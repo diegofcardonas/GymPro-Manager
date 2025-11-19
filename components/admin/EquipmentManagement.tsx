@@ -1,3 +1,4 @@
+
 import React, { useState, useContext, useMemo } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { EquipmentItem, EquipmentStatus, IncidentReport } from '../../types';
@@ -108,7 +109,7 @@ const EquipmentRow: React.FC<{ item: EquipmentItem, onEdit: (i: EquipmentItem) =
     return (
         <tr className="hover:bg-gray-50 dark:hover:bg-gray-800">
             <td className="p-4 font-medium text-gray-900 dark:text-white">{item.name}</td>
-            <td className="p-4 text-gray-600 dark:text-gray-400">{item.type}</td>
+            <td className="p-4 text-gray-600 dark:text-gray-400">{t(`equipmentTypes.${item.type}`, { defaultValue: item.type })}</td>
             <td className="p-4"><span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusColors[item.status]}`}>{t(`statuses.equipment.${item.status}`)}</span></td>
             <td className="p-4 text-right">
                  <div className="flex justify-end space-x-2">

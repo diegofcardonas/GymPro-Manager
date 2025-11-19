@@ -1,3 +1,4 @@
+
 {
     "general": {
         "appName": "GymPro Manager",
@@ -119,6 +120,13 @@
             "En Reparación": "En Reparación",
             "Fuera de Servicio": "Fuera de Servicio"
         }
+    },
+    "equipmentTypes": {
+        "Cardio": "Cardio",
+        "Strength": "Fuerza",
+        "Free Weights": "Pesos Libres",
+        "Machine": "Máquina",
+        "Accessory": "Accesorio"
     },
     "fitnessLevels": {
         "Principiante": "Principiante",

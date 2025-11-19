@@ -1,46 +1,47 @@
+
 import { EquipmentItem, EquipmentStatus } from '../types';
 
 export const MOCK_EQUIPMENT: EquipmentItem[] = [
     {
         id: 'eq1',
-        name: 'Treadmill #1',
+        name: 'Caminadora Pro #1',
         type: 'Cardio',
-        location: 'Cardio Zone',
+        location: 'Zona Cardio',
         status: EquipmentStatus.OPERATIONAL,
     },
     {
         id: 'eq2',
-        name: 'Treadmill #2',
+        name: 'Elíptica Matrix',
         type: 'Cardio',
-        location: 'Cardio Zone',
+        location: 'Zona Cardio',
         status: EquipmentStatus.OPERATIONAL,
     },
     {
         id: 'eq3',
-        name: 'Leg Press Machine',
+        name: 'Prensa de Piernas 45°',
         type: 'Strength',
-        location: 'Machine Area',
+        location: 'Zona de Máquinas',
         status: EquipmentStatus.IN_REPAIR,
     },
     {
         id: 'eq4',
-        name: 'Dumbbell Rack (5-50kg)',
+        name: 'Estante de Mancuernas (5-50kg)',
         type: 'Free Weights',
-        location: 'Weights Area',
+        location: 'Zona de Pesas',
         status: EquipmentStatus.OPERATIONAL,
     },
     {
         id: 'eq5',
-        name: 'Squat Rack #1',
+        name: 'Jaula de Potencia #1',
         type: 'Strength',
-        location: 'Weights Area',
+        location: 'Zona de Pesas',
         status: EquipmentStatus.OPERATIONAL,
     },
     {
         id: 'eq6',
-        name: 'Lat Pulldown Machine',
+        name: 'Polea Alta (Lat Pulldown)',
         type: 'Strength',
-        location: 'Machine Area',
+        location: 'Zona de Máquinas',
         status: EquipmentStatus.OUT_OF_SERVICE,
     },
 ];
