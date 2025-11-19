@@ -1,3 +1,4 @@
+
 import { GymClass } from '../types';
 
 const getISODate = (dayOffset: number, hour: number, durationMinutes: number): { start: string, end: string } => {
@@ -13,9 +14,9 @@ const getISODate = (dayOffset: number, hour: number, durationMinutes: number): {
 export const MOCK_CLASSES: GymClass[] = [
     {
         id: 'c1',
-        name: 'Morning HIIT',
-        description: 'High-Intensity Interval Training to kickstart your day. Get ready to sweat!',
-        trainerId: 't1', // Chris Validator
+        name: 'HIIT Matutino',
+        description: 'Entrenamiento de intervalos de alta intensidad para empezar el día. ¡Prepárate para sudar!',
+        trainerId: 't1', // Carlos Vives
         startTime: getISODate(1, 8, 45).start, // Tomorrow at 8:00 AM
         endTime: getISODate(1, 8, 45).end,
         capacity: 15,
@@ -24,8 +25,8 @@ export const MOCK_CLASSES: GymClass[] = [
     {
         id: 'c2',
         name: 'Vinyasa Yoga Flow',
-        description: 'A dynamic yoga class focusing on breath-synchronized movement.',
-        trainerId: 't2', // Diana Prince
+        description: 'Una clase de yoga dinámica centrada en el movimiento sincronizado con la respiración.',
+        trainerId: 't2', // Daniela Pineda
         startTime: getISODate(1, 18, 60).start, // Tomorrow at 6:00 PM
         endTime: getISODate(1, 18, 60).end,
         capacity: 20,
@@ -33,9 +34,9 @@ export const MOCK_CLASSES: GymClass[] = [
     },
     {
         id: 'c3',
-        name: 'Strength & Conditioning',
-        description: 'Build raw strength and improve your overall conditioning with this intense workout.',
-        trainerId: 't3', // Ben Affleck
+        name: 'Fuerza y Acondicionamiento',
+        description: 'Construye fuerza bruta y mejora tu condición general con este entrenamiento intenso.',
+        trainerId: 't3', // Bernardo Arias
         startTime: getISODate(2, 17, 75).start, // Day after tomorrow at 5:00 PM
         endTime: getISODate(2, 17, 75).end,
         capacity: 12,
@@ -43,9 +44,9 @@ export const MOCK_CLASSES: GymClass[] = [
     },
     {
         id: 'c4',
-        name: 'Endurance Cardio',
-        description: 'Push your limits with a mix of running, cycling, and rowing.',
-        trainerId: 't4', // Sarah Connor
+        name: 'Cardio de Resistencia',
+        description: 'Supera tus límites con una mezcla de correr, ciclismo y remo.',
+        trainerId: 't4', // Sara Correa
         startTime: getISODate(2, 9, 60).start, // Day after tomorrow at 9:00 AM
         endTime: getISODate(2, 9, 60).end,
         capacity: 18,
@@ -53,9 +54,9 @@ export const MOCK_CLASSES: GymClass[] = [
     },
     {
         id: 'c5',
-        name: 'Powerlifting Basics',
-        description: 'Learn the fundamentals of the three big lifts: squat, bench, and deadlift.',
-        trainerId: 't5', // John Cena
+        name: 'Fundamentos de Powerlifting',
+        description: 'Aprende los fundamentos de los tres grandes levantamientos: sentadilla, banca y peso muerto.',
+        trainerId: 't5', // Juan Castro
         startTime: getISODate(3, 19, 90).start, // In 3 days at 7:00 PM
         endTime: getISODate(3, 19, 90).end,
         capacity: 10,

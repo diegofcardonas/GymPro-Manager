@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { MembershipTier } from '../../types';
 import { PlusIcon } from '../icons/PlusIcon';
@@ -6,6 +7,14 @@ import { TrashIcon } from '../icons/TrashIcon';
 import { CheckCircleIcon } from '../icons/CheckCircleIcon';
 import { MOCK_TIERS } from '../../data/membershipTiers';
 
+const formatCOP = (value: number) => {
+    return new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(value);
+};
 
 const MembershipTiers: React.FC = () => {
     const [tiers, setTiers] = useState<MembershipTier[]>(MOCK_TIERS);
@@ -69,7 +78,7 @@ const TierCard: React.FC<{ tier: MembershipTier, onEdit: (tier: MembershipTier) 
         <div className="bg-white dark:bg-gray-800/50 rounded-xl ring-1 ring-black/5 dark:ring-white/10 shadow-lg flex flex-col overflow-hidden transform hover:scale-105 transition-transform duration-300">
             <div className="p-6 text-white" style={{ backgroundColor: tier.color }}>
                 <h3 className="text-2xl font-bold">{tier.name}</h3>
-                <p className="text-4xl font-extrabold mt-2">${tier.price}<span className="text-lg font-medium">/mes</span></p>
+                <p className="text-3xl font-extrabold mt-2">{formatCOP(tier.price)}<span className="text-lg font-medium">/mes</span></p>
                 <p className="text-sm opacity-80">{tier.duration} mes(es) de compromiso</p>
             </div>
             <div className="p-6 flex-grow">
@@ -130,7 +139,7 @@ const TierModal: React.FC<{ tier: MembershipTier | null, onSave: (tier: Membersh
                             <input type="text" name="name" value={formData.name} onChange={handleChange} className="mt-1 block w-full input-style" required />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium">Precio ($/mes)</label>
+                            <label className="block text-sm font-medium">Precio (COP/mes)</label>
                             <input type="number" name="price" value={formData.price} onChange={handleChange} className="mt-1 block w-full input-style" required />
                         </div>
                     </div>
@@ -166,7 +175,6 @@ const TierModal: React.FC<{ tier: MembershipTier | null, onSave: (tier: Membersh
                     <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg font-semibold">Cancelar</button>
                     <button type="submit" className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg font-semibold text-primary-foreground">Guardar Nivel</button>
                 </div>
-            </form>
              {/* FIX: Removed non-standard "jsx" prop from style tag. */}
              <style>{`
                 .input-style {
@@ -186,6 +194,7 @@ const TierModal: React.FC<{ tier: MembershipTier | null, onSave: (tier: Membersh
                     border-color: hsl(var(--primary));
                 }
             `}</style>
+            </form>
         </div>
     );
 };

@@ -19,6 +19,15 @@ import Footer from './Footer';
 
 type View = 'overview' | 'staff' | 'financials' | 'notifications';
 
+const formatCOP = (value: number) => {
+    return new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(value);
+};
+
 const StatCard: React.FC<{ title: string; value: string | number; icon: React.ReactNode; trend?: string }> = ({ title, value, icon, trend }) => (
     <div className="bg-white dark:bg-gray-800/50 p-6 rounded-xl ring-1 ring-black/5 dark:ring-white/10 flex items-center space-x-4">
         <div className="p-3 rounded-full bg-primary/10 text-primary">{icon}</div>
@@ -59,7 +68,7 @@ const GeneralManagerDashboard: React.FC = () => {
             .filter(p => p.status === PaymentStatus.COMPLETED)
             .forEach(p => {
                 const date = new Date(p.date);
-                const month = date.toLocaleString('default', { month: 'short' });
+                const month = date.toLocaleString('es-CO', { month: 'short' });
                 if (!monthRevenue[month]) monthRevenue[month] = 0;
                 monthRevenue[month] += p.amount;
             });
@@ -72,8 +81,8 @@ const GeneralManagerDashboard: React.FC = () => {
                 return (
                     <div className="space-y-8 animate-fade-in">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <StatCard title={t('manager.revenue')} value={`$${stats.totalRevenue.toLocaleString()}`} icon={<CurrencyDollarIcon className="w-6 h-6"/>} />
-                            <StatCard title={t('manager.mrr')} value={`$${stats.mrr.toLocaleString()}`} icon={<ChartBarIcon className="w-6 h-6"/>} trend="+5% vs last month" />
+                            <StatCard title={t('manager.revenue')} value={formatCOP(stats.totalRevenue)} icon={<CurrencyDollarIcon className="w-6 h-6"/>} />
+                            <StatCard title={t('manager.mrr')} value={formatCOP(stats.mrr)} icon={<ChartBarIcon className="w-6 h-6"/>} trend="+5% vs último mes" />
                             <StatCard title={t('manager.activeMembers')} value={stats.activeMembers} icon={<UserGroupIcon className="w-6 h-6"/>} />
                              <StatCard title={t('manager.staffCount')} value={staffMembers.length} icon={<UserGroupIcon className="w-6 h-6"/>} />
                         </div>
@@ -84,8 +93,8 @@ const GeneralManagerDashboard: React.FC = () => {
                                 <BarChart data={revenueData}>
                                     <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-gray-200 dark:text-white/10" />
                                     <XAxis dataKey="name" tick={{ fill: 'currentColor' }} className="text-xs text-gray-500 dark:text-gray-400" />
-                                    <YAxis tick={{ fill: 'currentColor' }} className="text-xs text-gray-500 dark:text-gray-400" />
-                                    <Tooltip contentStyle={{ backgroundColor: 'rgba(255,255,255,0.8)', borderRadius: '8px' }} />
+                                    <YAxis tick={{ fill: 'currentColor' }} tickFormatter={(value) => `${(value / 1000000).toFixed(0)}M`} className="text-xs text-gray-500 dark:text-gray-400" />
+                                    <Tooltip formatter={(value: number) => formatCOP(value)} contentStyle={{ backgroundColor: 'rgba(255,255,255,0.8)', borderRadius: '8px' }} />
                                     <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
                                 </BarChart>
                             </ResponsiveContainer>

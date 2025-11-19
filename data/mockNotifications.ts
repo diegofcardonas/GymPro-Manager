@@ -1,3 +1,4 @@
+
 import { Notification, NotificationType } from '../types';
 
 export const MOCK_NOTIFICATIONS: Notification[] = [
@@ -6,7 +7,7 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
         id: 'n1',
         userId: '1',
         title: 'Nuevo Registro de Cliente',
-        message: 'Una nueva cliente, Jessica Davis, se ha registrado.',
+        message: 'Una nueva cliente, Jessica Díaz, se ha registrado.',
         timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(), // 1 hour ago
         isRead: false,
         type: NotificationType.SUCCESS,
@@ -16,7 +17,7 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
         id: 'n2',
         userId: '1',
         title: 'Membresía a punto de vencer',
-        message: 'La membresía de Michael Brown vence en 2 días.',
+        message: 'La membresía de Miguel Brown vence en 2 días.',
         timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
         isRead: false,
         type: NotificationType.WARNING,
@@ -37,7 +38,7 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
         id: 'n4',
         userId: '2',
         title: 'Rutina Actualizada',
-        message: 'Tu entrenador, Chris Validator, ha actualizado tu rutina de entrenamiento.',
+        message: 'Tu entrenador, Carlos Vives, ha actualizado tu rutina de entrenamiento.',
         timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
         isRead: false,
         type: NotificationType.INFO,
@@ -58,7 +59,7 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
         id: 'n6',
         userId: 't1',
         title: 'Nuevo Cliente Asignado',
-        message: 'Se te ha asignado una nueva cliente: Samantha Williams.',
+        message: 'Se te ha asignado una nueva cliente: Samantha López.',
         timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(), // 10 minutes ago
         isRead: false,
         type: NotificationType.SUCCESS,
@@ -68,7 +69,7 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
         id: 'n7',
         userId: 't1',
         title: 'Membresía de Cliente Vencida',
-        message: 'La membresía de tu cliente James Rodriguez ha vencido.',
+        message: 'La membresía de tu cliente Jaime Rodríguez ha vencido.',
         timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days ago
         isRead: true,
         type: NotificationType.ALERT,

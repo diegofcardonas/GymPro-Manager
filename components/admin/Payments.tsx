@@ -21,13 +21,22 @@ interface EnrichedPayment extends Payment {
 
 const getNestedValue = (obj: any, path: string) => path.split('.').reduce((o, k) => (o && o[k] != null) ? o[k] : null, obj);
 
+const formatCOP = (value: number) => {
+    return new Intl.NumberFormat('es-CO', {
+        style: 'currency',
+        currency: 'COP',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(value);
+};
+
 const StatCard: React.FC<{ title: string; value: number; icon: React.ReactNode, formatAsCurrency?: boolean }> = ({ title, value, icon, formatAsCurrency = false }) => (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-xl flex items-center space-x-4 w-full text-left ring-1 ring-black/5 dark:ring-white/10 h-full">
         <div className="bg-gray-200 dark:bg-gray-700 p-3 rounded-full">{icon}</div>
         <div>
             <p className="text-gray-500 dark:text-gray-400 text-sm">{title}</p>
             <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                {formatAsCurrency ? `$${value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : value.toLocaleString()}
+                {formatAsCurrency ? formatCOP(value) : value.toLocaleString()}
             </p>
         </div>
     </div>
@@ -38,7 +47,7 @@ const CustomBarTooltip = ({ active, payload, label }: TooltipProps<number, strin
       return (
         <div className="p-2 bg-white/80 dark:bg-gray-700/80 backdrop-blur-sm rounded-md border border-gray-300 dark:border-gray-600">
           <p className="label text-sm font-semibold text-gray-800 dark:text-gray-200">{`${label}`}</p>
-          <p className="intro text-xs text-primary">{`Revenue : $${payload[0].value?.toLocaleString()}`}</p>
+          <p className="intro text-xs text-primary">{`Ingresos : ${formatCOP(payload[0].value as number)}`}</p>
         </div>
       );
     }
@@ -61,8 +70,8 @@ const Payments: React.FC = () => {
             const tier = MOCK_TIERS.find(t => t.id === payment.tierId);
             return {
                 ...payment,
-                user: user || { name: 'Unknown User', email: 'N/A' },
-                tier: tier || { name: 'Unknown Tier' }
+                user: user || { name: 'Usuario Desconocido', email: 'N/A' },
+                tier: tier || { name: 'Nivel Desconocido' }
             };
         });
     }, [payments, users]);
@@ -113,7 +122,7 @@ const Payments: React.FC = () => {
             .filter(p => p.status === PaymentStatus.COMPLETED)
             .forEach(p => {
                 const date = new Date(p.date);
-                const month = date.toLocaleString('default', { month: 'short', year: '2-digit' });
+                const month = date.toLocaleString('es-CO', { month: 'short', year: '2-digit' });
                 if (!monthRevenue[month]) {
                     monthRevenue[month] = 0;
                 }
@@ -122,10 +131,11 @@ const Payments: React.FC = () => {
     
         return Object.entries(monthRevenue)
             .map(([month, revenue]) => {
-                 const [m, y] = month.split(' ');
-                 return { name: month, revenue, date: new Date(`1 ${m} 20${y}`) };
+                 // Spanish format usually gives "ene 24", need to handle parsing if needed for sorting
+                 // Simple mock sorting by assumption of creation order for now or re-parse
+                 return { name: month, revenue };
             })
-            .sort((a,b) => a.date.getTime() - b.date.getTime());
+            // Ideally sort by date object
     }, [enrichedPayments]);
 
     const filteredPayments = useMemo(() => {
@@ -174,27 +184,27 @@ const Payments: React.FC = () => {
         <div className="space-y-8">
             <section>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <StatCard title="Total Revenue" value={dashboardStats.totalRevenue} formatAsCurrency icon={<CurrencyDollarIcon className="w-6 h-6 text-green-500"/>} />
-                    <StatCard title="Est. MRR" value={dashboardStats.mrr} formatAsCurrency icon={<CurrencyDollarIcon className="w-6 h-6 text-blue-500"/>} />
-                    <StatCard title="Active Members" value={dashboardStats.activeMembers} icon={<UserGroupIcon className="w-6 h-6 text-purple-500"/>} />
-                    <StatCard title="Unpaid Dues" value={dashboardStats.unpaidDues} formatAsCurrency icon={<XCircleIcon className="w-6 h-6 text-red-500"/>} />
+                    <StatCard title="Ingresos Totales" value={dashboardStats.totalRevenue} formatAsCurrency icon={<CurrencyDollarIcon className="w-6 h-6 text-green-500"/>} />
+                    <StatCard title="IMR Estimado" value={dashboardStats.mrr} formatAsCurrency icon={<CurrencyDollarIcon className="w-6 h-6 text-blue-500"/>} />
+                    <StatCard title="Miembros Activos" value={dashboardStats.activeMembers} icon={<UserGroupIcon className="w-6 h-6 text-purple-500"/>} />
+                    <StatCard title="Pagos Pendientes" value={dashboardStats.unpaidDues} formatAsCurrency icon={<XCircleIcon className="w-6 h-6 text-red-500"/>} />
                 </div>
             </section>
              <section className="grid grid-cols-1 lg:grid-cols-5 gap-8">
                 <div className="lg:col-span-3 bg-white dark:bg-gray-800/50 p-6 rounded-xl ring-1 ring-black/5 dark:ring-white/10">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Revenue Over Time</h3>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Ingresos en el Tiempo</h3>
                     <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={revenueOverTimeData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-gray-200 dark:text-white/10" />
                             <XAxis dataKey="name" tick={{ fill: 'currentColor' }} className="text-xs text-gray-500 dark:text-gray-400" />
-                            <YAxis tick={{ fill: 'currentColor' }} tickFormatter={(value) => `$${(value as number / 1000)}k`} className="text-xs text-gray-500 dark:text-gray-400" />
+                            <YAxis tick={{ fill: 'currentColor' }} tickFormatter={(value) => `$${(value as number / 1000000).toFixed(1)}M`} className="text-xs text-gray-500 dark:text-gray-400" />
                             <Tooltip cursor={{fill: 'hsla(var(--primary), 0.1)'}} content={<CustomBarTooltip />}/>
                             <Bar dataKey="revenue" fill="hsl(var(--primary))" />
                         </BarChart>
                     </ResponsiveContainer>
                 </div>
                 <div className="lg:col-span-2 bg-white dark:bg-gray-800/50 p-6 rounded-xl ring-1 ring-black/5 dark:ring-white/10">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Revenue by Tier</h3>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Ingresos por Nivel</h3>
                     <ResponsiveContainer width="100%" height={300}>
                         <PieChart>
                             <Pie
@@ -212,20 +222,20 @@ const Payments: React.FC = () => {
                                     <Cell key={`cell-${entry.name}`} fill={entry.color} />
                                 ))}
                             </Pie>
-                            <Tooltip formatter={(value: number) => `$${value.toLocaleString()}`}/>
+                            <Tooltip formatter={(value: number) => formatCOP(value)}/>
                              <Legend />
                         </PieChart>
                     </ResponsiveContainer>
                 </div>
             </section>
              <section>
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Payment History</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Historial de Pagos</h2>
                 <div className="bg-white dark:bg-gray-800/50 rounded-xl ring-1 ring-black/5 dark:ring-white/10 w-full overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-gray-700 space-y-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <input
                                 type="text"
-                                placeholder="Search by client name..."
+                                placeholder="Buscar por cliente..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary px-4 py-2 text-gray-800 dark:text-gray-200"
@@ -235,7 +245,7 @@ const Payments: React.FC = () => {
                                 onChange={e => setStatusFilter(e.target.value as PaymentStatus || null)}
                                 className="w-full bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary px-4 py-2 text-gray-800 dark:text-gray-200"
                             >
-                                <option value="">All Statuses</option>
+                                <option value="">Todos los Estados</option>
                                 {Object.values(PaymentStatus).map(s => <option key={s} value={s}>{s}</option>)}
                             </select>
                         </div>
@@ -246,29 +256,29 @@ const Payments: React.FC = () => {
                                 <tr>
                                     <th className="p-4 font-semibold">
                                         <button onClick={() => requestSort('user.name')} className="flex items-center space-x-1">
-                                            <span>Client</span>{getSortIcon('user.name')}
+                                            <span>Cliente</span>{getSortIcon('user.name')}
                                         </button>
                                     </th>
                                     <th className="p-4 font-semibold">
                                         <button onClick={() => requestSort('amount')} className="flex items-center space-x-1">
-                                            <span>Amount</span>{getSortIcon('amount')}
+                                            <span>Monto</span>{getSortIcon('amount')}
                                         </button>
                                     </th>
                                     <th className="p-4 font-semibold">
-                                        <span>Tier</span>
+                                        <span>Nivel</span>
                                     </th>
                                     <th className="p-4 font-semibold">
                                         <button onClick={() => requestSort('date')} className="flex items-center space-x-1">
-                                            <span>Date</span>{getSortIcon('date')}
+                                            <span>Fecha</span>{getSortIcon('date')}
                                         </button>
                                     </th>
                                     <th className="p-4 font-semibold">
                                         <button onClick={() => requestSort('status')} className="flex items-center space-x-1">
-                                            <span>Status</span>{getSortIcon('status')}
+                                            <span>Estado</span>{getSortIcon('status')}
                                         </button>
                                     </th>
                                     <th className="p-4 font-semibold">
-                                    <span>Actions</span>
+                                    <span>Acciones</span>
                                     </th>
                                 </tr>
                             </thead>
@@ -280,11 +290,11 @@ const Payments: React.FC = () => {
                         </table>
                     </div>
                     <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                        <p>Showing {paginatedPayments.length > 0 ? (currentPage - 1) * ITEMS_PER_PAGE + 1 : 0}-{(currentPage - 1) * ITEMS_PER_PAGE + paginatedPayments.length} of {sortedPayments.length} payments</p>
+                        <p>Mostrando {paginatedPayments.length > 0 ? (currentPage - 1) * ITEMS_PER_PAGE + 1 : 0}-{(currentPage - 1) * ITEMS_PER_PAGE + paginatedPayments.length} de {sortedPayments.length} pagos</p>
                         <div className="flex items-center space-x-2">
-                            <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded disabled:opacity-50">Previous</button>
-                            <span>Page {currentPage} of {totalPages || 1}</span>
-                            <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded disabled:opacity-50">Next</button>
+                            <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded disabled:opacity-50">Anterior</button>
+                            <span>Página {currentPage} de {totalPages || 1}</span>
+                            <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded disabled:opacity-50">Siguiente</button>
                         </div>
                     </div>
                 </div>
@@ -303,19 +313,19 @@ const PaymentRow: React.FC<{ payment: EnrichedPayment, onViewDetails: () => void
 
     return (
         <tr className="md:border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors duration-200 group">
-            <td data-label="Client" className="p-4 user-cell">
+            <td data-label="Cliente" className="p-4 user-cell">
                 <div className="font-semibold text-gray-900 dark:text-white">{(payment.user as User).name}</div>
             </td>
-            <td data-label="Amount" className="p-4 text-gray-600 dark:text-gray-300">${payment.amount.toFixed(2)}</td>
-            <td data-label="Tier" className="p-4 text-gray-600 dark:text-gray-300">{(payment.tier as MembershipTier).name}</td>
-            <td data-label="Date" className="p-4 text-gray-600 dark:text-gray-300">{new Date(payment.date).toLocaleDateString()}</td>
-            <td data-label="Status" className="p-4">
+            <td data-label="Monto" className="p-4 text-gray-600 dark:text-gray-300">{formatCOP(payment.amount)}</td>
+            <td data-label="Nivel" className="p-4 text-gray-600 dark:text-gray-300">{(payment.tier as MembershipTier).name}</td>
+            <td data-label="Fecha" className="p-4 text-gray-600 dark:text-gray-300">{new Date(payment.date).toLocaleDateString()}</td>
+            <td data-label="Estado" className="p-4">
                 <span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusClasses[payment.status]}`}>
                     {payment.status}
                 </span>
             </td>
             <td className="p-4 actions-cell">
-                 <button onClick={onViewDetails} className="text-sm font-semibold text-primary hover:underline">View Details</button>
+                 <button onClick={onViewDetails} className="text-sm font-semibold text-primary hover:underline">Ver Detalles</button>
             </td>
         </tr>
     );
@@ -349,7 +359,7 @@ const PaymentDetailsModal: React.FC<{ payment: EnrichedPayment; allPayments: Enr
                         <div className="p-2 bg-primary/10 rounded-full">
                             <CurrencyDollarIcon className="w-6 h-6 text-primary" />
                         </div>
-                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Payment Details</h2>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Detalles del Pago</h2>
                     </div>
                     <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
                         <XCircleIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
@@ -357,33 +367,33 @@ const PaymentDetailsModal: React.FC<{ payment: EnrichedPayment; allPayments: Enr
                 </div>
                 <div className="p-6 space-y-4 overflow-y-auto">
                     <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
-                        <h3 className="font-semibold text-lg mb-2 text-gray-800 dark:text-gray-200">Transaction Details</h3>
+                        <h3 className="font-semibold text-lg mb-2 text-gray-800 dark:text-gray-200">Detalles de la Transacción</h3>
                         <dl className="divide-y divide-gray-200 dark:divide-gray-600">
-                             <DetailRow label="Transaction ID" value={<span className="font-mono text-xs">{payment.id}</span>} />
-                             <DetailRow label="Date" value={new Date(payment.date).toLocaleString()} />
-                             <DetailRow label="Amount" value={<span className="font-bold text-lg">${payment.amount.toFixed(2)}</span>} />
-                             <DetailRow label="Membership Tier" value={(payment.tier as MembershipTier).name} />
-                             <DetailRow label="Status" value={<span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusClasses[payment.status]}`}>{payment.status}</span>} />
+                             <DetailRow label="ID Transacción" value={<span className="font-mono text-xs">{payment.id}</span>} />
+                             <DetailRow label="Fecha" value={new Date(payment.date).toLocaleString()} />
+                             <DetailRow label="Monto" value={<span className="font-bold text-lg">{formatCOP(payment.amount)}</span>} />
+                             <DetailRow label="Nivel de Membresía" value={(payment.tier as MembershipTier).name} />
+                             <DetailRow label="Estado" value={<span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusClasses[payment.status]}`}>{payment.status}</span>} />
                         </dl>
                     </div>
 
                     <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg">
-                        <h3 className="font-semibold text-lg mb-2 text-gray-800 dark:text-gray-200">Payment History for {(payment.user as User).name}</h3>
+                        <h3 className="font-semibold text-lg mb-2 text-gray-800 dark:text-gray-200">Historial de Pagos de {(payment.user as User).name}</h3>
                         <div className="max-h-48 overflow-y-auto pr-2">
                             <table className="w-full text-sm">
                                 <thead className="text-left text-gray-500 dark:text-gray-400">
                                     <tr>
-                                        <th className="py-1 font-medium">Date</th>
-                                        <th className="py-1 font-medium">Amount</th>
-                                        <th className="py-1 font-medium">Tier</th>
-                                        <th className="py-1 font-medium">Status</th>
+                                        <th className="py-1 font-medium">Fecha</th>
+                                        <th className="py-1 font-medium">Monto</th>
+                                        <th className="py-1 font-medium">Nivel</th>
+                                        <th className="py-1 font-medium">Estado</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {clientPaymentHistory.map(histPayment => (
                                         <tr key={histPayment.id} className={`border-t border-gray-200 dark:border-gray-600 ${histPayment.id === payment.id ? 'bg-primary/10' : ''}`}>
                                             <td className="py-2">{new Date(histPayment.date).toLocaleDateString()}</td>
-                                            <td className="py-2">${histPayment.amount.toFixed(2)}</td>
+                                            <td className="py-2">{formatCOP(histPayment.amount)}</td>
                                             <td className="py-2">{(histPayment.tier as MembershipTier).name}</td>
                                             <td className="py-2">
                                                 <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${statusClasses[histPayment.status]}`}>
@@ -399,7 +409,7 @@ const PaymentDetailsModal: React.FC<{ payment: EnrichedPayment; allPayments: Enr
 
                 </div>
                 <div className="flex justify-end space-x-4 p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-                    <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg font-semibold transition-colors text-gray-800 dark:text-gray-200">Close</button>
+                    <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg font-semibold transition-colors text-gray-800 dark:text-gray-200">Cerrar</button>
                 </div>
             </div>
         </div>

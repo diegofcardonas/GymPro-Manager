@@ -1,3 +1,4 @@
+
 import { Message } from '../types';
 
 export const MOCK_MESSAGES: Message[] = [
@@ -7,7 +8,7 @@ export const MOCK_MESSAGES: Message[] = [
         conversationId: '2-t1',
         senderId: 't1',
         receiverId: '2',
-        text: 'Hey Samantha, great job on your last workout! How did the increased weight on the bench press feel?',
+        text: '¡Hola Samantha! Gran trabajo en tu último entrenamiento. ¿Cómo sentiste el aumento de peso en el press de banca?',
         timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
         isRead: true,
     },
@@ -16,7 +17,7 @@ export const MOCK_MESSAGES: Message[] = [
         conversationId: '2-t1',
         senderId: '2',
         receiverId: 't1',
-        text: 'Thanks, Chris! It was challenging but I managed to complete all the sets. My chest was definitely sore the next day.',
+        text: '¡Gracias, Carlos! Fue un reto, pero logré completar todas las series. Definitivamente me dolía el pecho al día siguiente.',
         timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
         isRead: true,
     },
@@ -25,7 +26,7 @@ export const MOCK_MESSAGES: Message[] = [
         conversationId: '2-t1',
         senderId: 't1',
         receiverId: '2',
-        text: 'That\'s a good sign! Keep up the great work. Let me know if you need any adjustments to your routine.',
+        text: '¡Esa es una buena señal! Sigue con el buen trabajo. Avísame si necesitas algún ajuste en tu rutina.',
         timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
         isRead: false,
     },
@@ -36,7 +37,7 @@ export const MOCK_MESSAGES: Message[] = [
         conversationId: '3-t2',
         senderId: '3',
         receiverId: 't2',
-        text: 'Hi Diana, I had a question about the deadlift form. Can we go over it quickly before my next session?',
+        text: 'Hola Daniela, tenía una pregunta sobre la técnica del peso muerto. ¿Podemos revisarlo rápidamente antes de mi próxima sesión?',
         timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
         isRead: true,
     },
@@ -45,7 +46,7 @@ export const MOCK_MESSAGES: Message[] = [
         conversationId: '3-t2',
         senderId: 't2',
         receiverId: '3',
-        text: 'Of course, Michael. Let\'s do that. Just find me on the floor 10 minutes before your scheduled workout time.',
+        text: 'Por supuesto, Miguel. Hagámoslo. Búscame en el piso 10 minutos antes de tu hora de entrenamiento programada.',
         timestamp: new Date(Date.now() - 20 * 60 * 60 * 1000).toISOString(), // 20 hours ago
         isRead: true,
     },
