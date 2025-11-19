@@ -1,4 +1,3 @@
-
 {
     "general": {
         "appName": "GymPro Manager",
@@ -544,6 +543,38 @@
             "age": "Age",
             "contactName": "Contact Name",
             "contactPhone": "Contact Phone"
+        },
+        "finances": {
+            "title": "Financial Dashboard",
+            "netProfit": "Net Profit",
+            "totalIncome": "Total Income",
+            "totalExpenses": "Total Expenses",
+            "outstanding": "Outstanding",
+            "exportReport": "Export Report",
+            "incomeVsExpense": "Income vs Expense",
+            "expenseBreakdown": "Expense Breakdown",
+            "recentTransactions": "Recent Transactions",
+            "income": "Income",
+            "expenses": "Expenses",
+            "category": "Category",
+            "amount": "Amount",
+            "date": "Date",
+            "status": "Status",
+            "client": "Client",
+            "concept": "Concept",
+            "ranges": {
+                "month": "This Month",
+                "quarter": "Last Quarter",
+                "year": "This Year"
+            },
+            "categories": {
+                "Rent": "Rent",
+                "Salaries": "Salaries",
+                "Utilities": "Utilities",
+                "Equipment": "Equipment",
+                "Marketing": "Marketing",
+                "Maintenance": "Maintenance"
+            }
         }
     },
     "receptionist": {

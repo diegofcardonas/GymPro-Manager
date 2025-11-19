@@ -1,4 +1,3 @@
-
 {
     "general": {
         "appName": "GymPro Manager",
@@ -544,6 +543,38 @@
             "age": "Edad",
             "contactName": "Nombre del Contacto",
             "contactPhone": "Teléfono del Contacto"
+        },
+        "finances": {
+            "title": "Panel Financiero",
+            "netProfit": "Utilidad Neta",
+            "totalIncome": "Ingresos Totales",
+            "totalExpenses": "Gastos Totales",
+            "outstanding": "Cuentas por Cobrar",
+            "exportReport": "Exportar Reporte",
+            "incomeVsExpense": "Ingresos vs Gastos",
+            "expenseBreakdown": "Desglose de Gastos",
+            "recentTransactions": "Transacciones Recientes",
+            "income": "Ingresos",
+            "expenses": "Gastos",
+            "category": "Categoría",
+            "amount": "Monto",
+            "date": "Fecha",
+            "status": "Estado",
+            "client": "Cliente",
+            "concept": "Concepto",
+            "ranges": {
+                "month": "Este Mes",
+                "quarter": "Último Trimestre",
+                "year": "Este Año"
+            },
+            "categories": {
+                "Rent": "Alquiler",
+                "Salaries": "Nómina",
+                "Utilities": "Servicios",
+                "Equipment": "Equipos",
+                "Marketing": "Marketing",
+                "Maintenance": "Mantenimiento"
+            }
         }
     },
     "receptionist": {
