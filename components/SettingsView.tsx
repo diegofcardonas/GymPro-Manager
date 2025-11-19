@@ -41,7 +41,7 @@ const SettingSection: React.FC<{ title: string; children: React.ReactNode; dange
 
 const SettingsView: React.FC = () => {
     const { t } = useTranslation();
-    const { currentUser, updateCurrentUser, logout, users, toggleBlockUser } = useContext(AuthContext)!;
+    const { currentUser, updateCurrentUser, logout, users, toggleBlockUser, deleteUser } = useContext(AuthContext)!;
     const { theme, setThemeByName, isDarkMode, toggleDarkMode } = useContext(ThemeContext)!;
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -110,10 +110,11 @@ const SettingsView: React.FC = () => {
 
 
     const handleDeactivate = () => {
-        if (window.confirm('¿Estás seguro de que quieres desactivar tu cuenta? Esta acción es permanente y no se puede deshacer.')) {
-            // In a real application, this would trigger an API call to delete the user.
-            // For this mock app, we'll simulate it by logging the user out.
-            console.log(`Deactivating account for user: ${currentUser?.id}`);
+        if (!currentUser) return;
+        if (window.confirm(t('components.settingsView.confirmDeactivation'))) {
+            // Delete the user from the system
+            deleteUser(currentUser.id);
+            // Logout to clear session and return to login screen
             logout();
         }
     };
@@ -270,7 +271,7 @@ const SettingsView: React.FC = () => {
                                 </div>
                                 <button 
                                     onClick={() => toggleBlockUser(user.id)}
-                                    className="px-3 py-1 text-xs font-semibold bg-gray-300 dark:bg-gray-600 rounded-md hover:bg-gray-400 dark:hover:bg-gray-500"
+                                    className="px-3 py-1 text-xs font-semibold bg-gray-300 dark:bg-gray-600 rounded-md hover:bg-gray-400 dark:hover:bg-gray-50"
                                 >
                                     {t('components.settingsView.unblock')}
                                 </button>
