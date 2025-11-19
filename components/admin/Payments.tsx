@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo, useContext } from 'react';
 import { Payment, PaymentStatus, User, MembershipTier, Role, MembershipStatus as UserMembershipStatus } from '../../types';
 import { AuthContext } from '../../context/AuthContext';
@@ -219,9 +220,9 @@ const Payments: React.FC = () => {
             </section>
              <section>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Payment History</h2>
-                <div className="bg-white dark:bg-gray-800/50 rounded-xl ring-1 ring-black/5 dark:ring-white/10 w-full">
+                <div className="bg-white dark:bg-gray-800/50 rounded-xl ring-1 ring-black/5 dark:ring-white/10 w-full overflow-hidden">
                     <div className="p-4 border-b border-gray-200 dark:border-gray-700 space-y-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <input
                                 type="text"
                                 placeholder="Search by client name..."
@@ -301,7 +302,7 @@ const PaymentRow: React.FC<{ payment: EnrichedPayment, onViewDetails: () => void
     };
 
     return (
-        <tr className="md:border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors duration-200">
+        <tr className="md:border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-colors duration-200 group">
             <td data-label="Client" className="p-4 user-cell">
                 <div className="font-semibold text-gray-900 dark:text-white">{(payment.user as User).name}</div>
             </td>
@@ -342,7 +343,7 @@ const PaymentDetailsModal: React.FC<{ payment: EnrichedPayment; allPayments: Enr
     
     return (
          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col animate-scale-in">
                 <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
                     <div className="flex items-center gap-3">
                         <div className="p-2 bg-primary/10 rounded-full">

@@ -86,7 +86,7 @@ const ExecutiveSummaryCard: React.FC<{ stats: any }> = ({ stats }) => {
     }, [stats.totalClients, stats.active, stats.expired, stats.pending]);
 
     return (
-        <div className="relative rounded-3xl overflow-hidden p-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 shadow-xl col-span-full lg:col-span-2">
+        <div className="relative rounded-3xl overflow-hidden p-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 shadow-xl col-span-1 md:col-span-2">
             <div className="h-full bg-white dark:bg-gray-900 rounded-[20px] p-6 relative overflow-hidden">
                  <div className="absolute top-0 right-0 p-4 opacity-10">
                     <SparklesAiIcon className="w-32 h-32 text-purple-500" />
@@ -142,9 +142,9 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate, onUse
          <div className="w-full max-w-7xl mx-auto p-2">
              
             {/* Bento Grid Layout */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
                 
-                {/* Row 1: AI Summary (Spans 2 cols) & Top Stats */}
+                {/* Row 1: AI Summary (Spans 2 cols on md+) & Top Stats */}
                 <ExecutiveSummaryCard stats={stats} />
 
                 <StatCard 
@@ -164,8 +164,8 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate, onUse
                     onClick={() => onNavigate('users', { type: 'status', value: MembershipStatus.ACTIVE })}
                 />
 
-                 {/* Row 2: Main Chart (Spans 2 cols, 2 rows) & More Stats */}
-                <div className="lg:col-span-2 lg:row-span-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-md rounded-3xl p-6 border border-white/20 dark:border-gray-700/50 shadow-lg flex flex-col">
+                 {/* Row 2: Main Chart (Spans 2 cols on md, 2 cols 2 rows on lg) & More Stats */}
+                <div className="col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-md rounded-3xl p-6 border border-white/20 dark:border-gray-700/50 shadow-lg flex flex-col">
                     <div className="flex justify-between items-center mb-6">
                         <h3 className="text-xl font-bold text-gray-800 dark:text-white">Growth Trends</h3>
                         <select className="bg-transparent text-sm font-medium text-gray-500 dark:text-gray-400 border-none focus:ring-0 cursor-pointer hover:text-primary">
@@ -217,8 +217,8 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate, onUse
                     onClick={() => onNavigate('users', { type: 'status', value: MembershipStatus.PENDING })}
                 />
 
-                 {/* Quick Actions - Spans 2 cols */}
-                 <div className="lg:col-span-2 bg-gradient-to-br from-gray-900 to-gray-800 dark:from-black dark:to-gray-900 p-8 rounded-3xl text-white shadow-lg flex flex-col justify-between relative overflow-hidden group">
+                 {/* Quick Actions - Spans 2 cols on md+ */}
+                 <div className="col-span-1 sm:col-span-2 bg-gradient-to-br from-gray-900 to-gray-800 dark:from-black dark:to-gray-900 p-8 rounded-3xl text-white shadow-lg flex flex-col justify-between relative overflow-hidden group">
                      <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:bg-primary/30 transition-all duration-700"></div>
                      
                      <div className="relative z-10">

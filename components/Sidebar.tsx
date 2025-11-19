@@ -77,7 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, on
     ], [t]);
 
     return (
-        <div className={`fixed h-full z-30 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-r border-black/10 dark:border-white/10 flex flex-col transition-all duration-300 ease-in-out
+        <div className={`fixed h-full z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-r border-black/10 dark:border-white/10 flex flex-col transition-transform duration-300 ease-in-out
             ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
             md:translate-x-0 
             ${isCollapsed ? 'w-20' : 'w-64'}

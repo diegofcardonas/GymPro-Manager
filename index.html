@@ -32,27 +32,28 @@
       /* Custom scrollbar for better aesthetics */
       ::-webkit-scrollbar {
         width: 8px;
+        height: 8px;
       }
       /* Light mode scrollbar */
       ::-webkit-scrollbar-track {
-        background: #f1f5f9; /* coolGray-200 */
+        background: transparent;
       }
       ::-webkit-scrollbar-thumb {
-        background: #94a3b8; /* coolGray-400 */
+        background: #cbd5e1; /* slate-300 */
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #64748b; /* coolGray-500 */
+        background: #94a3b8; /* slate-400 */
       }
       /* Dark mode scrollbar */
       html.dark ::-webkit-scrollbar-track {
-        background: #1a202c; /* dark-800 */
+        background: transparent;
       }
       html.dark ::-webkit-scrollbar-thumb {
-        background: #4a5568; /* dark-600 */
+        background: #4b5563; /* gray-600 */
       }
       html.dark ::-webkit-scrollbar-thumb:hover {
-        background: #718096; /* dark-500 */
+        background: #6b7280; /* gray-500 */
       }
 
       /* Chat background pattern */
@@ -92,85 +93,100 @@
         border-color: transparent #374151 transparent transparent;
       }
 
-      /* Responsive table styles for User Management */
-      @media (max-width: 767px) {
+      /* Responsive table styles: Mobile Card Layout */
+      @media (max-width: 768px) {
         .responsive-table thead {
           display: none;
         }
+        
         .responsive-table tbody tr {
-          display: block;
-          margin-bottom: 1rem;
-          border-radius: 0.5rem;
-          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          background-color: white;
+          border-radius: 1rem;
           box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+          margin-bottom: 1.5rem;
+          border: 1px solid #e2e8f0; /* border-slate-200 */
+          overflow: hidden;
         }
-        html:not(.dark) .responsive-table tbody tr {
-           border: 1px solid rgb(226, 232, 240); /* border-slate-200 */
-        }
+        
         html.dark .responsive-table tbody tr {
-           border: 1px solid rgb(55 65 81); /* border-gray-700 */
+           background-color: #1f2937; /* bg-gray-800 */
+           border-color: #374151; /* border-gray-700 */
         }
+        
         .responsive-table td {
-          display: block;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.875rem 1.25rem;
+          border-bottom: 1px solid #f1f5f9; /* border-slate-100 */
           text-align: right;
-          padding-left: 50%;
-          position: relative;
         }
-        html:not(.dark) .responsive-table td {
-            border-bottom: 1px solid rgb(226, 232, 240);
-        }
+        
         html.dark .responsive-table td {
-            border-bottom: 1px solid rgb(55 65 81);
+            border-bottom-color: #374151;
         }
-        .responsive-table tr:last-child {
-            margin-bottom: 0;
-        }
+        
         .responsive-table td:last-child {
-            border-bottom: 0;
+            border-bottom: none;
         }
-        .responsive-table td:before {
+        
+        .responsive-table td::before {
           content: attr(data-label);
-          position: absolute;
-          left: 1rem;
-          width: 45%;
-          padding-right: 0.75rem;
-          white-space: nowrap;
-          text-align: left;
           font-weight: 600;
-        }
-        html:not(.dark) .responsive-table td:before {
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
           color: #64748b; /* text-slate-500 */
+          text-align: left;
+          margin-right: 1rem;
         }
-        html.dark .responsive-table td:before {
+        
+        html.dark .responsive-table td::before {
           color: #9ca3af; /* text-gray-400 */
         }
-        /* Special handling for the first cell (user info) to act as a header */
+        
+        /* Special handling for the User cell (Header of the card) */
         .responsive-table td.user-cell {
-          display: flex;
-          align-items: center;
-          justify-content: flex-start; /* Align content to the left */
-          text-align: left;
-          padding-left: 1rem; /* Reset padding */
+          background-color: #f8fafc; /* bg-slate-50 */
+          border-bottom: 1px solid #e2e8f0;
+          justify-content: flex-start;
+          padding-top: 1rem;
+          padding-bottom: 1rem;
         }
-        html:not(.dark) .responsive-table td.user-cell {
-           background-color: rgba(241, 245, 249, 0.5); /* bg-slate-100/50 */
-        }
+        
         html.dark .responsive-table td.user-cell {
-           background-color: rgba(55, 65, 81, 0.5); /* bg-gray-700/50 */
+           background-color: #111827; /* bg-gray-900 */
+           border-bottom-color: #374151;
         }
-        .responsive-table td.user-cell:before {
-          content: ""; /* No label for the main cell */
+        
+        .responsive-table td.user-cell::before {
+          display: none;
         }
-        /* Special handling for actions cell */
+        
+        /* Special handling for actions cell (Footer of the card) */
         .responsive-table td.actions-cell {
-            padding-left: 1rem; /* Reset padding */
-            text-align: center; /* Center buttons */
+            justify-content: flex-end;
+            background-color: #f8fafc; /* bg-slate-50 */
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
         }
-        .responsive-table td.actions-cell:before {
-            content: ""; /* No label */
+        
+        html.dark .responsive-table td.actions-cell {
+            background-color: rgba(255,255,255,0.02);
         }
-        .responsive-table td.actions-cell > div {
-            justify-content: center; /* Center the flex container */
+        
+        .responsive-table td.actions-cell::before {
+            display: none;
+        }
+        
+        /* Ensure inner content of cells behaves nicely */
+        .responsive-table td > * {
+            text-align: right;
+        }
+        .responsive-table td.user-cell > * {
+            text-align: left;
         }
       }
 

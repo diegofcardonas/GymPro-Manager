@@ -1,3 +1,4 @@
+
 import React, { useState, useContext, useMemo, useRef, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { User, Role, Message } from '../types';
@@ -188,7 +189,6 @@ const MessagingView: React.FC<MessagingViewProps> = ({ preselectedContact, onPre
             const msgDate = new Date(msg.timestamp).toLocaleDateString();
             if (msgDate !== lastDate) {
                 const rawLabel = formatDateDivider(msg.timestamp);
-                // Translate "TODAY" or "YESTERDAY" if returned, otherwise use date string
                 const label = rawLabel === 'TODAY' ? t('components.messagingView.today') : 
                               rawLabel === 'YESTERDAY' ? t('components.messagingView.yesterday') : rawLabel;
                 
@@ -233,7 +233,7 @@ const MessagingView: React.FC<MessagingViewProps> = ({ preselectedContact, onPre
     );
 
     return (
-        <div className="w-full max-w-6xl h-[calc(100dvh-140px)] md:h-[80vh] bg-white dark:bg-gray-800/50 rounded-2xl shadow-lg ring-1 ring-black/5 dark:ring-white/10 flex overflow-hidden">
+        <div className="w-full max-w-6xl h-[calc(100dvh-100px)] md:h-[80vh] bg-white dark:bg-gray-800/50 rounded-2xl shadow-lg ring-1 ring-black/5 dark:ring-white/10 flex overflow-hidden">
             {/* Contacts List */}
             <div className={`w-full md:w-1/3 border-r border-gray-200 dark:border-gray-700 flex flex-col bg-gray-50/50 dark:bg-gray-900/50 ${selectedContact ? 'hidden md:flex' : 'flex'}`}>
                 <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0">
@@ -313,7 +313,7 @@ const MessagingView: React.FC<MessagingViewProps> = ({ preselectedContact, onPre
                                 )}
                             </div>
                         </div>
-                        <div className="flex-1 p-6 overflow-y-auto space-y-2">
+                        <div className="flex-1 p-4 md:p-6 overflow-y-auto space-y-2">
                             {messagesWithDividers.map(item => {
                                 if ('type' in item && item.type === 'divider') {
                                     return (
@@ -326,7 +326,7 @@ const MessagingView: React.FC<MessagingViewProps> = ({ preselectedContact, onPre
                                 const isSentByMe = msg.senderId === currentUser?.id;
                                 return (
                                     <div key={msg.id} className={`flex items-end gap-2 ${isSentByMe ? 'justify-end' : 'justify-start'}`}>
-                                        <div className={`relative max-w-xs md:max-w-md lg:max-w-lg px-3 py-2 rounded-lg shadow ${isSentByMe ? 'bg-primary text-primary-foreground bubble-sent' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 bubble-received'}`}>
+                                        <div className={`relative max-w-[80%] md:max-w-md lg:max-w-lg px-3 py-2 rounded-lg shadow ${isSentByMe ? 'bg-primary text-primary-foreground bubble-sent' : 'bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 bubble-received'}`}>
                                             <p className="text-sm break-words">{msg.text}</p>
                                             <div className="flex items-center justify-end gap-1.5 mt-1 -mb-1">
                                                 <span className={`text-xs ${isSentByMe ? 'text-primary-foreground/70' : 'text-gray-500 dark:text-gray-400/70'}`}>
@@ -342,7 +342,7 @@ const MessagingView: React.FC<MessagingViewProps> = ({ preselectedContact, onPre
                             })}
                             <div ref={chatEndRef} />
                         </div>
-                        <form onSubmit={handleFormSubmit} className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 flex-shrink-0">
+                        <form onSubmit={handleFormSubmit} className="p-3 md:p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 flex-shrink-0">
                             <div className="flex items-center space-x-3 bg-white dark:bg-gray-700 rounded-full px-2">
                                 <input
                                     type="text"

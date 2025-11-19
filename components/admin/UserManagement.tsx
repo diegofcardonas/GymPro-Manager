@@ -22,7 +22,6 @@ type UserTab = Role.CLIENT | Role.TRAINER | 'OPERATIONAL' | 'HEALTH';
 const getNestedValue = (obj: any, path: string) => path.split('.').reduce((o, k) => (o && o[k] != null) ? o[k] : null, obj);
 
 const exportToCSV = (users: User[], headers: {key: string, label: string}[], filename: string, allTrainers: User[]) => {
-    // ... (Implementation kept same for brevity, assume functionality remains)
     const csvRows = [];
     csvRows.push(headers.map(h => h.label).join(','));
     for (const user of users) {
@@ -161,7 +160,6 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
         return sortConfig.direction === 'ascending' ? <ChevronUpIcon className="h-4 w-4" /> : <ChevronDownIcon className="h-4 w-4" />;
     };
 
-    // ... (Handlers kept same: handleOpenModal, handleCloseModal, handleSaveUser, handleDeleteUser, handleTabClick, handleSelectAll, handleSelectRow, handleDeleteSelected)
     const handleOpenModal = (user: User | null) => { setSelectedUser(user); setIsModalOpen(true); };
     const handleCloseModal = () => { setIsModalOpen(false); setSelectedUser(null); };
     const handleSaveUser = (user: User) => { if (user.id && user.id !== '') updateUser(user); else addUser({ ...user, id: String(Date.now() + Math.random()) }); handleCloseModal(); };
@@ -184,35 +182,34 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
     return (
         <div className="bg-white dark:bg-gray-800/50 rounded-xl ring-1 ring-black/5 dark:ring-white/10 w-full overflow-hidden">
             <div className="p-4 border-b border-gray-200 dark:border-gray-700 space-y-4">
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div className="flex border-b border-gray-200 dark:border-gray-700 w-full sm:w-auto overflow-x-auto">
+                <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                    <div className="flex border-b border-gray-200 dark:border-gray-700 w-full lg:w-auto overflow-x-auto pb-1 lg:pb-0">
                         {[Role.CLIENT, Role.TRAINER, 'OPERATIONAL', 'HEALTH'].map((tab) => (
                              <button 
                                 key={tab}
                                 onClick={() => handleTabClick(tab as UserTab)} 
-                                className={`flex-1 sm:flex-initial px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${activeTab === tab ? 'border-b-2 border-primary text-primary' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'}`}
+                                className={`flex-1 lg:flex-initial px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${activeTab === tab ? 'border-b-2 border-primary text-primary' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'}`}
                              >
                                 {t(`admin.userManagement.${tab === Role.CLIENT ? 'clients' : tab === Role.TRAINER ? 'trainers' : tab === 'OPERATIONAL' ? 'staffOperational' : 'staffHealth'}`)}
                              </button>
                         ))}
                     </div>
-                     <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                        <button onClick={() => exportToCSV(sortedUsers, headers.filter(h => h.key !== 'actions'), `gympro_${activeTab.toLowerCase()}_export.csv`, trainers)} className="w-full sm:w-auto px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg font-semibold transition-colors text-white">{t('admin.userManagement.exportCsv')}</button>
-                        <button onClick={() => handleOpenModal(null)} className="w-full sm:w-auto px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2 text-primary-foreground">
+                     <div className="flex flex-wrap gap-2 w-full lg:w-auto">
+                        <button onClick={() => exportToCSV(sortedUsers, headers.filter(h => h.key !== 'actions'), `gympro_${activeTab.toLowerCase()}_export.csv`, trainers)} className="flex-1 lg:flex-none px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-lg font-semibold transition-colors text-white text-sm">{t('admin.userManagement.exportCsv')}</button>
+                        <button onClick={() => handleOpenModal(null)} className="flex-1 lg:flex-none px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2 text-primary-foreground text-sm">
                             <PlusIcon className="h-5 w-5" />
                             <span>{t('admin.userManagement.addUser', { type: activeTab === Role.CLIENT ? t('admin.userManagement.clients') : activeTab === Role.TRAINER ? t('admin.userManagement.trainers') : 'User' })}</span>
                         </button>
                     </div>
                 </div>
-                 {/* ... Search and Filters UI (Kept simpler for brevity) ... */}
-                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <input type="text" placeholder={t('admin.userManagement.searchPlaceholder')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="sm:col-span-1 w-full bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary px-4 py-2 text-gray-800 dark:text-gray-200" />
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input type="text" placeholder={t('admin.userManagement.searchPlaceholder')} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary px-4 py-2 text-gray-800 dark:text-gray-200" />
                      {activeTab === Role.CLIENT && <>
-                        <select value={statusFilter || ''} onChange={e => setStatusFilter(e.target.value as MembershipStatus || null)} className="sm:col-span-1 w-full bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary px-4 py-2 text-gray-800 dark:text-gray-200">
+                        <select value={statusFilter || ''} onChange={e => setStatusFilter(e.target.value as MembershipStatus || null)} className="w-full bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary px-4 py-2 text-gray-800 dark:text-gray-200">
                             <option value="">{t('admin.userManagement.allStatuses')}</option>
                             {Object.values(MembershipStatus).map(s => <option key={s} value={s}>{t(`statuses.membership.${s}`)}</option>)}
                         </select>
-                        <select value={trainerFilter || ''} onChange={e => setTrainerFilter(e.target.value || null)} className="sm:col-span-1 w-full bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary px-4 py-2 text-gray-800 dark:text-gray-200">
+                        <select value={trainerFilter || ''} onChange={e => setTrainerFilter(e.target.value || null)} className="w-full bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary px-4 py-2 text-gray-800 dark:text-gray-200">
                             <option value="">{t('admin.userManagement.allTrainers')}</option>
                             <option value="unassigned">{t('admin.userManagement.unassigned')}</option>
                             {trainers.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
@@ -270,7 +267,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
                     </tbody>
                 </table>
             </div>
-             {/* Pagination Controls (kept for brevity) */}
+             {/* Pagination Controls */}
              <div className="p-4 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                 <p>{t('admin.userManagement.showingUsers', { start: (paginatedUsers.length > 0 ? (currentPage-1)*ITEMS_PER_PAGE+1 : 0), end: (currentPage-1)*ITEMS_PER_PAGE+paginatedUsers.length, total: sortedUsers.length })}</p>
                 <div className="flex items-center space-x-2">
@@ -285,7 +282,6 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
 };
 
 const UserRow: React.FC<{ user: User; trainers: User[]; onEdit: (user: User) => void; onDelete: (userId: string) => void; onSelect: (userId: string) => void; isSelected: boolean; onViewDetails: (user: User) => void; isClientTab: boolean; }> = ({ user, trainers, onEdit, onDelete, onSelect, isSelected, onViewDetails, isClientTab }) => {
-    // ... (UserRow implementation remains largely the same, ensuring it matches the table structure)
      const { t } = useTranslation();
     const trainerNames = useMemo(() => trainers.filter(t => user.trainerIds?.includes(t.id)).map(t => t.name).join(', ') || t('admin.userDetailsModal.none'), [trainers, user.trainerIds, t]);
     
@@ -320,7 +316,7 @@ const UserRow: React.FC<{ user: User; trainers: User[]; onEdit: (user: User) => 
                 </>
             )}
             <td data-label={t('admin.userManagement.headers.actions')} className="p-4 actions-cell">
-                <div className="flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex space-x-2 md:opacity-0 group-hover:opacity-100 transition-opacity justify-end">
                     <button onClick={() => onEdit(user)} className="p-2 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"><PencilIcon className="h-5 w-5" /></button>
                     <button onClick={() => onDelete(user.id)} className="p-2 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><TrashIcon className="h-5 w-5" /></button>
                 </div>
@@ -329,29 +325,36 @@ const UserRow: React.FC<{ user: User; trainers: User[]; onEdit: (user: User) => 
     );
 };
 
-// ... UserModal Component (assumed unchanged or minor updates) ...
 const UserModal: React.FC<{ user: User | null; activeTab: UserTab; trainers: User[]; onSave: (user: User) => void; onClose: () => void }> = ({ user, activeTab, trainers, onSave, onClose }) => {
-    // Keeping the existing modal logic, it's functional.
-    // Just pasting a truncated version to complete the file structure for XML output
     const { t } = useTranslation();
-    // ... state init ...
     const [formData, setFormData] = useState<User>(user || { id: '', name: '', email: '', phone: '', avatarUrl: `https://picsum.photos/seed/${Date.now()}/200`, role: activeTab === 'OPERATIONAL' ? Role.RECEPTIONIST : activeTab === 'HEALTH' ? Role.NUTRITIONIST : activeTab, joinDate: new Date().toISOString(), membership: { status: MembershipStatus.PENDING, startDate: new Date().toISOString(), endDate: '', tierId: MOCK_TIERS[0].id }, trainerIds: [], assignedRoutines: [], progressNotes: [] } as User);
     
-    const handleChange = (e: any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
          const { name, value } = e.target;
-         // ... simplified for brevity, assume correct deep merging logic from previous file ...
          setFormData(prev => ({ ...prev, [name]: value })); 
     }
     
-    // Mock implementation to satisfy React Component structure in this response
     return (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl p-6">
-                <h2 className="text-2xl font-bold mb-4">{user ? 'Edit' : 'Add'} User</h2>
-                {/* Form fields would go here */}
-                <div className="flex justify-end gap-2 mt-4">
-                    <button onClick={onClose} className="px-4 py-2 bg-gray-200 rounded">Cancel</button>
-                    <button onClick={() => onSave(formData)} className="px-4 py-2 bg-primary text-white rounded">Save</button>
+             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl p-6 animate-scale-in">
+                <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">{user ? t('admin.userManagement.editUserModalTitle') : t('admin.userManagement.addUserModalTitle')}</h2>
+                <div className="space-y-4">
+                     <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('general.name')}</label>
+                        <input type="text" name="name" value={formData.name} onChange={handleChange} className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm p-2 text-gray-900 dark:text-white" />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('general.email')}</label>
+                        <input type="email" name="email" value={formData.email} onChange={handleChange} className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm p-2 text-gray-900 dark:text-white" />
+                    </div>
+                     <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('general.phone')}</label>
+                        <input type="tel" name="phone" value={formData.phone} onChange={handleChange} className="mt-1 block w-full bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm p-2 text-gray-900 dark:text-white" />
+                    </div>
+                </div>
+                <div className="flex justify-end gap-2 mt-6">
+                    <button onClick={onClose} className="px-4 py-2 bg-gray-200 dark:bg-gray-600 rounded hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-white">{t('general.cancel')}</button>
+                    <button onClick={() => onSave(formData)} className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90">{t('general.save')}</button>
                 </div>
              </div>
         </div>
