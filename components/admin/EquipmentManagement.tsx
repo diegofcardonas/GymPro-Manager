@@ -1,5 +1,5 @@
 
-import React, { useState, useContext, useMemo } from 'react';
+import React, { useState, useContext, useMemo, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { EquipmentItem, EquipmentStatus, IncidentReport } from '../../types';
 import { PlusIcon } from '../icons/PlusIcon';
@@ -128,6 +128,14 @@ const EquipmentModal: React.FC<{
 }> = ({ equipment, onSave, onClose }) => {
     const { t } = useTranslation();
     const [formData, setFormData] = useState(equipment || { name: '', type: '', location: '', status: EquipmentStatus.OPERATIONAL });
+
+    useEffect(() => {
+        if (equipment) {
+            setFormData(equipment);
+        } else {
+            setFormData({ name: '', type: '', location: '', status: EquipmentStatus.OPERATIONAL });
+        }
+    }, [equipment]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));

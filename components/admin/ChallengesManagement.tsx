@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { Challenge } from '../../types';
 import { PlusIcon } from '../icons/PlusIcon';
@@ -87,6 +88,14 @@ const ChallengeModal: React.FC<{
     onClose: () => void;
 }> = ({ challenge, onSave, onClose }) => {
     const [formData, setFormData] = useState(challenge || { name: '', description: '', goal: 1, unit: '', startDate: '', endDate: '' });
+
+    useEffect(() => {
+        if (challenge) {
+            setFormData(challenge);
+        } else {
+            setFormData({ name: '', description: '', goal: 1, unit: '', startDate: '', endDate: '' });
+        }
+    }, [challenge]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));

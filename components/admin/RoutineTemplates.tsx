@@ -1,4 +1,5 @@
-import React, { useState, useContext, useMemo } from 'react';
+
+import React, { useState, useContext, useMemo, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { PreEstablishedRoutine, DailyRoutine, Exercise } from '../../types';
 import { PlusIcon } from '../icons/PlusIcon';
@@ -108,6 +109,14 @@ const RoutineTemplateModal: React.FC<{ template: PreEstablishedRoutine | null, o
     
     const [formData, setFormData] = useState(template || { id: '', name: '', description: '', routines: initialRoutine });
     const [activeDay, setActiveDay] = useState<DailyRoutine['day']>('Monday');
+
+    useEffect(() => {
+        if (template) {
+            setFormData(template);
+        } else {
+             setFormData({ id: '', name: '', description: '', routines: initialRoutine });
+        }
+    }, [template]);
 
     const handleInfoChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData(prev => ({...prev, [e.target.name]: e.target.value}));

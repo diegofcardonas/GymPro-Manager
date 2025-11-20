@@ -150,6 +150,7 @@ const App: React.FC = () => {
 
   const updateUser = useCallback((updatedUser: User) => {
     setUsers(prevUsers => prevUsers.map(u => u.id === updatedUser.id ? updatedUser : u));
+    // IMPORTANT: If we are updating the currently logged-in user, update that state too
     if(currentUser && currentUser.id === updatedUser.id) {
         setCurrentUser(updatedUser);
     }
@@ -162,19 +163,51 @@ const App: React.FC = () => {
   }, [setUsers, addToast, t]);
 
   const deleteUser = useCallback((userId: string) => {
+    if (currentUser && currentUser.id === userId) {
+        addToast("Cannot delete yourself while logged in.", 'error');
+        return;
+    }
+
+    // 1. Clean up Users array (remove user, and remove references to user in other users)
     setUsers(prevUsers => {
-      const userToDelete = prevUsers.find(u => u.id === userId);
-      if (!userToDelete) return prevUsers;
-      let updatedUsers = prevUsers.map(user => {
-        if (user.role === Role.CLIENT && user.trainerIds?.includes(userId)) {
-          return { ...user, trainerIds: user.trainerIds.filter(id => id !== userId) };
-        }
-        return user;
-      });
-      return updatedUsers.filter(u => u.id !== userId);
+      return prevUsers
+        .filter(u => u.id !== userId) // Remove the user
+        .map(user => {
+           // If deleting a trainer, remove them from clients' trainerIds
+           // Safe check: ensure trainerIds exists before filtering
+           if (user.role === Role.CLIENT && user.trainerIds && user.trainerIds.includes(userId)) {
+               return { ...user, trainerIds: user.trainerIds.filter(id => id !== userId) };
+           }
+           return user;
+        });
     });
+
+    // 2. Clean up Classes: Remove classes owned by user OR remove booking if user is client
+    setGymClasses(prevClasses => {
+        return prevClasses
+            .filter(c => c.trainerId !== userId) // Remove classes owned by this user (if trainer)
+            .map(c => ({
+                ...c,
+                // Safe check: ensure bookedClientIds exists
+                bookedClientIds: (c.bookedClientIds || []).filter(id => id !== userId) 
+            }));
+    });
+
+    // 3. Clean up Challenges: Remove user from participation
+    setChallenges(prevChallenges => prevChallenges.map(c => ({
+        ...c,
+        // Safe check: ensure participants exists
+        participants: (c.participants || []).filter(p => p.userId !== userId)
+    })));
+
+    // 4. Clean up Messages: Remove messages where user is sender or receiver
+    setMessages(prev => prev.filter(m => m.senderId !== userId && m.receiverId !== userId));
+    
+    // 5. Clean up Payments: Remove user payments
+    setPayments(prev => prev.filter(p => p.userId !== userId));
+
     addToast(t('toast.userDeleted'), 'info');
-  }, [setUsers, addToast, t]);
+  }, [currentUser, setUsers, setGymClasses, setChallenges, setMessages, setPayments, addToast, t]);
 
   const toggleBlockUser = useCallback((userIdToBlock: string) => {
     if (!currentUser) return;

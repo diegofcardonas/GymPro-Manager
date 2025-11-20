@@ -14,6 +14,7 @@ import { UserGroupIcon } from '../icons/UserGroupIcon';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '../shared/Skeleton';
 import { EmptyState } from '../shared/EmptyState';
+import { ConfirmationModal } from '../shared/ConfirmationModal';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -71,6 +72,11 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
     const [trainerFilter, setTrainerFilter] = useState<string | null>(null);
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [deleteConfirmation, setDeleteConfirmation] = useState<{
+        isOpen: boolean;
+        id?: string;
+        isBulk?: boolean;
+    }>({ isOpen: false });
 
     // Simulate loading delay
     useEffect(() => {
@@ -163,11 +169,30 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
     const handleOpenModal = (user: User | null) => { setSelectedUser(user); setIsModalOpen(true); };
     const handleCloseModal = () => { setIsModalOpen(false); setSelectedUser(null); };
     const handleSaveUser = (user: User) => { if (user.id && user.id !== '') updateUser(user); else addUser({ ...user, id: String(Date.now() + Math.random()) }); handleCloseModal(); };
-    const handleDeleteUser = (userId: string) => { if (window.confirm(t('admin.userManagement.confirmDelete'))) deleteUser(userId); };
+    
+    const handleDeleteUser = (userId: string, e?: React.MouseEvent) => { 
+        e?.stopPropagation();
+        setDeleteConfirmation({ isOpen: true, id: userId, isBulk: false });
+    };
+
+    const confirmDelete = () => {
+        if (deleteConfirmation.isBulk) {
+            selectedUserIds.forEach(id => deleteUser(id));
+            setSelectedUserIds([]);
+        } else if (deleteConfirmation.id) {
+            deleteUser(deleteConfirmation.id);
+        }
+        setDeleteConfirmation({ isOpen: false });
+    };
+
     const handleTabClick = (tab: UserTab) => { setActiveTab(tab); setCurrentPage(1); setStatusFilter(null); setTrainerFilter(null); onFilterClear(); };
     const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => { if (e.target.checked) setSelectedUserIds(paginatedUsers.map(u => u.id)); else setSelectedUserIds([]); };
     const handleSelectRow = (userId: string) => { setSelectedUserIds(prev => prev.includes(userId) ? prev.filter(id => id !== userId) : [...prev, userId]); };
-    const handleDeleteSelected = () => { if (window.confirm(t('admin.userManagement.confirmDeleteSelected', { count: selectedUserIds.length }))) { selectedUserIds.forEach(id => deleteUser(id)); setSelectedUserIds([]); } };
+    // This function is now hooked up to the modal via state
+    const handleDeleteSelected = () => { 
+        if (selectedUserIds.length === 0) return;
+        setDeleteConfirmation({ isOpen: true, isBulk: true });
+    };
 
     const headers = activeTab === Role.CLIENT ? [
         { key: 'name', label: t('admin.userManagement.headers.user') }, { key: 'membership.status', label: t('admin.userManagement.headers.status') },
@@ -189,7 +214,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
                                 key={tab}
                                 onClick={() => handleTabClick(tab as UserTab)} 
                                 className={`flex-1 lg:flex-initial px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${activeTab === tab ? 'border-b-2 border-primary text-primary' : 'text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'}`}
-                             >
+                            >
                                 {t(`admin.userManagement.${tab === Role.CLIENT ? 'clients' : tab === Role.TRAINER ? 'trainers' : tab === 'OPERATIONAL' ? 'staffOperational' : 'staffHealth'}`)}
                              </button>
                         ))}
@@ -277,11 +302,23 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
                 </div>
             </div>
              {isModalOpen && <UserModal user={selectedUser} activeTab={activeTab} trainers={trainers} onSave={handleSaveUser} onClose={handleCloseModal} />}
+             
+             <ConfirmationModal 
+                isOpen={deleteConfirmation.isOpen}
+                onClose={() => setDeleteConfirmation({ ...deleteConfirmation, isOpen: false })}
+                onConfirm={confirmDelete}
+                title={t('general.warning')}
+                message={deleteConfirmation.isBulk 
+                    ? t('admin.userManagement.confirmDeleteSelected', { count: selectedUserIds.length }) 
+                    : t('admin.userManagement.confirmDelete')}
+                confirmText={t('general.delete')}
+                isDangerous
+            />
         </div>
     );
 };
 
-const UserRow: React.FC<{ user: User; trainers: User[]; onEdit: (user: User) => void; onDelete: (userId: string) => void; onSelect: (userId: string) => void; isSelected: boolean; onViewDetails: (user: User) => void; isClientTab: boolean; }> = ({ user, trainers, onEdit, onDelete, onSelect, isSelected, onViewDetails, isClientTab }) => {
+const UserRow: React.FC<{ user: User; trainers: User[]; onEdit: (user: User) => void; onDelete: (userId: string, e?: React.MouseEvent) => void; onSelect: (userId: string) => void; isSelected: boolean; onViewDetails: (user: User) => void; isClientTab: boolean; }> = ({ user, trainers, onEdit, onDelete, onSelect, isSelected, onViewDetails, isClientTab }) => {
      const { t } = useTranslation();
     const trainerNames = useMemo(() => trainers.filter(t => user.trainerIds?.includes(t.id)).map(t => t.name).join(', ') || t('admin.userDetailsModal.none'), [trainers, user.trainerIds, t]);
     
@@ -316,9 +353,9 @@ const UserRow: React.FC<{ user: User; trainers: User[]; onEdit: (user: User) => 
                 </>
             )}
             <td data-label={t('admin.userManagement.headers.actions')} className="p-4 actions-cell">
-                <div className="flex space-x-2 md:opacity-0 group-hover:opacity-100 transition-opacity justify-end">
-                    <button onClick={() => onEdit(user)} className="p-2 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"><PencilIcon className="h-5 w-5" /></button>
-                    <button onClick={() => onDelete(user.id)} className="p-2 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><TrashIcon className="h-5 w-5" /></button>
+                <div className="flex space-x-2 justify-end">
+                    <button onClick={(e) => { e.stopPropagation(); onEdit(user); }} className="p-2 text-gray-500 dark:text-gray-400 hover:text-primary dark:hover:text-primary transition-colors"><PencilIcon className="h-5 w-5" /></button>
+                    <button onClick={(e) => { e.stopPropagation(); onDelete(user.id, e); }} className="p-2 text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"><TrashIcon className="h-5 w-5" /></button>
                 </div>
             </td>
         </tr>
@@ -327,8 +364,17 @@ const UserRow: React.FC<{ user: User; trainers: User[]; onEdit: (user: User) => 
 
 const UserModal: React.FC<{ user: User | null; activeTab: UserTab; trainers: User[]; onSave: (user: User) => void; onClose: () => void }> = ({ user, activeTab, trainers, onSave, onClose }) => {
     const { t } = useTranslation();
-    const [formData, setFormData] = useState<User>(user || { id: '', name: '', email: '', phone: '', avatarUrl: `https://picsum.photos/seed/${Date.now()}/200`, role: activeTab === 'OPERATIONAL' ? Role.RECEPTIONIST : activeTab === 'HEALTH' ? Role.NUTRITIONIST : activeTab, joinDate: new Date().toISOString(), membership: { status: MembershipStatus.PENDING, startDate: new Date().toISOString(), endDate: '', tierId: MOCK_TIERS[0].id }, trainerIds: [], assignedRoutines: [], progressNotes: [] } as User);
+    const defaultUser: User = { id: '', name: '', email: '', phone: '', avatarUrl: `https://picsum.photos/seed/${Date.now()}/200`, role: activeTab === 'OPERATIONAL' ? Role.RECEPTIONIST : activeTab === 'HEALTH' ? Role.NUTRITIONIST : activeTab, joinDate: new Date().toISOString(), membership: { status: MembershipStatus.PENDING, startDate: new Date().toISOString(), endDate: '', tierId: MOCK_TIERS[0].id }, trainerIds: [], assignedRoutines: [], progressNotes: [] } as User;
+    const [formData, setFormData] = useState<User>(user || defaultUser);
     
+    useEffect(() => {
+        if (user) {
+            setFormData(user);
+        } else {
+            setFormData({ ...defaultUser, id: '', avatarUrl: `https://picsum.photos/seed/${Date.now()}/200` });
+        }
+    }, [user, activeTab]);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
          const { name, value } = e.target;
          setFormData(prev => ({ ...prev, [name]: value })); 

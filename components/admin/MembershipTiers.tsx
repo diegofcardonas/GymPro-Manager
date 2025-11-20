@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MembershipTier } from '../../types';
 import { PlusIcon } from '../icons/PlusIcon';
 import { PencilIcon } from '../icons/PencilIcon';
@@ -104,6 +104,14 @@ const TierModal: React.FC<{ tier: MembershipTier | null, onSave: (tier: Membersh
         tier || { name: '', price: 0, duration: 1, features: [], color: '#3b82f6' }
     );
     const [newFeature, setNewFeature] = useState('');
+
+    useEffect(() => {
+        if (tier) {
+            setFormData(tier);
+        } else {
+            setFormData({ name: '', price: 0, duration: 1, features: [], color: '#3b82f6' });
+        }
+    }, [tier]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type } = e.target;

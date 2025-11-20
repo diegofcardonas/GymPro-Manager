@@ -1,5 +1,5 @@
 
-import React, { useState, useContext, useMemo } from 'react';
+import React, { useState, useContext, useMemo, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { GymClass, Role, User } from '../../types';
 import { PlusIcon } from '../icons/PlusIcon';
@@ -13,6 +13,7 @@ import { ClipboardListIcon } from '../icons/ClipboardListIcon';
 import { FilterIcon } from '../icons/FilterIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import { useTranslation } from 'react-i18next';
+import { ConfirmationModal } from '../shared/ConfirmationModal';
 
 // Helper to generate consistent pastel colors based on string input
 const stringToColor = (str: string) => {
@@ -36,6 +37,7 @@ const ClassSchedule: React.FC = () => {
     const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
     const [selectedDateForNewClass, setSelectedDateForNewClass] = useState<string>('');
     const [selectedTrainerFilter, setSelectedTrainerFilter] = useState<string>('all');
+    const [classToDelete, setClassToDelete] = useState<string | null>(null);
 
     const trainers = useMemo(() => users.filter(u => u.role === Role.TRAINER), [users]);
     
@@ -65,8 +67,14 @@ const ClassSchedule: React.FC = () => {
 
     const handleDelete = (id: string, e?: React.MouseEvent) => {
         e?.stopPropagation();
-        if (window.confirm(t('general.confirmDelete'))) {
-            deleteGymClass(id);
+        e?.nativeEvent.stopImmediatePropagation();
+        setClassToDelete(id);
+    };
+
+    const confirmDelete = () => {
+        if (classToDelete) {
+            deleteGymClass(classToDelete);
+            setClassToDelete(null);
         }
     };
 
@@ -137,6 +145,7 @@ const ClassSchedule: React.FC = () => {
                         trainers={trainers}
                         onDateClick={handleAddNew} 
                         onClassClick={handleEdit}
+                        onDelete={handleDelete}
                     />
                 ) : (
                     <div className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -145,7 +154,7 @@ const ClassSchedule: React.FC = () => {
                             const { bg, text, border } = stringToColor(gymClass.name);
                             
                             return (
-                                <div key={gymClass.id} className="p-4 flex flex-col sm:flex-row justify-between sm:items-center hover:bg-gray-50 dark:hover:bg-gray-800 gap-4 transition-colors group">
+                                <div key={gymClass.id} className="p-4 flex flex-col sm:flex-row justify-between sm:items-center hover:bg-gray-50 dark:hover:bg-gray-800 gap-4 transition-colors group cursor-pointer" onClick={() => handleEdit(gymClass)}>
                                     <div className="flex items-start gap-4">
                                          <div className="w-2 h-12 rounded-full flex-shrink-0" style={{ backgroundColor: text }}></div>
                                          <div>
@@ -165,8 +174,8 @@ const ClassSchedule: React.FC = () => {
                                             </p>
                                          </div>
                                     </div>
-                                    <div className="flex space-x-2 flex-shrink-0 self-end sm:self-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button onClick={() => handleEdit(gymClass)} className="p-2 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary bg-gray-100 dark:bg-gray-700 rounded-lg hover:scale-105 transition-transform"><PencilIcon className="h-5 w-5" /></button>
+                                    <div className="flex space-x-2 flex-shrink-0 self-end sm:self-center">
+                                        <button onClick={(e) => { e.stopPropagation(); handleEdit(gymClass); }} className="p-2 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary bg-gray-100 dark:bg-gray-700 rounded-lg hover:scale-105 transition-transform"><PencilIcon className="h-5 w-5" /></button>
                                         <button onClick={(e) => handleDelete(gymClass.id, e)} className="p-2 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 bg-gray-100 dark:bg-gray-700 rounded-lg hover:scale-105 transition-transform"><TrashIcon className="h-5 w-5" /></button>
                                     </div>
                                 </div>
@@ -191,6 +200,16 @@ const ClassSchedule: React.FC = () => {
                     onClose={() => setIsModalOpen(false)}
                 />
             )}
+            
+            <ConfirmationModal 
+                isOpen={!!classToDelete}
+                onClose={() => setClassToDelete(null)}
+                onConfirm={confirmDelete}
+                title={t('general.warning')}
+                message={t('general.confirmDelete')}
+                confirmText={t('general.delete')}
+                isDangerous
+            />
         </div>
     );
 };
@@ -200,7 +219,8 @@ const CalendarView: React.FC<{
     trainers: User[];
     onDateClick: (date: string) => void; 
     onClassClick: (gymClass: GymClass) => void;
-}> = ({ classes, trainers, onDateClick, onClassClick }) => {
+    onDelete: (id: string, e: React.MouseEvent) => void;
+}> = ({ classes, trainers, onDateClick, onClassClick, onDelete }) => {
     const { t } = useTranslation();
     const [currentDate, setCurrentDate] = useState(new Date());
 
@@ -315,16 +335,21 @@ const CalendarView: React.FC<{
                                 {dayClasses.slice(0, maxVisible).map((cls) => {
                                     const { bg, text, border } = stringToColor(cls.name);
                                     return (
-                                        <button
+                                        <div
                                             key={cls.id}
                                             onClick={(e) => { e.stopPropagation(); onClassClick(cls); }}
-                                            className="text-left px-2 py-1 rounded-md text-[10px] lg:text-xs font-semibold truncate border shadow-sm transition-transform hover:scale-[1.02] w-full relative overflow-hidden"
+                                            className="text-left px-2 py-1 rounded-md text-[10px] lg:text-xs font-semibold truncate border shadow-sm transition-transform hover:scale-[1.02] w-full relative overflow-hidden flex justify-between items-center group/item"
                                             style={{ backgroundColor: bg, color: text, borderColor: border }}
                                             title={`${cls.name} - ${trainers.find(t=>t.id===cls.trainerId)?.name}`}
                                         >
-                                            <span className="mr-1 opacity-70 font-mono">{new Date(cls.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                                            {cls.name}
-                                        </button>
+                                            <div className="truncate flex-1">
+                                                <span className="mr-1 opacity-70 font-mono">{new Date(cls.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                                                {cls.name}
+                                            </div>
+                                            <button onClick={(e) => onDelete(cls.id, e)} className="ml-1 p-0.5 rounded hover:bg-red-500 hover:text-white text-red-600 opacity-0 group-hover/item:opacity-100 transition-opacity md:opacity-0 md:group-hover/item:opacity-100 opacity-100">
+                                                 <TrashIcon className="w-3 h-3" />
+                                            </button>
+                                        </div>
                                     );
                                 })}
                                 {overflowCount > 0 && (
@@ -349,17 +374,39 @@ const ClassModal: React.FC<{
     onClose: () => void;
 }> = ({ gymClass, trainers, preSelectedDate, onSave, onClose }) => {
     const { t } = useTranslation();
-    // Initialize state with either existing class data OR defaults (possibly using preSelectedDate)
-    const [formData, setFormData] = useState(gymClass || { name: '', description: '', trainerId: '', startTime: '', endTime: '', capacity: 10, bookedClientIds: [] });
     
-    // Logic for date input initialization
+    // Initialize state with either existing class data OR defaults (possibly using preSelectedDate)
     const initialDate = gymClass 
         ? new Date(gymClass.startTime).toISOString().split('T')[0] 
         : preSelectedDate || new Date().toISOString().split('T')[0];
 
+    const [formData, setFormData] = useState({ 
+        name: '', description: '', trainerId: '', capacity: 10, bookedClientIds: [] as string[]
+    });
     const [date, setDate] = useState(initialDate);
-    const [startTime, setStartTime] = useState(gymClass ? new Date(gymClass.startTime).toTimeString().substring(0,5) : '09:00');
-    const [endTime, setEndTime] = useState(gymClass ? new Date(gymClass.endTime).toTimeString().substring(0,5) : '10:00');
+    const [startTime, setStartTime] = useState('09:00');
+    const [endTime, setEndTime] = useState('10:00');
+
+    useEffect(() => {
+        if (gymClass) {
+            setFormData({
+                name: gymClass.name,
+                description: gymClass.description,
+                trainerId: gymClass.trainerId,
+                capacity: gymClass.capacity,
+                bookedClientIds: gymClass.bookedClientIds
+            });
+            setDate(new Date(gymClass.startTime).toISOString().split('T')[0]);
+            setStartTime(new Date(gymClass.startTime).toTimeString().substring(0,5));
+            setEndTime(new Date(gymClass.endTime).toTimeString().substring(0,5));
+        } else {
+            // Reset for new class
+             setFormData({ name: '', description: '', trainerId: '', capacity: 10, bookedClientIds: [] });
+             setDate(preSelectedDate || new Date().toISOString().split('T')[0]);
+             setStartTime('09:00');
+             setEndTime('10:00');
+        }
+    }, [gymClass, preSelectedDate]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -371,6 +418,7 @@ const ClassModal: React.FC<{
         const endDateTime = new Date(`${date}T${endTime}`);
         onSave({
             ...formData,
+            id: gymClass?.id,
             startTime: startDateTime.toISOString(),
             endTime: endDateTime.toISOString(),
             capacity: Number(formData.capacity)

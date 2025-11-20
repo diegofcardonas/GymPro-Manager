@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { Announcement } from '../../types';
 import { PlusIcon } from '../icons/PlusIcon';
@@ -84,6 +85,14 @@ const AnnouncementModal: React.FC<{
     onClose: () => void;
 }> = ({ announcement, onSave, onClose }) => {
     const [formData, setFormData] = useState(announcement || { title: '', content: '' });
+
+    useEffect(() => {
+        if (announcement) {
+            setFormData(announcement);
+        } else {
+            setFormData({ title: '', content: '' });
+        }
+    }, [announcement]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
