@@ -163,11 +163,6 @@ const App: React.FC = () => {
   }, [setUsers, addToast, t]);
 
   const deleteUser = useCallback((userId: string) => {
-    if (currentUser && currentUser.id === userId) {
-        addToast("Cannot delete yourself while logged in.", 'error');
-        return;
-    }
-
     // 1. Clean up Users array (remove user, and remove references to user in other users)
     setUsers(prevUsers => {
       return prevUsers
@@ -206,7 +201,10 @@ const App: React.FC = () => {
     // 5. Clean up Payments: Remove user payments
     setPayments(prev => prev.filter(p => p.userId !== userId));
 
-    addToast(t('toast.userDeleted'), 'info');
+    // Only show toast if it's an admin deleting another user, not self-deletion
+    if (currentUser && currentUser.id !== userId) {
+        addToast(t('toast.userDeleted'), 'info');
+    }
   }, [currentUser, setUsers, setGymClasses, setChallenges, setMessages, setPayments, addToast, t]);
 
   const toggleBlockUser = useCallback((userIdToBlock: string) => {

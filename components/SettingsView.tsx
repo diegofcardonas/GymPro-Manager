@@ -6,6 +6,7 @@ import { ThemeContext } from '../context/ThemeContext';
 import { themes } from '../themes';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
+import { ConfirmationModal } from './shared/ConfirmationModal';
 
 // Reusable toggle component
 const SettingToggle: React.FC<{ id: string, label: string, description: string, enabled: boolean, onToggle: () => void }> = ({ id, label, description, enabled, onToggle }) => (
@@ -47,6 +48,7 @@ const SettingsView: React.FC = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
 
     const handlePasswordChange = (e: React.FormEvent) => {
         e.preventDefault();
@@ -109,29 +111,16 @@ const SettingsView: React.FC = () => {
     }, [currentUser, updateCurrentUser]);
 
 
-    const handleDeactivate = async (e: React.MouseEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
+    const handleConfirmDeactivate = async () => {
         if (!currentUser) return;
-        
-        const confirmMessage = t('components.settingsView.confirmDeactivation');
-        if (window.confirm(confirmMessage)) {
-            try {
-                // 1. Delete the user data from the list of users
-                deleteUser(currentUser.id);
-                
-                // 2. Small delay to ensure state updates and localStorage persistence happen 
-                // before the app re-renders into the login state.
-                await new Promise(resolve => setTimeout(resolve, 100));
-                
-                // 3. Log out to clear current session and redirect to login screen
-                logout();
-            } catch (error) {
-                console.error("Error deactivating account:", error);
-                // Force logout even if something else failed
-                logout();
-            }
+        try {
+            deleteUser(currentUser.id);
+            // Small delay to ensure state updates before logout
+            await new Promise(resolve => setTimeout(resolve, 100));
+            logout();
+        } catch (error) {
+            console.error("Error deactivating account:", error);
+            logout();
         }
     };
 
@@ -305,11 +294,22 @@ const SettingsView: React.FC = () => {
                         <h4 className="font-medium text-red-800 dark:text-red-200">{t('components.settingsView.deactivateAccount')}</h4>
                         <p className="text-sm text-red-600 dark:text-red-400">{t('components.settingsView.deactivateAccountDesc')}</p>
                     </div>
-                    <button type="button" onClick={handleDeactivate} className="btn btn-danger">
+                    <button type="button" onClick={() => setIsDeactivateModalOpen(true)} className="btn btn-danger">
                         {t('components.settingsView.deactivate')}
                     </button>
                 </div>
             </SettingSection>
+
+            <ConfirmationModal
+                isOpen={isDeactivateModalOpen}
+                onClose={() => setIsDeactivateModalOpen(false)}
+                onConfirm={handleConfirmDeactivate}
+                title={t('components.settingsView.deactivateAccount')}
+                message={t('components.settingsView.confirmDeactivation')}
+                confirmText={t('components.settingsView.deactivate')}
+                isDangerous
+            />
+
             <style>{`
                 .input-style {
                     background-color: #ffffff;
