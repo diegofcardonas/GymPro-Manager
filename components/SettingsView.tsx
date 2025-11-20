@@ -42,42 +42,43 @@ const SettingSection: React.FC<{ title: string; children: React.ReactNode; dange
 
 const SettingsView: React.FC = () => {
     const { t } = useTranslation();
-    const { currentUser, updateCurrentUser, logout, users, toggleBlockUser, deleteUser } = useContext(AuthContext)!;
+    const { currentUser, updateCurrentUser, logout, users, toggleBlockUser, deleteUser, resetUsers } = useContext(AuthContext)!;
     const { theme, setThemeByName, isDarkMode, toggleDarkMode } = useContext(ThemeContext)!;
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
     const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
+    const [isResetModalOpen, setIsResetModalOpen] = useState(false);
 
     const handlePasswordChange = (e: React.FormEvent) => {
         e.preventDefault();
         setMessage(null);
 
         if (!currentUser) {
-            setMessage({ type: 'error', text: 'Debes iniciar sesión.' });
+            setMessage({ type: 'error', text: t('components.settingsView.authErrorLogin') });
             return;
         }
 
         if (currentUser.password !== currentPassword) {
-            setMessage({ type: 'error', text: 'La contraseña actual es incorrecta.' });
+            setMessage({ type: 'error', text: t('components.settingsView.passwordErrorCurrent') });
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            setMessage({ type: 'error', text: 'Las nuevas contraseñas no coinciden.' });
+            setMessage({ type: 'error', text: t('components.settingsView.passwordErrorMatch') });
             return;
         }
 
         if (newPassword.length < 8) {
-             setMessage({ type: 'error', text: 'La nueva contraseña debe tener al menos 8 caracteres.' });
+             setMessage({ type: 'error', text: t('components.settingsView.passwordErrorLength') });
             return;
         }
 
         const updatedUser: User = { ...currentUser, password: newPassword };
         updateCurrentUser(updatedUser);
 
-        setMessage({ type: 'success', text: '¡Contraseña actualizada correctamente!' });
+        setMessage({ type: 'success', text: t('components.settingsView.passwordSuccess') });
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
@@ -289,13 +290,22 @@ const SettingsView: React.FC = () => {
             </SettingSection>
 
             <SettingSection title={t('components.settingsView.dangerZone')} danger>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between border-b border-red-200 dark:border-red-800/50 pb-4 mb-4">
                     <div>
                         <h4 className="font-medium text-red-800 dark:text-red-200">{t('components.settingsView.deactivateAccount')}</h4>
                         <p className="text-sm text-red-600 dark:text-red-400">{t('components.settingsView.deactivateAccountDesc')}</p>
                     </div>
                     <button type="button" onClick={() => setIsDeactivateModalOpen(true)} className="btn btn-danger">
                         {t('components.settingsView.deactivate')}
+                    </button>
+                </div>
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h4 className="font-medium text-red-800 dark:text-red-200">{t('components.settingsView.resetUsers')}</h4>
+                        <p className="text-sm text-red-600 dark:text-red-400">{t('components.settingsView.resetUsersDesc')}</p>
+                    </div>
+                    <button type="button" onClick={() => setIsResetModalOpen(true)} className="btn btn-danger">
+                        {t('components.settingsView.reset')}
                     </button>
                 </div>
             </SettingSection>
@@ -307,6 +317,16 @@ const SettingsView: React.FC = () => {
                 title={t('components.settingsView.deactivateAccount')}
                 message={t('components.settingsView.confirmDeactivation')}
                 confirmText={t('components.settingsView.deactivate')}
+                isDangerous
+            />
+
+            <ConfirmationModal
+                isOpen={isResetModalOpen}
+                onClose={() => setIsResetModalOpen(false)}
+                onConfirm={() => { resetUsers(); setIsResetModalOpen(false); }}
+                title={t('components.settingsView.resetUsers')}
+                message={t('components.settingsView.confirmResetUsers')}
+                confirmText={t('components.settingsView.reset')}
                 isDangerous
             />
 

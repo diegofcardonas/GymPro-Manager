@@ -28,6 +28,7 @@ interface AuthContextType {
   addUser: (user: User) => void;
   updateUser: (user: User) => void;
   deleteUser: (userId: string) => void;
+  resetUsers: () => void; // New method
   toggleBlockUser: (userIdToBlock: string) => void;
 
   markNotificationAsRead: (notificationId: string) => void;
@@ -104,6 +105,7 @@ export const AuthContext = createContext<AuthContextType>({
   addUser: () => {},
   updateUser: () => {},
   deleteUser: () => {},
+  resetUsers: () => {}, // Default empty function
   toggleBlockUser: () => {},
 
   markNotificationAsRead: () => {},

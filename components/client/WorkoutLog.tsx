@@ -163,15 +163,15 @@ const WorkoutLog: React.FC<WorkoutLogProps> = ({ onNavigate }) => {
     if (isRestDay) {
         return (
             <div className="w-full max-w-2xl text-center bg-white dark:bg-gray-800/50 rounded-2xl shadow-lg ring-1 ring-black/5 dark:ring-white/10 p-8 flex flex-col items-center justify-center min-h-[400px]">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">¡Feliz Día de Descanso!</h2>
-                <p className="text-gray-500 dark:text-gray-400 mb-8">No hay entrenamiento programado para hoy. Disfruta tu recuperación.</p>
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">{t('workout.restDayTitle')}</h2>
+                <p className="text-gray-500 dark:text-gray-400 mb-8">{t('workout.restDayDesc')}</p>
                 
                 <button 
                     onClick={startFreestyle}
                     className="px-6 py-3 bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-semibold rounded-lg transition-colors flex items-center gap-2"
                 >
                     <PlusIcon className="w-5 h-5" />
-                    Registrar Entrenamiento Libre
+                    {t('workout.freeWorkout')}
                 </button>
             </div>
         );
@@ -181,10 +181,10 @@ const WorkoutLog: React.FC<WorkoutLogProps> = ({ onNavigate }) => {
         <div className="w-full max-w-4xl space-y-6 pb-24">
             <div className="flex justify-between items-center">
                 <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-                    {isFreestyle ? 'Entrenamiento Libre' : <>Registrar Entrenamiento: <span className="text-primary capitalize">{t(`days.${today}`)}</span></>}
+                    {isFreestyle ? t('workout.freeTitle') : <>{t('workout.logTitle')}: <span className="text-primary capitalize">{t(`days.${today}`)}</span></>}
                 </h2>
                  <button onClick={handleAddExercise} className="px-4 py-2 bg-primary/10 text-primary hover:bg-primary/20 rounded-lg text-sm font-semibold flex items-center gap-1 transition-colors">
-                    <PlusIcon className="w-4 h-4" /> Añadir Ejercicio
+                    <PlusIcon className="w-4 h-4" /> {t('workout.addExercise')}
                 </button>
             </div>
             
@@ -210,12 +210,12 @@ const WorkoutLog: React.FC<WorkoutLogProps> = ({ onNavigate }) => {
                                         className="w-full p-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg font-semibold text-gray-900 dark:text-white"
                                         autoFocus
                                     >
-                                        <option value="" disabled>Selecciona un ejercicio...</option>
+                                        <option value="" disabled>{t('admin.userManagement.selectPlaceholder')}</option>
                                         {MOCK_EXERCISES.map(name => <option key={name} value={name}>{name}</option>)}
                                     </select>
                                 )}
                                 {exercise.name && (
-                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Objetivo: {exercise.plannedSets} x {exercise.plannedReps}</p>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{t('workout.target')}: {exercise.plannedSets} x {exercise.plannedReps}</p>
                                 )}
                             </div>
                             <button 
@@ -258,7 +258,7 @@ const WorkoutLog: React.FC<WorkoutLogProps> = ({ onNavigate }) => {
                             ))}
                         </div>
                          <button onClick={() => handleAddSet(exIndex)} className="mt-4 text-sm font-semibold text-primary hover:underline flex items-center gap-1">
-                             <PlusIcon className="w-4 h-4" /> Añadir Serie
+                             <PlusIcon className="w-4 h-4" /> {t('admin.userManagement.addUser').replace('User', 'Set')}
                         </button>
                     </div>
                 ))}
@@ -266,7 +266,7 @@ const WorkoutLog: React.FC<WorkoutLogProps> = ({ onNavigate }) => {
 
             <div className="flex justify-center pt-6">
                  <button onClick={handleLogWorkout} className="px-8 py-4 bg-primary text-primary-foreground font-bold text-lg rounded-xl shadow-xl hover:bg-primary/90 transition-transform transform hover:scale-105 w-full sm:w-auto">
-                    Finalizar Entrenamiento 🎉
+                    {t('workout.finish')}
                 </button>
             </div>
 
@@ -281,7 +281,7 @@ const WorkoutLog: React.FC<WorkoutLogProps> = ({ onNavigate }) => {
                         <span className="absolute inset-0 flex items-center justify-center font-mono text-xl font-bold">{formatTime(timeLeft)}</span>
                     </div>
                     <div>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Descanso</p>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">{t('workout.rest')}</p>
                         <div className="flex gap-2 mt-2">
                              <button onClick={() => startTimer(initialTime + 10)} className="text-xs bg-gray-700 hover:bg-gray-600 px-2 py-1 rounded">+10s</button>
                              <button onClick={stopTimer} className="text-xs bg-red-600 hover:bg-red-500 px-2 py-1 rounded text-white">Stop</button>

@@ -23,10 +23,12 @@ import { NumberInputWithButtons } from './shared/NumberInputWithButtons';
 import { ChatBubbleLeftRightIcon } from './icons/ChatBubbleLeftRightIcon';
 import Footer from './Footer';
 import { UserProfileMenu } from './shared/UserProfileMenu';
+import { useTranslation } from 'react-i18next';
 
 type View = 'dashboard' | 'clients' | 'schedule' | 'messages' | 'profile' | 'routine-templates' | 'notifications' | 'settings';
 
 const TrainerProfileView: React.FC<{user: User, onEdit: () => void}> = ({ user, onEdit }) => {
+    const { t } = useTranslation();
     const calculateAge = (birthDate?: string): number | undefined => {
         if (!birthDate) return undefined;
         const today = new Date();
@@ -44,10 +46,10 @@ const TrainerProfileView: React.FC<{user: User, onEdit: () => void}> = ({ user, 
     return (
         <div className="w-full max-w-4xl bg-white dark:bg-gray-800/50 rounded-2xl shadow-lg ring-1 ring-black/5 dark:ring-white/10 p-6 md:p-8">
             <div className="flex flex-col sm:flex-row justify-between items-start mb-8 gap-4">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Mi Perfil</h2>
+                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{t('trainer.profile.title')}</h2>
                 <button onClick={onEdit} className="flex items-center space-x-2 px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg font-semibold transition-colors w-full sm:w-auto justify-center">
                     <PencilIcon className="w-5 h-5"/>
-                    <span>Editar Perfil</span>
+                    <span>{t('trainer.profile.edit')}</span>
                 </button>
             </div>
             
@@ -65,27 +67,27 @@ const TrainerProfileView: React.FC<{user: User, onEdit: () => void}> = ({ user, 
                 <div className="w-full border-t md:border-t-0 md:border-l border-gray-200 dark:border-gray-700 mt-6 md:mt-0 pt-6 md:pt-0 md:pl-8">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                         <div>
-                            <h4 className="font-semibold text-gray-500 dark:text-gray-400">Teléfono</h4>
-                            <p className="text-gray-800 dark:text-gray-200">{user.phone || 'No especificado'}</p>
+                            <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t('general.phone')}</h4>
+                            <p className="text-gray-800 dark:text-gray-200">{user.phone || t('admin.userDetailsModal.notApplicable')}</p>
                         </div>
                         <div>
-                            <h4 className="font-semibold text-gray-500 dark:text-gray-400">Miembro Desde</h4>
+                            <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t('admin.userDetailsModal.memberSince')}</h4>
                             <p className="text-gray-800 dark:text-gray-200">{new Date(user.joinDate).toLocaleDateString()}</p>
                         </div>
                         <div>
-                            <h4 className="font-semibold text-gray-500 dark:text-gray-400">Género</h4>
-                            <p className="text-gray-800 dark:text-gray-200">{user.gender || 'No especificado'}</p>
+                            <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t('general.gender')}</h4>
+                            <p className="text-gray-800 dark:text-gray-200">{user.gender || t('admin.userDetailsModal.notApplicable')}</p>
                         </div>
                          <div>
-                            <h4 className="font-semibold text-gray-500 dark:text-gray-400">Edad</h4>
-                            <p className="text-gray-800 dark:text-gray-200">{displayAge ? `${displayAge} años` : 'No especificado'}</p>
+                            <h4 className="font-semibold text-gray-500 dark:text-gray-400">{t('general.age')}</h4>
+                            <p className="text-gray-800 dark:text-gray-200">{displayAge ? t('admin.userDetailsModal.ageYears', {age: displayAge}) : t('admin.userDetailsModal.notApplicable')}</p>
                         </div>
                     </div>
 
                     <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 space-y-4">
                          <div>
-                            <h3 className="font-semibold text-gray-500 dark:text-gray-400 mb-2">Habilidades</h3>
-                            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{user.skills || 'No especificado'}</p>
+                            <h3 className="font-semibold text-gray-500 dark:text-gray-400 mb-2">{t('trainer.profile.skills')}</h3>
+                            <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{user.skills || t('admin.userDetailsModal.notApplicable')}</p>
                          </div>
                     </div>
                 </div>
@@ -98,29 +100,33 @@ const TrainerProfileView: React.FC<{user: User, onEdit: () => void}> = ({ user, 
 const MyClientsView: React.FC<{
     myClients: User[];
     handleOpenModal: (client: User) => void;
-}> = ({ myClients, handleOpenModal }) => (
-    <div className="bg-white dark:bg-gray-800/50 rounded-xl ring-1 ring-black/5 dark:ring-white/10 w-full">
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Mis Clientes ({myClients.length})</h2>
+}> = ({ myClients, handleOpenModal }) => {
+    const { t } = useTranslation();
+    return (
+        <div className="bg-white dark:bg-gray-800/50 rounded-xl ring-1 ring-black/5 dark:ring-white/10 w-full">
+            <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{t('trainer.clients.title')} ({myClients.length})</h2>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
+                {myClients.map(client => (
+                    <div key={client.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 flex flex-col items-center text-center ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-primary transition-all duration-300">
+                        <img src={client.avatarUrl} alt={client.name} className="w-24 h-24 rounded-full object-cover mb-4 ring-2 ring-gray-300 dark:ring-gray-600"/>
+                        <h3 className="font-bold text-lg text-gray-900 dark:text-white">{client.name}</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{client.email}</p>
+                        <button onClick={() => handleOpenModal(client)} className="w-full mt-auto px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2 text-primary-foreground">
+                            <PencilIcon className="h-5 w-5" />
+                            <span>{t('trainer.clients.manage')}</span>
+                        </button>
+                    </div>
+                ))}
+            </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
-            {myClients.map(client => (
-                <div key={client.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 flex flex-col items-center text-center ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-primary transition-all duration-300">
-                    <img src={client.avatarUrl} alt={client.name} className="w-24 h-24 rounded-full object-cover mb-4 ring-2 ring-gray-300 dark:ring-gray-600"/>
-                    <h3 className="font-bold text-lg text-gray-900 dark:text-white">{client.name}</h3>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{client.email}</p>
-                    <button onClick={() => handleOpenModal(client)} className="w-full mt-auto px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2 text-primary-foreground">
-                        <PencilIcon className="h-5 w-5" />
-                        <span>Gestionar Cliente</span>
-                    </button>
-                </div>
-            ))}
-        </div>
-    </div>
-);
+    );
+};
 
 
 const TrainerDashboard: React.FC = () => {
+    const { t } = useTranslation();
     const { currentUser, myClients: clientsFromContext, updateUser, logout, updateCurrentUser } = useContext(AuthContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -179,14 +185,14 @@ const TrainerDashboard: React.FC = () => {
     };
     
     const viewTitles: Record<View, string> = {
-        dashboard: 'Panel de Control',
-        clients: 'Mis Clientes',
-        schedule: 'Mi Horario',
-        messages: 'Mensajes',
-        profile: 'Mi Perfil',
-        'routine-templates': 'Mis Plantillas',
-        notifications: 'Notificaciones',
-        settings: 'Ajustes'
+        dashboard: t('trainer.sidebar.dashboard'),
+        clients: t('trainer.sidebar.clients'),
+        schedule: t('trainer.sidebar.schedule'),
+        messages: t('trainer.sidebar.messages'),
+        profile: t('trainer.sidebar.profile'),
+        'routine-templates': t('trainer.sidebar.templates'),
+        notifications: t('trainer.sidebar.notifications'),
+        settings: t('trainer.sidebar.settings')
     }
 
     return (
@@ -247,6 +253,7 @@ const TrainerDashboard: React.FC = () => {
 };
 
 const TrainerEditProfileModal: React.FC<{user: User, onSave: (user: User) => void, onClose: () => void}> = ({ user, onSave, onClose }) => {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState(user);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -301,7 +308,7 @@ const TrainerEditProfileModal: React.FC<{user: User, onSave: (user: User) => voi
     return (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
             <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col animate-scale-in">
-                <h2 className="text-2xl font-bold p-6 border-b border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white">Editar Perfil</h2>
+                <h2 className="text-2xl font-bold p-6 border-b border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white">{t('admin.editProfileModal.title')}</h2>
                 
                 <div className="p-6 space-y-4 overflow-y-auto">
                     <div className="flex items-center space-x-4">
@@ -312,9 +319,9 @@ const TrainerEditProfileModal: React.FC<{user: User, onSave: (user: User) => voi
                                 onClick={() => fileInputRef.current?.click()}
                                 className="px-3 py-1 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-sm rounded-lg text-gray-800 dark:text-gray-200"
                             >
-                                Subir foto
+                                {t('admin.editProfileModal.uploadPhoto')}
                             </button>
-                            <button type="button" onClick={handleRandomAvatar} className="px-3 py-1 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-sm rounded-lg text-gray-800 dark:text-gray-200">Avatar aleatorio</button>
+                            <button type="button" onClick={handleRandomAvatar} className="px-3 py-1 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-sm rounded-lg text-gray-800 dark:text-gray-200">{t('admin.editProfileModal.randomAvatar')}</button>
                             <input
                                 type="file"
                                 ref={fileInputRef}
@@ -325,64 +332,64 @@ const TrainerEditProfileModal: React.FC<{user: User, onSave: (user: User) => voi
                         </div>
                     </div>
 
-                    <h3 className="text-lg font-semibold border-b border-gray-200 dark:border-gray-700 pb-2 text-gray-800 dark:text-gray-200">Información Personal</h3>
+                    <h3 className="text-lg font-semibold border-b border-gray-200 dark:border-gray-700 pb-2 text-gray-800 dark:text-gray-200">{t('admin.editProfileModal.personalInfo')}</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-600 dark:text-gray-400">Nombre</label>
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-600 dark:text-gray-400">{t('general.name')}</label>
                             <input type="text" name="name" id="name" value={formData.name} onChange={handleChange} className="mt-1 block w-full bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary text-gray-900 dark:text-white" required/>
                         </div>
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-600 dark:text-gray-400">Email</label>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-600 dark:text-gray-400">{t('general.email')}</label>
                             <input type="email" name="email" id="email" value={formData.email} className="mt-1 block w-full bg-gray-200/50 dark:bg-gray-700/50 border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-500 dark:text-gray-400" disabled/>
-                            <p className="text-xs text-gray-500 mt-1">El email no se puede cambiar.</p>
+                            <p className="text-xs text-gray-500 mt-1">{t('admin.userManagement.emailCannotBeChanged')}</p>
                         </div>
                         <div>
-                            <label htmlFor="phone" className="block text-sm font-medium text-gray-600 dark:text-gray-400">Teléfono</label>
+                            <label htmlFor="phone" className="block text-sm font-medium text-gray-600 dark:text-gray-400">{t('general.phone')}</label>
                             <input type="tel" name="phone" id="phone" value={formData.phone} onChange={handleChange} className="mt-1 block w-full bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary text-gray-900 dark:text-white"/>
                         </div>
                         <div>
-                            <label htmlFor="gender" className="block text-sm font-medium text-gray-600 dark:text-gray-400">Género</label>
+                            <label htmlFor="gender" className="block text-sm font-medium text-gray-600 dark:text-gray-400">{t('general.gender')}</label>
                             <select name="gender" id="gender" value={formData.gender || ''} onChange={handleChange} className="mt-1 block w-full bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary text-gray-900 dark:text-white">
-                                <option value="">Seleccionar...</option>
-                                <option value="Masculino">Masculino</option>
-                                <option value="Femenino">Femenino</option>
-                                <option value="Otro">Otro</option>
-                                <option value="Prefiero no decirlo">Prefiero no decirlo</option>
+                                <option value="">{t('admin.editProfileModal.selectGender')}</option>
+                                <option value="Masculino">{t('genders.Masculino')}</option>
+                                <option value="Femenino">{t('genders.Femenino')}</option>
+                                <option value="Otro">{t('genders.Otro')}</option>
+                                <option value="Prefiero no decirlo">{t('genders.Prefiero no decirlo')}</option>
                             </select>
                         </div>
                         <div>
-                            <label htmlFor="birthDate" className="block text-sm font-medium text-gray-600 dark:text-gray-400">Fecha de Nacimiento</label>
+                            <label htmlFor="birthDate" className="block text-sm font-medium text-gray-600 dark:text-gray-400">{t('general.birthDate')}</label>
                             <input type="date" name="birthDate" id="birthDate" value={formData.birthDate || ''} onChange={handleChange} className="mt-1 block w-full bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary text-gray-900 dark:text-white" />
                         </div>
                          <div>
-                            <label htmlFor="age" className="block text-sm font-medium text-gray-600 dark:text-gray-400">Edad</label>
+                            <label htmlFor="age" className="block text-sm font-medium text-gray-600 dark:text-gray-400">{t('general.age')}</label>
                             <input type="text" name="age" id="age" value={currentAge !== undefined ? currentAge : ''} readOnly className="mt-1 block w-full bg-gray-200/50 dark:bg-gray-700/50 border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-gray-500 dark:text-gray-400 cursor-not-allowed" />
                         </div>
                     </div>
 
-                     <h3 className="text-lg font-semibold border-b border-gray-200 dark:border-gray-700 pb-2 pt-4 text-gray-800 dark:text-gray-200">Habilidades Profesionales</h3>
+                     <h3 className="text-lg font-semibold border-b border-gray-200 dark:border-gray-700 pb-2 pt-4 text-gray-800 dark:text-gray-200">{t('admin.editProfileModal.skills')}</h3>
                     <div>
-                        <label htmlFor="skills" className="block text-sm font-medium text-gray-600 dark:text-gray-400">Habilidades</label>
+                        <label htmlFor="skills" className="block text-sm font-medium text-gray-600 dark:text-gray-400">{t('admin.userDetailsModal.skills')}</label>
                         <textarea name="skills" id="skills" value={formData.skills || ''} onChange={handleChange} rows={3} className="mt-1 block w-full bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary text-gray-900 dark:text-white" placeholder="p. ej., Yoga, CrossFit, Nutrición"></textarea>
-                        <p className="text-xs text-gray-500 mt-1">Separa las habilidades con una coma.</p>
+                        <p className="text-xs text-gray-500 mt-1">{t('admin.editProfileModal.commaSeparated')}</p>
                     </div>
 
-                    <h3 className="text-lg font-semibold border-b border-gray-200 dark:border-gray-700 pb-2 pt-4 text-gray-800 dark:text-gray-200">Contacto de Emergencia</h3>
+                    <h3 className="text-lg font-semibold border-b border-gray-200 dark:border-gray-700 pb-2 pt-4 text-gray-800 dark:text-gray-200">{t('admin.editProfileModal.emergencyContact')}</h3>
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label htmlFor="emergencyContactName" className="block text-sm font-medium text-gray-600 dark:text-gray-400">Nombre del Contacto</label>
+                            <label htmlFor="emergencyContactName" className="block text-sm font-medium text-gray-600 dark:text-gray-400">{t('admin.editProfileModal.contactName')}</label>
                             <input type="text" name="emergencyContactName" id="emergencyContactName" value={formData.emergencyContact?.name || ''} onChange={handleChange} className="mt-1 block w-full bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary text-gray-900 dark:text-white" />
                         </div>
                         <div>
-                            <label htmlFor="emergencyContactPhone" className="block text-sm font-medium text-gray-600 dark:text-gray-400">Teléfono del Contacto</label>
+                            <label htmlFor="emergencyContactPhone" className="block text-sm font-medium text-gray-600 dark:text-gray-400">{t('admin.editProfileModal.contactPhone')}</label>
                             <input type="tel" name="emergencyContactPhone" id="emergencyContactPhone" value={formData.emergencyContact?.phone || ''} onChange={handleChange} className="mt-1 block w-full bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary text-gray-900 dark:text-white" />
                         </div>
                     </div>
                 </div>
 
                 <div className="flex justify-end space-x-4 p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 sticky bottom-0">
-                    <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg font-semibold transition-colors text-gray-800 dark:text-gray-200">Cancelar</button>
-                    <button type="submit" className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg font-semibold transition-colors text-primary-foreground">Guardar Cambios</button>
+                    <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg font-semibold transition-colors text-gray-800 dark:text-gray-200">{t('general.cancel')}</button>
+                    <button type="submit" className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg font-semibold transition-colors text-primary-foreground">{t('general.saveChanges')}</button>
                 </div>
             </form>
         </div>
@@ -390,14 +397,15 @@ const TrainerEditProfileModal: React.FC<{user: User, onSave: (user: User) => voi
 };
 
 const ManageClientModal: React.FC<{client: User; trainer: User; onSave: (client: User) => void; onClose: () => void}> = ({ client, trainer, onSave, onClose }) => {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState('routine');
     return (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-scale-in">
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-start">
                     <div>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Gestionar a {client.name}</h2>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Nivel Físico: <span className="font-semibold text-primary">{client.fitnessLevel || 'No especificado'}</span></p>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('trainer.clients.manageTitle', {name: client.name})}</h2>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.userDetailsModal.fitnessLevel')}: <span className="font-semibold text-primary">{client.fitnessLevel ? t(`fitnessLevels.${client.fitnessLevel}`) : t('admin.userDetailsModal.notApplicable')}</span></p>
                     </div>
                     <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
                         <XCircleIcon className="w-6 h-6 text-gray-500" />
@@ -405,8 +413,8 @@ const ManageClientModal: React.FC<{client: User; trainer: User; onSave: (client:
                 </div>
                 <div className="border-b border-gray-200 dark:border-gray-700 px-6 overflow-x-auto">
                     <nav className="-mb-px flex space-x-6">
-                        <button type="button" onClick={() => setActiveTab('routine')} className={`capitalize py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'routine' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600'}`}>Rutina</button>
-                        <button type="button" onClick={() => setActiveTab('history')} className={`capitalize py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'history' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600'}`}>Historial de Entrenamientos</button>
+                        <button type="button" onClick={() => setActiveTab('routine')} className={`capitalize py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'routine' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600'}`}>{t('trainer.modal.routine')}</button>
+                        <button type="button" onClick={() => setActiveTab('history')} className={`capitalize py-3 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === 'history' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200 dark:hover:border-gray-600'}`}>{t('trainer.history.title')}</button>
                     </nav>
                 </div>
                 
@@ -418,6 +426,7 @@ const ManageClientModal: React.FC<{client: User; trainer: User; onSave: (client:
 }
 
 const WorkoutHistoryView: React.FC<{client: User; onSave: (client: User) => void;}> = ({ client, onSave }) => {
+    const { t } = useTranslation();
     const sortedHistory = useMemo(() => {
         return [...(client.workoutHistory || [])].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     }, [client.workoutHistory]);
@@ -433,7 +442,7 @@ const WorkoutHistoryView: React.FC<{client: User; onSave: (client: User) => void
         <div className="flex-1 p-6 overflow-y-auto space-y-4">
             {sortedHistory.length > 0 ? sortedHistory.map(session => (
                 <div key={session.id} className="bg-gray-100 dark:bg-gray-700/50 p-4 rounded-lg">
-                    <h4 className="font-bold text-lg text-gray-800 dark:text-gray-200">{session.day} - {new Date(session.date).toLocaleDateString()}</h4>
+                    <h4 className="font-bold text-lg text-gray-800 dark:text-gray-200">{t(`days.${session.day}`)} - {new Date(session.date).toLocaleDateString()}</h4>
                     <div className="mt-2 space-y-2">
                         {session.loggedExercises.map((ex, i) => (
                             <div key={i} className="text-sm">
@@ -447,23 +456,24 @@ const WorkoutHistoryView: React.FC<{client: User; onSave: (client: User) => void
                         ))}
                     </div>
                      <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">Notas del Entrenador</label>
+                        <label className="block text-sm font-medium text-gray-600 dark:text-gray-400">{t('trainer.history.notes')}</label>
                         <textarea 
                             value={session.trainerNotes || ''}
                             onChange={(e) => handleNoteChange(session.id, e.target.value)}
                             rows={2}
-                            placeholder="Añade una nota sobre esta sesión..."
+                            placeholder={t('trainer.history.addNote')}
                             className="mt-1 block w-full bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-primary focus:border-primary text-gray-900 dark:text-white p-2 text-sm"
                         />
                     </div>
                 </div>
-            )) : <p className="text-center text-gray-500 dark:text-gray-400">Aún no se ha registrado ningún historial de entrenamiento.</p>}
+            )) : <p className="text-center text-gray-500 dark:text-gray-400">{t('trainer.history.noHistory')}</p>}
         </div>
     );
 };
 
 
 const RoutineEditor: React.FC<{client: User; trainer: User; onSave: (client: User) => void; onClose: () => void}> = ({ client, trainer, onSave, onClose }) => {
+    const { t, i18n } = useTranslation();
     const { preEstablishedRoutines } = useContext(AuthContext);
     const [routine, setRoutine] = useState<DailyRoutine[]>(
         JSON.parse(JSON.stringify(client.assignedRoutines?.find(ar => ar.trainerId === trainer.id)?.routine || []))
@@ -472,11 +482,7 @@ const RoutineEditor: React.FC<{client: User; trainer: User; onSave: (client: Use
     const [activeDay, setActiveDay] = useState<DailyRoutine['day']>('Monday');
     
     const weekDays: DailyRoutine['day'][] = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const weekDaysSpanish: { [key in DailyRoutine['day']]: string } = {
-        'Monday': 'Lunes', 'Tuesday': 'Martes', 'Wednesday': 'Miércoles', 'Thursday': 'Jueves',
-        'Friday': 'Viernes', 'Saturday': 'Sábado', 'Sunday': 'Domingo'
-    };
-
+    
     const { globalTemplates, personalTemplates } = useMemo(() => {
         const global = preEstablishedRoutines.filter(r => !r.trainerId);
         const personal = preEstablishedRoutines.filter(r => r.trainerId === trainer.id);
@@ -487,7 +493,7 @@ const RoutineEditor: React.FC<{client: User; trainer: User; onSave: (client: Use
         if (!templateId) return;
         const template = preEstablishedRoutines.find(t => t.id === templateId);
         if (template) {
-            if (window.confirm(`¿Estás seguro de que quieres aplicar la plantilla "${template.name}"? Esto sobrescribirá la rutina actual.`)) {
+            if (window.confirm(t('trainer.routine.confirmApply', {name: template.name}))) {
                 setRoutine(JSON.parse(JSON.stringify(template.routines))); // Deep copy to prevent mutation
             }
         }
@@ -498,24 +504,44 @@ const RoutineEditor: React.FC<{client: User; trainer: User; onSave: (client: Use
         try {
             const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             
-            const prompt = `Eres un experto entrenador personal. Crea una rutina de entrenamiento semanal personalizada de 7 días para el siguiente cliente.
+            const prompt = i18n.language.startsWith('es') 
+                ? `Eres un experto entrenador personal. Crea una rutina de entrenamiento semanal personalizada de 7 días para el siguiente cliente.
 
-            Detalles del Cliente:
-            - Nombre: ${client.name}
-            - Edad: ${client.age || 'No proporcionada'}
-            - Género: ${client.gender || 'No proporcionado'}
-            - Nivel Físico: ${client.fitnessLevel || 'No especificado'}
-            - Altura: ${client.height ? `${client.height} cm` : 'No proporcionada'}
-            - Peso: ${client.weight ? `${client.weight} kg` : 'No proporcionado'}
-            - Metas de Fitness: ${client.fitnessGoals || 'Sin metas específicas listadas.'}
-            - Condiciones Médicas/Lesiones: ${client.medicalConditions || 'Ninguna reportada.'}
+                Detalles del Cliente:
+                - Nombre: ${client.name}
+                - Edad: ${client.age || 'No proporcionada'}
+                - Género: ${client.gender || 'No proporcionado'}
+                - Nivel Físico: ${client.fitnessLevel || 'No especificado'}
+                - Altura: ${client.height ? `${client.height} cm` : 'No proporcionada'}
+                - Peso: ${client.weight ? `${client.weight} kg` : 'No proporcionado'}
+                - Metas de Fitness: ${client.fitnessGoals || 'Sin metas específicas listadas.'}
+                - Condiciones Médicas/Lesiones: ${client.medicalConditions || 'Ninguna reportada.'}
 
-            Instrucciones:
-            - La rutina debe cubrir los 7 días de la semana (Lunes a Domingo).
-            - Incluye días de descanso cuando sea apropiado para el nivel físico del cliente. Para los días de descanso, proporciona un array de ejercicios vacío.
-            - Para cada ejercicio, especifica el nombre, número de series y un rango de repeticiones (p. ej., "8-12") o duración (p. ej., "30 mins").
-            - Adapta los ejercicios a las metas, nivel físico y condiciones médicas del cliente.
-            - Devuelve la respuesta como un array JSON válido que siga estrictamente el esquema proporcionado. Asegúrate de que los días estén en orden: Lunes, Martes, Miércoles, Jueves, Viernes, Sábado, Domingo.`;
+                Instrucciones:
+                - La rutina debe cubrir los 7 días de la semana (Lunes a Domingo).
+                - Incluye días de descanso cuando sea apropiado para el nivel físico del cliente. Para los días de descanso, proporciona un array de ejercicios vacío.
+                - Para cada ejercicio, especifica el nombre, número de series y un rango de repeticiones (p. ej., "8-12") o duración (p. ej., "30 mins").
+                - Adapta los ejercicios a las metas, nivel físico y condiciones médicas del cliente.
+                - Devuelve la respuesta como un array JSON válido que siga estrictamente el esquema proporcionado. Asegúrate de que los días estén en orden en Inglés: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.`
+                
+                : `You are an expert personal trainer. Create a personalized 7-day weekly workout routine for the following client.
+
+                Client Details:
+                - Name: ${client.name}
+                - Age: ${client.age || 'Not provided'}
+                - Gender: ${client.gender || 'Not provided'}
+                - Fitness Level: ${client.fitnessLevel || 'Not specified'}
+                - Height: ${client.height ? `${client.height} cm` : 'Not provided'}
+                - Weight: ${client.weight ? `${client.weight} kg` : 'Not provided'}
+                - Fitness Goals: ${client.fitnessGoals || 'No specific goals listed.'}
+                - Medical Conditions/Injuries: ${client.medicalConditions || 'None reported.'}
+
+                Instructions:
+                - The routine must cover all 7 days of the week (Monday to Sunday).
+                - Include rest days where appropriate for the client's fitness level. For rest days, provide an empty exercise array.
+                - For each exercise, specify the name, number of sets, and a rep range (e.g., "8-12") or duration (e.g., "30 mins").
+                - Tailor the exercises to the client's goals, fitness level, and medical conditions.
+                - Return the response as a valid JSON array strictly following the provided schema. Ensure days are in order: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.`;
 
             const schema = {
                 type: Type.ARRAY,
@@ -559,8 +585,8 @@ const RoutineEditor: React.FC<{client: User; trainer: User; onSave: (client: Use
             setRoutine(fullRoutine);
 
         } catch (error) {
-            console.error("Error al generar sugerencia de rutina:", error);
-            alert("Lo siento, no pude generar una sugerencia en este momento. Por favor, inténtalo de nuevo más tarde.");
+            console.error("Error generating routine suggestion:", error);
+            alert(t('app.aiCoachError'));
         } finally {
             setIsSuggesting(false);
         }
@@ -626,29 +652,29 @@ const RoutineEditor: React.FC<{client: User; trainer: User; onSave: (client: Use
     return (
          <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden">
              <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 flex flex-col sm:flex-row items-center gap-4 flex-shrink-0">
-                <label htmlFor="routine-template" className="text-sm font-medium text-gray-700 dark:text-gray-300 flex-shrink-0">Aplicar plantilla:</label>
+                <label htmlFor="routine-template" className="text-sm font-medium text-gray-700 dark:text-gray-300 flex-shrink-0">{t('trainer.routine.applyTemplate')}:</label>
                 <select
                     id="routine-template"
                     onChange={(e) => handleApplyTemplate(e.target.value)}
                     className="w-full sm:w-auto flex-grow bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm p-2 focus:ring-primary focus:border-primary text-gray-900 dark:text-white"
                 >
-                    <option value="">Selecciona una rutina...</option>
+                    <option value="">{t('trainer.routine.select')}</option>
                     {personalTemplates.length > 0 && (
-                        <optgroup label="Mis Plantillas">
+                        <optgroup label={t('trainer.routine.myTemplates')}>
                             {personalTemplates.map(template => (
                                 <option key={template.id} value={template.id}>{template.name}</option>
                             ))}
                         </optgroup>
                     )}
                     {globalTemplates.length > 0 && (
-                         <optgroup label="Plantillas Globales">
+                         <optgroup label={t('trainer.routine.globalTemplates')}>
                             {globalTemplates.map(template => (
                                 <option key={template.id} value={template.id}>{template.name}</option>
                             ))}
                         </optgroup>
                     )}
                 </select>
-                 <span className="text-sm text-gray-500 dark:text-gray-400 hidden sm:inline">o</span>
+                 <span className="text-sm text-gray-500 dark:text-gray-400 hidden sm:inline">{t('trainer.routine.or')}</span>
                 <button 
                     type="button" 
                     onClick={handleSuggestRoutine}
@@ -663,7 +689,7 @@ const RoutineEditor: React.FC<{client: User; trainer: User; onSave: (client: Use
                     ) : (
                         <SparklesIcon className="h-5 w-5" />
                     )}
-                    <span>{isSuggesting ? 'Generando...' : 'Sugerir con IA'}</span>
+                    <span>{isSuggesting ? t('trainer.routine.generating') : t('trainer.routine.suggestAi')}</span>
                 </button>
             </div>
            <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
@@ -676,32 +702,32 @@ const RoutineEditor: React.FC<{client: User; trainer: User; onSave: (client: Use
                                 onClick={() => setActiveDay(day)}
                                 className={`w-full text-left p-2 px-3 text-sm font-semibold rounded-md transition-colors whitespace-nowrap ${activeDay === day ? 'bg-primary/10 text-primary' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'}`}
                             >
-                                {weekDaysSpanish[day]}
+                                {t(`days.${day}`)}
                             </button>
                         ))}
                     </nav>
                 </div>
                 <div className="flex-1 p-6 overflow-y-auto">
-                     <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">Rutina de {weekDaysSpanish[activeDay]}</h3>
+                     <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">{t('client.routine.title').replace('Weekly Routine', '')} {t(`days.${activeDay}`)}</h3>
                      <div className="space-y-3">
                         {activeDayRoutine && activeDayRoutine.exercises.length > 0 && (
                             <div className="hidden sm:flex items-center gap-2">
-                                <div className="flex-grow text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ejercicio</div>
-                                <div className="w-28 flex-shrink-0 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Series</div>
-                                <div className="w-32 flex-shrink-0 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rep.</div>
+                                <div className="flex-grow text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('client.routine.exercise')}</div>
+                                <div className="w-28 flex-shrink-0 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('client.routine.sets')}</div>
+                                <div className="w-32 flex-shrink-0 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{t('client.routine.reps')}</div>
                                 <div className="w-9 flex-shrink-0"></div> {/* Spacer for delete button */}
                             </div>
                         )}
                         {activeDayRoutine?.exercises.map((ex, exIndex) => (
                             <div key={exIndex} className="flex flex-col sm:flex-row sm:items-center gap-2 bg-gray-50 dark:bg-gray-700/30 p-3 rounded-lg sm:p-0 sm:bg-transparent sm:dark:bg-transparent">
                                 <div className="flex-grow w-full sm:w-auto">
-                                    <label className="text-xs font-semibold text-gray-500 sm:hidden mb-1 block">Ejercicio</label>
+                                    <label className="text-xs font-semibold text-gray-500 sm:hidden mb-1 block">{t('client.routine.exercise')}</label>
                                     <select 
                                         value={ex.name}
                                         onChange={(e) => handleExerciseChange(exIndex, 'name', e.target.value)}
                                         className="w-full bg-gray-100 dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm p-2 focus:ring-primary focus:border-primary text-gray-900 dark:text-white"
                                     >
-                                        <option value="" disabled>Selecciona un ejercicio...</option>
+                                        <option value="" disabled>{t('admin.userManagement.selectPlaceholder')}</option>
                                         {MOCK_EXERCISES.map(exerciseName => (
                                             <option key={exerciseName} value={exerciseName}>{exerciseName}</option>
                                         ))}
@@ -709,11 +735,11 @@ const RoutineEditor: React.FC<{client: User; trainer: User; onSave: (client: Use
                                 </div>
                                 <div className="flex items-center gap-2 justify-between sm:justify-start w-full sm:w-auto">
                                     <div className="flex flex-col sm:block w-24 sm:w-28">
-                                        <label className="text-xs font-semibold text-gray-500 sm:hidden mb-1 block">Series</label>
+                                        <label className="text-xs font-semibold text-gray-500 sm:hidden mb-1 block">{t('client.routine.sets')}</label>
                                         <NumberInputWithButtons value={ex.sets} onChange={(v) => handleExerciseChange(exIndex, 'sets', v as number)} className="w-full" />
                                     </div>
                                     <div className="flex flex-col sm:block w-28 sm:w-32">
-                                        <label className="text-xs font-semibold text-gray-500 sm:hidden mb-1 block">Reps</label>
+                                        <label className="text-xs font-semibold text-gray-500 sm:hidden mb-1 block">{t('client.routine.reps')}</label>
                                         <NumberInputWithButtons value={ex.reps} onChange={(v) => handleExerciseChange(exIndex, 'reps', v as string)} className="w-full" />
                                     </div>
                                     <div className="sm:w-9 flex justify-end sm:justify-center mt-4 sm:mt-0">
@@ -728,8 +754,8 @@ const RoutineEditor: React.FC<{client: User; trainer: User; onSave: (client: Use
 
                      {(!activeDayRoutine || activeDayRoutine.exercises.length === 0) && (
                         <div className="text-center py-10 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
-                            <p className="font-semibold text-gray-500 dark:text-gray-400">Día de Descanso</p>
-                            <p className="text-sm text-gray-400 dark:text-gray-500">Añade un ejercicio para empezar.</p>
+                            <p className="font-semibold text-gray-500 dark:text-gray-400">{t('client.routine.restDay')}</p>
+                            <p className="text-sm text-gray-400 dark:text-gray-500">{t('trainer.routine.restDayText')}</p>
                         </div>
                      )}
 
@@ -740,14 +766,14 @@ const RoutineEditor: React.FC<{client: User; trainer: User; onSave: (client: Use
                             className="w-full flex items-center justify-center space-x-2 px-4 py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary rounded-lg font-semibold transition-colors text-gray-500 dark:text-gray-400"
                         >
                             <PlusIcon className="h-5 w-5" />
-                            <span>Añadir Nuevo Ejercicio</span>
+                            <span>{t('trainer.routine.addExercise')}</span>
                         </button>
                     </div>
                 </div>
            </div>
             <div className="flex justify-end space-x-4 p-6 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 sticky bottom-0">
-                <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg font-semibold transition-colors text-gray-800 dark:text-gray-200">Cancelar</button>
-                <button type="submit" disabled={isSuggesting} className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg font-semibold transition-colors text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed">Guardar Cambios</button>
+                <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg font-semibold transition-colors text-gray-800 dark:text-gray-200">{t('general.cancel')}</button>
+                <button type="submit" disabled={isSuggesting} className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg font-semibold transition-colors text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed">{t('general.saveChanges')}</button>
             </div>
         </form>
     );

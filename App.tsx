@@ -207,6 +207,21 @@ const App: React.FC = () => {
     }
   }, [currentUser, setUsers, setGymClasses, setChallenges, setMessages, setPayments, addToast, t]);
 
+  const resetUsers = useCallback(() => {
+      setUsers(MOCK_USERS);
+      
+      // If current user was a custom one, they might not exist in MOCK_USERS anymore.
+      if (currentUser) {
+          const foundUser = MOCK_USERS.find(u => u.id === currentUser.id);
+          if (foundUser) {
+              setCurrentUser(foundUser);
+          } else {
+              setCurrentUser(null); // Logout if current user no longer exists
+          }
+      }
+      addToast(t('toast.usersReset'), 'success');
+  }, [currentUser, setUsers, addToast, t]);
+
   const toggleBlockUser = useCallback((userIdToBlock: string) => {
     if (!currentUser) return;
     const currentBlockedIds = currentUser.blockedUserIds || [];
@@ -564,11 +579,11 @@ const App: React.FC = () => {
 
   const authContextValue = useMemo(() => ({
     currentUser, users, myClients, myTrainers, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts,
-    logout, updateCurrentUser, updateUser, addUser, deleteUser, toggleBlockUser, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification, addNotification, addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate, logWorkout, addGymClass, updateGymClass, deleteGymClass, bookClass, sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement,
+    logout, updateCurrentUser, updateUser, addUser, deleteUser, resetUsers, toggleBlockUser, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification, addNotification, addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate, logWorkout, addGymClass, updateGymClass, deleteGymClass, bookClass, sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement,
     sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement, addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, toggleReportModal, addNutritionLog, addPayment, login, register, addToast, removeToast
   }), [
       currentUser, users, myClients, myTrainers, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts,
-      logout, updateCurrentUser, updateUser, addUser, deleteUser, toggleBlockUser, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification, addNotification, addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate, logWorkout, addGymClass, updateGymClass, deleteGymClass, bookClass, sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement,
+      logout, updateCurrentUser, updateUser, addUser, deleteUser, resetUsers, toggleBlockUser, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification, addNotification, addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate, logWorkout, addGymClass, updateGymClass, deleteGymClass, bookClass, sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement,
       sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement, addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, toggleReportModal, addNutritionLog, addPayment, login, register, addToast, removeToast
   ]);
   

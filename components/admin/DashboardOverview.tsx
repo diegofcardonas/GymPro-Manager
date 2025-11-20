@@ -56,27 +56,41 @@ const ExecutiveSummaryCard: React.FC<{ stats: any }> = ({ stats }) => {
 
     useEffect(() => {
         const generateSummary = async () => {
+            if (!process.env.API_KEY) {
+                setSummary("API Key not configured for AI features.");
+                setLoading(false);
+                return;
+            }
+
             try {
-                // Simulate slight delay for realism or debounce
                 setLoading(true);
                 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-                const model = ai.models.getGenerativeModel({ model: 'gemini-2.5-flash' });
                 
                 const prompt = `
-                    Act as a business analyst for a gym. Generate a concise, professional, 2-sentence executive summary based on these stats:
+                    Act as a senior business analyst for a gym called "GymPro".
+                    Analyze these real-time metrics and generate a concise, professional, 2-sentence executive summary (in the same language as the prompt):
+                    
                     - Total Clients: ${stats.totalClients}
                     - Active Members: ${stats.active}
-                    - Expired Members: ${stats.expired} (Action needed)
-                    - Pending Signups: ${stats.pending}
-                    - Active Trainers: ${stats.totalTrainers}
+                    - Expired Members (Churn Risk): ${stats.expired}
+                    - Pending Renewals/Signups: ${stats.pending}
+                    - Trainers: ${stats.totalTrainers}
                     
-                    Focus on growth and areas needing attention (like expirations). Use an encouraging tone.
+                    Instructions:
+                    1. First sentence: Highlight the key performance indicator or growth status.
+                    2. Second sentence: Provide a specific, actionable recommendation based on the data (e.g., if Expired is high, suggest retention campaigns; if Pending is high, suggest follow-ups).
+                    Tone: Encouraging but data-driven.
                 `;
 
-                const result = await model.generateContent(prompt);
-                setSummary(result.response.text());
+                const response = await ai.models.generateContent({
+                    model: 'gemini-2.5-flash',
+                    contents: prompt,
+                });
+
+                setSummary(response.text || "No summary generated.");
             } catch (error) {
-                setSummary("Unable to generate AI summary at this time. Please check metrics manually.");
+                console.error("AI Summary Error:", error);
+                setSummary("Unable to generate AI summary at this time. Please analyze metrics manually.");
             } finally {
                 setLoading(false);
             }

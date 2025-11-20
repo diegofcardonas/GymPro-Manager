@@ -32,7 +32,12 @@
         "emergencyContact": "Emergency Contact",
         "birthDate": "Date of Birth",
         "manage": "Manage",
-        "create": "Create"
+        "create": "Create",
+        "gender": "Gender",
+        "age": "Age",
+        "password": "Password",
+        "apply": "Apply",
+        "clear": "Clear"
     },
     "toast": {
         "welcome": "Welcome, {{name}}",
@@ -46,6 +51,7 @@
         "userDeleted": "User deleted",
         "userUnblocked": "User unblocked",
         "userBlocked": "User blocked",
+        "usersReset": "Users reset to default successfully",
         "routineTemplateCreated": "Routine template created",
         "routineTemplateUpdated": "Routine template updated",
         "routineTemplateDeleted": "Routine template deleted",
@@ -148,8 +154,18 @@
     "login": {
         "subtitle": "Select a role to log in for demonstration purposes.",
         "loginAs": "Log in as {{role}}",
+        "joinAs": "Join as {{role}}",
         "staffOperational": "Operational and Service Staff",
-        "staffHealth": "Health and Wellness Staff"
+        "staffHealth": "Health and Wellness Staff",
+        "errorMissingFields": "All fields are required for registration.",
+        "errorUnexpected": "An unexpected error occurred.",
+        "createAccountDesc": "Create your account to get started.",
+        "createAccount": "Create Account",
+        "demoAccess": "Demo Access",
+        "dontHaveAccount": "Don't have an account?",
+        "alreadyHaveAccount": "Already have an account?",
+        "signup": "Sign up",
+        "login": "Log in"
     },
     "placeholders": {
         "dashboardComingSoon": "Dashboard Coming Soon!",
@@ -229,7 +245,19 @@
             "notSpecified": "Not specified"
         },
         "aiCoach": {
-            "systemInstruction": "You are an expert fitness coach and nutritionist AI for GymPro. Be encouraging, concise, and helpful. Answer questions about workouts, diet, and gym equipment."
+            "systemInstruction": "You are an expert fitness coach and nutritionist AI for GymPro. Be encouraging, concise, and helpful. Answer questions about workouts, diet, and gym equipment.",
+            "title": "AI Coach",
+            "subtitle": "Your 24/7 personal fitness assistant",
+            "introTitle": "Hello! I am your AI Coach.",
+            "introDesc": "I'm here to help you with your goals, answer questions about exercises, nutrition, and keep you motivated.",
+            "placeholder": "Type your question here...",
+            "prompts": {
+                "routine": "Give me a 20-minute HIIT routine",
+                "snack": "What are good post-workout snacks?",
+                "progressive": "Explain progressive overload",
+                "motivate": "Motivate me to workout today",
+                "sets": "Difference between sets and reps"
+            }
         },
         "membershipCard": {
             "dynamicAccessCode": "DYNAMIC ACCESS CODE",
@@ -278,6 +306,17 @@
             "confirmApply": "Are you sure you want to apply template \"{{name}}\"? This will overwrite the current routine.",
             "addExercise": "Add New Exercise",
             "restDayText": "Add an exercise to start."
+        },
+        "profile": {
+            "title": "My Profile",
+            "edit": "Edit Profile",
+            "skills": "Professional Skills"
+        },
+        "history": {
+            "title": "Workout History",
+            "notes": "Trainer Notes",
+            "addNote": "Add a note about this session...",
+            "noHistory": "No workout history recorded yet."
         }
     },
     "components": {
@@ -310,6 +349,7 @@
             "passwordErrorCurrent": "Current password is incorrect.",
             "passwordErrorMatch": "New passwords do not match.",
             "passwordErrorLength": "New password must be at least 8 characters.",
+            "authErrorLogin": "You must be logged in.",
             "currentPassword": "Current Password",
             "newPassword": "New Password",
             "confirmNewPassword": "Confirm New Password",
@@ -341,7 +381,11 @@
             "deactivateAccount": "Deactivate Account",
             "deactivateAccountDesc": "This action is permanent and cannot be undone.",
             "deactivate": "Deactivate",
-            "confirmDeactivation": "Are you sure you want to deactivate your account? This action is permanent and cannot be undone."
+            "confirmDeactivation": "Are you sure you want to deactivate your account? This action is permanent and cannot be undone.",
+            "resetUsers": "Reset Demo Users",
+            "resetUsersDesc": "Restore user list to initial state. All custom users will be lost.",
+            "confirmResetUsers": "Are you sure? This will delete all created users and reset modifications to default users.",
+            "reset": "Reset"
         },
         "reportIncidentModal": {
             "title": "Report Equipment Problem",
@@ -357,7 +401,9 @@
             "searchUser": "Search for a user...",
             "send": "Send",
             "successMessage_one": "Routine sent to {{count}} user!",
-            "successMessage_other": "Routine sent to {{count}} users!"
+            "successMessage_other": "Routine sent to {{count}} users!",
+            "messageIntro": "Here is a routine for you:",
+            "defaultRoutineName": "Your Personalized Routine"
         },
         "messagingView": {
             "title": "Community Chat",
@@ -405,6 +451,93 @@
                 "cancel": "Cancel"
             },
             "confirmDelete": "Are you sure you want to delete this item?"
+        },
+        "classSchedule": {
+            "calendar": "Calendar View",
+            "list": "List View",
+            "allTrainers": "All Trainers",
+            "more": "more",
+            "today": "Today",
+            "modal": {
+                "edit": "Edit Class",
+                "new": "New Class",
+                "desc": "Define session details.",
+                "name": "Class Name",
+                "description": "Description",
+                "trainer": "Trainer",
+                "date": "Date",
+                "capacity": "Max Capacity",
+                "start": "Start Time",
+                "end": "End Time",
+                "namePlaceholder": "e.g. Morning Yoga",
+                "descPlaceholder": "Class details..."
+            }
+        },
+        "booking": {
+            "title": "Class Schedule",
+            "subtitle": "Book your spot and reach your goals.",
+            "filters": "Filters",
+            "allTrainers": "All Trainers",
+            "anyTime": "Any Time",
+            "morning": "Morning (< 12pm)",
+            "afternoon": "Afternoon (12pm - 5pm)",
+            "evening": "Evening (> 5pm)",
+            "today": "Today",
+            "noClasses": "No classes scheduled.",
+            "noClassesHint": "Try changing filters or select another day.",
+            "intensity": "Intensity",
+            "spots": "Spots",
+            "booked": "Booked",
+            "full": "Class Full",
+            "reserve": "Book Now"
+        },
+        "workout": {
+            "restDayTitle": "Happy Rest Day!",
+            "restDayDesc": "No workout scheduled for today. Enjoy your recovery.",
+            "freeWorkout": "Log Freestyle Workout",
+            "freeTitle": "Freestyle Workout",
+            "logTitle": "Log Workout",
+            "addExercise": "Add Exercise",
+            "target": "Target",
+            "finish": "Finish Workout 🎉",
+            "rest": "Rest"
+        },
+        "progress": {
+            "title": "My Progress",
+            "select": "Select an exercise to view progress:",
+            "maxWeight": "Max Weight Lifted (kg)",
+            "volume": "Total Volume (kg)",
+            "noDataTitle": "No Progress Data",
+            "noDataDesc": "Log your first workout to start tracking your progress!"
+        },
+        "nutrition": {
+            "title": "AI Nutrition Log",
+            "whatAte": "What did you eat?",
+            "desc": "Describe your meal and AI will calculate macros and calories.",
+            "placeholder": "e.g., 200g grilled chicken breast with a cup of rice and avocado.",
+            "analyze": "Analyze Meal",
+            "analyzing": "Analyzing...",
+            "history": "Recent History",
+            "estCalories": "Est. Calories",
+            "noLogs": "No logs yet."
+        },
+        "challenges": {
+            "title": "Gym Challenges",
+            "join": "Join",
+            "myProgress": "My Progress",
+            "leaderboard": "Leaderboard",
+            "modal": {
+                "new": "New Challenge",
+                "edit": "Edit Challenge",
+                "name": "Name",
+                "desc": "Description",
+                "goal": "Goal",
+                "unit": "Unit",
+                "start": "Start Date",
+                "end": "End Date",
+                "save": "Save Challenge",
+                "cancel": "Cancel"
+            }
         }
     },
     "admin": {
@@ -493,13 +626,14 @@
                 "membership": "Membership",
                 "health": "Health",
                 "professional": "Professional",
-                "emergency": "Emergency"
+                "security": "Security"
             },
             "selectPlaceholder": "Select...",
             "emailCannotBeChanged": "Email cannot be changed.",
             "emergencyContact": "Emergency Contact",
             "contactName": "Contact Name",
-            "contactPhone": "Contact Phone"
+            "contactPhone": "Contact Phone",
+            "leaveBlank": "Leave blank if you don't want to change it."
         },
         "userDetailsModal": {
             "keyInfo": "Key Information",
@@ -542,7 +676,9 @@
             "selectGender": "Select...",
             "age": "Age",
             "contactName": "Contact Name",
-            "contactPhone": "Contact Phone"
+            "contactPhone": "Contact Phone",
+            "skills": "Skills",
+            "commaSeparated": "Separate skills with a comma."
         },
         "finances": {
             "title": "Financial Dashboard",
@@ -591,6 +727,8 @@
         "noMembersFound": "No members found.",
         "noClassesToday": "No classes today.",
         "noCheckInsYet": "No check-ins yet.",
+        "wrongStatusAlert": "{{name}} has an {{status}} membership!",
+        "welcomeMsg": "Welcome to the gym, {{name}}!",
         "nav": {
             "checkIn": "Check-In",
             "members": "Members",
@@ -653,6 +791,7 @@
         "noneReported": "None reported",
         "noNotesYet": "No notes yet.",
         "addNotePlaceholder": "Add a new progress note...",
+        "manageRecovery": "Manage Recovery",
         "nav": {
             "patients": "Patients",
             "notes": "Notes"

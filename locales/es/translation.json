@@ -32,7 +32,12 @@
         "emergencyContact": "Contacto de Emergencia",
         "birthDate": "Fecha de Nacimiento",
         "manage": "Gestionar",
-        "create": "Crear"
+        "create": "Crear",
+        "gender": "Género",
+        "age": "Edad",
+        "password": "Contraseña",
+        "apply": "Aplicar",
+        "clear": "Limpiar"
     },
     "toast": {
         "welcome": "Bienvenido, {{name}}",
@@ -46,6 +51,7 @@
         "userDeleted": "Usuario eliminado",
         "userUnblocked": "Usuario desbloqueado",
         "userBlocked": "Usuario bloqueado",
+        "usersReset": "Usuarios restablecidos correctamente",
         "routineTemplateCreated": "Plantilla de rutina creada",
         "routineTemplateUpdated": "Plantilla de rutina actualizada",
         "routineTemplateDeleted": "Plantilla de rutina eliminada",
@@ -148,8 +154,18 @@
     "login": {
         "subtitle": "Selecciona un rol para iniciar sesión a modo de prueba.",
         "loginAs": "Iniciar sesión como {{role}}",
+        "joinAs": "Unirse como {{role}}",
         "staffOperational": "Personal Operativo y de Servicio",
-        "staffHealth": "Personal Especializado en Salud y Bienestar"
+        "staffHealth": "Personal Especializado en Salud y Bienestar",
+        "errorMissingFields": "Todos los campos son requeridos.",
+        "errorUnexpected": "Ocurrió un error inesperado.",
+        "createAccountDesc": "Crea tu cuenta para empezar.",
+        "createAccount": "Crear Cuenta",
+        "demoAccess": "Acceso Demo",
+        "dontHaveAccount": "¿No tienes cuenta?",
+        "alreadyHaveAccount": "¿Ya tienes cuenta?",
+        "signup": "Regístrate",
+        "login": "Inicia sesión"
     },
     "placeholders": {
         "dashboardComingSoon": "¡El panel de control llegará pronto!",
@@ -229,7 +245,19 @@
             "notSpecified": "No especificado"
         },
         "aiCoach": {
-            "systemInstruction": "Eres un experto entrenador personal y nutricionista IA para GymPro. Sé alentador, conciso y servicial. Responde preguntas sobre entrenamientos, dieta y equipamiento de gimnasio."
+            "systemInstruction": "Eres un experto entrenador personal y nutricionista IA para GymPro. Sé alentador, conciso y servicial. Responde preguntas sobre entrenamientos, dieta y equipamiento de gimnasio.",
+            "title": "Entrenador IA",
+            "subtitle": "Tu asistente personal de fitness 24/7",
+            "introTitle": "¡Hola! Soy tu Entrenador IA.",
+            "introDesc": "Estoy aquí para ayudarte con tus metas, responder dudas sobre ejercicios, nutrición y mantenerte motivado.",
+            "placeholder": "Escribe tu pregunta aquí...",
+            "prompts": {
+                "routine": "Dame una rutina de HIIT de 20 minutos",
+                "snack": "¿Cuáles son buenos snacks post-entreno?",
+                "progressive": "Explícame la sobrecarga progresiva",
+                "motivate": "Motívame para entrenar hoy",
+                "sets": "Diferencia entre series y repeticiones"
+            }
         },
         "membershipCard": {
             "dynamicAccessCode": "CÓDIGO DE ACCESO DINÁMICO",
@@ -278,6 +306,17 @@
             "confirmApply": "¿Estás seguro de que quieres aplicar la plantilla \"{{name}}\"? Esto sobrescribirá la rutina actual.",
             "addExercise": "Añadir Nuevo Ejercicio",
             "restDayText": "Añade un ejercicio para empezar."
+        },
+        "profile": {
+            "title": "Mi Perfil",
+            "edit": "Editar Perfil",
+            "skills": "Habilidades Profesionales"
+        },
+        "history": {
+            "title": "Historial de Entrenamientos",
+            "notes": "Notas del Entrenador",
+            "addNote": "Añade una nota sobre esta sesión...",
+            "noHistory": "Aún no se ha registrado ningún historial de entrenamiento."
         }
     },
     "components": {
@@ -310,6 +349,7 @@
             "passwordErrorCurrent": "La contraseña actual es incorrecta.",
             "passwordErrorMatch": "Las nuevas contraseñas no coinciden.",
             "passwordErrorLength": "La nueva contraseña debe tener al menos 8 caracteres.",
+            "authErrorLogin": "Debes iniciar sesión.",
             "currentPassword": "Contraseña Actual",
             "newPassword": "Nueva Contraseña",
             "confirmNewPassword": "Confirmar Nueva Contraseña",
@@ -341,7 +381,11 @@
             "deactivateAccount": "Desactivar Cuenta",
             "deactivateAccountDesc": "Esta acción es permanente y no se puede deshacer.",
             "deactivate": "Desactivar",
-            "confirmDeactivation": "¿Estás seguro de que quieres desactivar tu cuenta? Esta acción es permanente y no se puede deshacer."
+            "confirmDeactivation": "¿Estás seguro de que quieres desactivar tu cuenta? Esta acción es permanente y no se puede deshacer.",
+            "resetUsers": "Restablecer Usuarios de Prueba",
+            "resetUsersDesc": "Restaurar lista de usuarios al estado inicial. Se perderán los usuarios creados.",
+            "confirmResetUsers": "¿Estás seguro? Esto eliminará todos los usuarios creados y restablecerá las modificaciones de los usuarios por defecto.",
+            "reset": "Restablecer"
         },
         "reportIncidentModal": {
             "title": "Reportar Problema de Equipo",
@@ -357,7 +401,9 @@
             "searchUser": "Buscar un usuario...",
             "send": "Enviar",
             "successMessage_one": "¡Rutina enviada a {{count}} usuario!",
-            "successMessage_other": "¡Rutina enviada a {{count}} usuarios!"
+            "successMessage_other": "¡Rutina enviada a {{count}} usuarios!",
+            "messageIntro": "Aquí tienes una rutina para ti:",
+            "defaultRoutineName": "Tu Rutina Personalizada"
         },
         "messagingView": {
             "title": "Chat de la Comunidad",
@@ -405,6 +451,93 @@
                 "cancel": "Cancelar"
             },
             "confirmDelete": "¿Estás seguro de que quieres eliminar este equipo?"
+        },
+        "classSchedule": {
+            "calendar": "Vista Calendario",
+            "list": "Vista Lista",
+            "allTrainers": "Todos los Entrenadores",
+            "more": "más",
+            "today": "Hoy",
+            "modal": {
+                "edit": "Editar Clase",
+                "new": "Nueva Clase",
+                "desc": "Define los detalles de la sesión.",
+                "name": "Nombre de la Clase",
+                "description": "Descripción",
+                "trainer": "Entrenador",
+                "date": "Fecha",
+                "capacity": "Capacidad Máxima",
+                "start": "Hora Inicio",
+                "end": "Hora Fin",
+                "namePlaceholder": "ej. Yoga Matutino",
+                "descPlaceholder": "Detalles de la clase..."
+            }
+        },
+        "booking": {
+            "title": "Horario de Clases",
+            "subtitle": "Reserva tu lugar y alcanza tus objetivos.",
+            "filters": "Filtros",
+            "allTrainers": "Todos los Entrenadores",
+            "anyTime": "Cualquier Hora",
+            "morning": "Mañana (Antes 12pm)",
+            "afternoon": "Tarde (12pm - 5pm)",
+            "evening": "Noche (Después 5pm)",
+            "today": "Hoy",
+            "noClasses": "Sin clases programadas.",
+            "noClassesHint": "Intenta cambiar los filtros o selecciona otro día.",
+            "intensity": "Intensidad",
+            "spots": "Lugares",
+            "booked": "Reservado",
+            "full": "Clase Llena",
+            "reserve": "Reservar Ahora"
+        },
+        "workout": {
+            "restDayTitle": "¡Feliz Día de Descanso!",
+            "restDayDesc": "No hay entrenamiento programado para hoy. Disfruta tu recuperación.",
+            "freeWorkout": "Registrar Entrenamiento Libre",
+            "freeTitle": "Entrenamiento Libre",
+            "logTitle": "Registrar Entrenamiento",
+            "addExercise": "Añadir Ejercicio",
+            "target": "Objetivo",
+            "finish": "Finalizar Entrenamiento 🎉",
+            "rest": "Descanso"
+        },
+        "progress": {
+            "title": "Mi Progreso",
+            "select": "Selecciona un ejercicio para ver el progreso:",
+            "maxWeight": "Peso Máximo Levantado (kg)",
+            "volume": "Volumen Total (kg)",
+            "noDataTitle": "Sin Datos de Progreso",
+            "noDataDesc": "¡Registra tu primer entrenamiento para empezar a seguir tu progreso!"
+        },
+        "nutrition": {
+            "title": "Registro Nutricional IA",
+            "whatAte": "¿Qué comiste?",
+            "desc": "Describe tu comida y la IA calculará macros y calorías.",
+            "placeholder": "p. ej., 200g de pechuga de pollo a la parrilla con una taza de arroz y aguacate.",
+            "analyze": "Analizar Comida",
+            "analyzing": "Analizando...",
+            "history": "Historial Reciente",
+            "estCalories": "Calorías Est.",
+            "noLogs": "No hay registros aún."
+        },
+        "challenges": {
+            "title": "Desafíos del Gimnasio",
+            "join": "Unirse",
+            "myProgress": "Mi Progreso",
+            "leaderboard": "Tabla de Clasificación",
+            "modal": {
+                "new": "Nuevo Desafío",
+                "edit": "Editar Desafío",
+                "name": "Nombre",
+                "desc": "Descripción",
+                "goal": "Meta",
+                "unit": "Unidad",
+                "start": "Fecha de Inicio",
+                "end": "Fecha de Fin",
+                "save": "Guardar Desafío",
+                "cancel": "Cancelar"
+            }
         }
     },
     "admin": {
@@ -493,13 +626,14 @@
                 "membership": "Membresía",
                 "health": "Salud",
                 "professional": "Profesional",
-                "emergency": "Emergencia"
+                "security": "Seguridad"
             },
             "selectPlaceholder": "Seleccionar...",
             "emailCannotBeChanged": "El email no se puede cambiar.",
             "emergencyContact": "Contacto de Emergencia",
             "contactName": "Nombre del Contacto",
-            "contactPhone": "Teléfono del Contacto"
+            "contactPhone": "Teléfono del Contacto",
+            "leaveBlank": "Dejar en blanco si no se desea cambiar."
         },
         "userDetailsModal": {
             "keyInfo": "Información Clave",
@@ -542,7 +676,9 @@
             "selectGender": "Seleccionar...",
             "age": "Edad",
             "contactName": "Nombre del Contacto",
-            "contactPhone": "Teléfono del Contacto"
+            "contactPhone": "Teléfono del Contacto",
+            "skills": "Habilidades",
+            "commaSeparated": "Separa las habilidades con una coma."
         },
         "finances": {
             "title": "Panel Financiero",
@@ -591,6 +727,8 @@
         "noMembersFound": "No se encontraron miembros.",
         "noClassesToday": "No hay clases hoy.",
         "noCheckInsYet": "No hay check-ins todavía.",
+        "wrongStatusAlert": "¡{{name}} tiene una membresía {{status}}!",
+        "welcomeMsg": "¡Bienvenido al gimnasio, {{name}}!",
         "nav": {
             "checkIn": "Check-In",
             "members": "Miembros",
@@ -653,6 +791,7 @@
         "noneReported": "Ninguna reportada",
         "noNotesYet": "No hay notas aún.",
         "addNotePlaceholder": "Añadir nueva nota de progreso...",
+        "manageRecovery": "Gestionar Recuperación",
         "nav": {
             "patients": "Pacientes",
             "notes": "Notas"
