@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useContext, useEffect } from 'react';
 import { User, Role, MembershipStatus, SortConfig, FitnessLevel, MembershipTier } from '../../types';
 import { AuthContext } from '../../context/AuthContext';
@@ -15,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { Skeleton } from '../shared/Skeleton';
 import { EmptyState } from '../shared/EmptyState';
 import { ConfirmationModal } from '../shared/ConfirmationModal';
+import { UserDetailsModal } from './UserDetailsModal';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -56,18 +56,22 @@ const exportToCSV = (users: User[], headers: {key: string, label: string}[], fil
 interface UserManagementProps {
     initialFilter: DashboardFilter | null;
     onFilterClear: () => void;
-    onViewUserDetails: (user: User) => void;
+    initialUser?: User | null;
 }
 
-const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilterClear, onViewUserDetails }) => {
+const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilterClear, initialUser }) => {
     const { t } = useTranslation();
     const { users, addUser, updateUser, deleteUser } = useContext(AuthContext);
     const [activeTab, setActiveTab] = useState<UserTab>(Role.CLIENT);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<SortConfig | null>({ key: 'joinDate', direction: 'descending' });
     const [currentPage, setCurrentPage] = useState(1);
+    
+    // Modal states
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [viewingUser, setViewingUser] = useState<User | null>(null);
+
     const [statusFilter, setStatusFilter] = useState<MembershipStatus | null>(null);
     const [trainerFilter, setTrainerFilter] = useState<string | null>(null);
     const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
@@ -77,6 +81,26 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
         id?: string;
         isBulk?: boolean;
     }>({ isOpen: false });
+
+    // Handle initial user passed from dashboard
+    useEffect(() => {
+        if (initialUser) {
+            setViewingUser(initialUser);
+        }
+    }, [initialUser]);
+
+    // Live Sync: Keep viewingUser updated if global user data changes
+    useEffect(() => {
+        if (viewingUser) {
+            const updatedUser = users.find(u => u.id === viewingUser.id);
+            if (updatedUser) {
+                setViewingUser(updatedUser);
+            } else {
+                // User might have been deleted
+                setViewingUser(null);
+            }
+        }
+    }, [users, viewingUser?.id]);
 
     // Simulate loading delay
     useEffect(() => {
@@ -194,6 +218,15 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
         setDeleteConfirmation({ isOpen: true, isBulk: true });
     };
 
+    const handleViewUserDetails = (user: User) => {
+        setViewingUser(user);
+    };
+
+    const handleEditFromDetails = (user: User) => {
+        setViewingUser(null);
+        handleOpenModal(user);
+    }
+
     const headers = activeTab === Role.CLIENT ? [
         { key: 'name', label: t('admin.userManagement.headers.user') }, { key: 'membership.status', label: t('admin.userManagement.headers.status') },
         { key: 'trainerIds', label: t('admin.userManagement.headers.trainers') }, { key: 'joinDate', label: t('admin.userManagement.headers.joinDate') },
@@ -282,7 +315,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
                                 </tr>
                             ))
                         ) : paginatedUsers.length > 0 ? (
-                             paginatedUsers.map(user => <UserRow key={user.id} user={user} trainers={trainers} onEdit={handleOpenModal} onDelete={handleDeleteUser} onSelect={handleSelectRow} isSelected={selectedUserIds.includes(user.id)} onViewDetails={onViewUserDetails} isClientTab={activeTab === Role.CLIENT} />)
+                             paginatedUsers.map(user => <UserRow key={user.id} user={user} trainers={trainers} onEdit={handleOpenModal} onDelete={handleDeleteUser} onSelect={handleSelectRow} isSelected={selectedUserIds.includes(user.id)} onViewDetails={handleViewUserDetails} isClientTab={activeTab === Role.CLIENT} />)
                         ) : (
                             <tr>
                                 <td colSpan={headers.length + 1} className="p-8">
@@ -307,8 +340,11 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
                     <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded disabled:opacity-50">{t('admin.userManagement.next')}</button>
                 </div>
             </div>
+             
              {isModalOpen && <UserModal user={selectedUser} activeTab={activeTab} trainers={trainers} onSave={handleSaveUser} onClose={handleCloseModal} />}
              
+             {viewingUser && <UserDetailsModal user={viewingUser} allUsers={users} onClose={() => setViewingUser(null)} onEdit={handleEditFromDetails} />}
+
              <ConfirmationModal 
                 isOpen={deleteConfirmation.isOpen}
                 onClose={() => setDeleteConfirmation({ ...deleteConfirmation, isOpen: false })}
