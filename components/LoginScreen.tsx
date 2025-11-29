@@ -16,8 +16,9 @@ const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  // Default to CLIENT for new registrations
-  const [role, setRole] = useState<Role>(Role.CLIENT);
+  
+  // Default to CLIENT for new registrations, no UI to change it
+  const role = Role.CLIENT;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +39,7 @@ const LoginScreen: React.FC = () => {
           return;
         }
         // Always registers as Role.CLIENT
-        result = await register({ name, email, password, role: Role.CLIENT });
+        result = await register({ name, email, password, role });
       }
 
       if (result) {
@@ -57,7 +58,6 @@ const LoginScreen: React.FC = () => {
     setEmail('');
     setPassword('');
     setName('');
-    setRole(Role.CLIENT);
   }
   
   const fillDemoCredentials = (demoEmail: string, demoPass: string) => {
@@ -95,7 +95,7 @@ const LoginScreen: React.FC = () => {
                 onChange={(e) => setName(e.target.value)}
                 required={!isLoginView}
                 className="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary dark:text-white"
-                placeholder="John Doe"
+                placeholder="Juan Pérez"
               />
             </div>
           )}
@@ -110,7 +110,7 @@ const LoginScreen: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary dark:text-white"
-              placeholder="name@example.com"
+              placeholder="nombre@ejemplo.com"
             />
           </div>
           <div>

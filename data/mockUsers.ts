@@ -128,25 +128,7 @@ const STAFF: User[] = [
     }
 ];
 
-export const MOCK_USERS: User[] = [
-    {
-        id: '1',
-        name: 'Administrador Principal',
-        email: 'admin@gympro.com',
-        password: 'password123',
-        phone: '300-123-4567',
-        avatarUrl: 'https://ui-avatars.com/api/?name=Admin+Gym&background=0D8ABC&color=fff',
-        role: Role.ADMIN,
-        joinDate: '2023-01-01',
-        membership: { status: MembershipStatus.ACTIVE, startDate: '2024-01-01', endDate: '2030-01-01' },
-        birthDate: '1980-01-01',
-        age: 44,
-        gender: 'Masculino',
-        notificationPreferences: defaultPrefs, privacySettings: defaultPrivacy
-    },
-    ...TRAINERS,
-    ...STAFF,
-    // Clients
+const STATIC_CLIENTS: User[] = [
     {
         id: '2',
         name: 'Samantha Williams',
@@ -156,7 +138,7 @@ export const MOCK_USERS: User[] = [
         avatarUrl: 'https://randomuser.me/api/portraits/women/12.jpg',
         role: Role.CLIENT,
         joinDate: '2023-06-15',
-        membership: { status: MembershipStatus.ACTIVE, startDate: '2024-06-15', endDate: '2025-06-15', tierId: 'tier2' },
+        membership: { status: MembershipStatus.ACTIVE, startDate: '2024-06-15', endDate: '2025-06-15', tierId: 'tier_premium' },
         trainerIds: ['t1', 't2'],
         assignedRoutines: [{ trainerId: 't1', routine: ROUTINE_A }],
         fitnessGoals: 'Tonificar y mejorar resistencia cardiovascular.',
@@ -177,7 +159,7 @@ export const MOCK_USERS: User[] = [
         avatarUrl: 'https://randomuser.me/api/portraits/men/45.jpg',
         role: Role.CLIENT,
         joinDate: '2023-02-10',
-        membership: { status: MembershipStatus.EXPIRED, startDate: '2023-02-10', endDate: '2024-02-10', tierId: 'tier3' },
+        membership: { status: MembershipStatus.EXPIRED, startDate: '2023-02-10', endDate: '2024-02-10', tierId: 'tier_basic' },
         trainerIds: ['t3'],
         fitnessGoals: 'Ganar masa muscular (Hipertrofia).',
         height: 178, weight: 85, fitnessLevel: FitnessLevel.ADVANCED,
@@ -195,7 +177,7 @@ export const MOCK_USERS: User[] = [
         avatarUrl: 'https://randomuser.me/api/portraits/women/90.jpg',
         role: Role.CLIENT,
         joinDate: '2024-05-01',
-        membership: { status: MembershipStatus.PENDING, startDate: '2024-05-01', endDate: '2025-05-01', tierId: 'tier1' },
+        membership: { status: MembershipStatus.PENDING, startDate: '2024-05-01', endDate: '2025-05-01', tierId: 'tier_week' },
         trainerIds: [],
         fitnessGoals: 'Bajar de peso post-embarazo.',
         height: 160, weight: 70, fitnessLevel: FitnessLevel.BEGINNER,
@@ -212,7 +194,7 @@ export const MOCK_USERS: User[] = [
         avatarUrl: 'https://randomuser.me/api/portraits/men/11.jpg',
         role: Role.CLIENT,
         joinDate: '2023-11-20',
-        membership: { status: MembershipStatus.ACTIVE, startDate: '2023-11-20', endDate: '2024-11-20', tierId: 'tier2' },
+        membership: { status: MembershipStatus.ACTIVE, startDate: '2023-11-20', endDate: '2024-11-20', tierId: 'tier_elite' },
         trainerIds: ['t1'],
         fitnessGoals: 'Preparación física para fútbol.',
         height: 175, weight: 72, fitnessLevel: FitnessLevel.INTERMEDIATE,
@@ -220,4 +202,71 @@ export const MOCK_USERS: User[] = [
         workoutHistory: [], nutritionLogs: [],
         notificationPreferences: defaultPrefs, privacySettings: defaultPrivacy
     }
+];
+
+// Generator for additional users to simulate high traffic and profit
+const generateUsers = (count: number): User[] => {
+    const firstNames = ['Alejandro', 'Sofia', 'Mateo', 'Valentina', 'Santiago', 'Isabella', 'Sebastian', 'Camila', 'Nicolas', 'Mariana', 'Daniel', 'Gabriela', 'Samuel', 'Daniela', 'Lucas', 'Valeria'];
+    const lastNames = ['Garcia', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Perez', 'Sanchez', 'Ramirez', 'Torres', 'Flores', 'Rivera', 'Gomez', 'Diaz', 'Reyes'];
+    
+    const users: User[] = [];
+    
+    for (let i = 0; i < count; i++) {
+        const fn = firstNames[Math.floor(Math.random() * firstNames.length)];
+        const ln = lastNames[Math.floor(Math.random() * lastNames.length)];
+        const gender = Math.random() > 0.5 ? 'Masculino' : 'Femenino';
+        const tier = MOCK_TIERS[Math.floor(Math.random() * MOCK_TIERS.length)];
+        const status = Math.random() > 0.15 ? MembershipStatus.ACTIVE : (Math.random() > 0.5 ? MembershipStatus.EXPIRED : MembershipStatus.PENDING);
+        
+        users.push({
+            id: `gen_${i}`,
+            name: `${fn} ${ln}`,
+            email: `${fn.toLowerCase()}.${ln.toLowerCase()}${i}@example.com`,
+            password: 'password123',
+            phone: `300-${Math.floor(Math.random()*1000)}-${Math.floor(Math.random()*10000)}`,
+            avatarUrl: `https://randomuser.me/api/portraits/${gender === 'Masculino' ? 'men' : 'women'}/${Math.floor(Math.random()*90)}.jpg`,
+            role: Role.CLIENT,
+            joinDate: new Date(Date.now() - Math.floor(Math.random() * 365 * 24 * 60 * 60 * 1000)).toISOString(),
+            membership: {
+                status: status,
+                startDate: new Date().toISOString(),
+                endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                tierId: tier.id
+            },
+            trainerIds: Math.random() > 0.7 ? ['t1', 't2', 't3'][Math.floor(Math.random() * 3)] as any : [],
+            birthDate: '1995-01-01', // Generic for generated users
+            age: 29,
+            gender: gender as any,
+            notificationPreferences: defaultPrefs,
+            privacySettings: defaultPrivacy,
+            workoutHistory: [],
+            nutritionLogs: []
+        });
+    }
+    return users;
+};
+
+// Generate 250 users to ensure profitability charts look good
+const GENERATED_USERS = generateUsers(250);
+
+export const MOCK_USERS: User[] = [
+    {
+        id: '1',
+        name: 'Administrador Principal',
+        email: 'admin@gympro.com',
+        password: 'password123',
+        phone: '300-123-4567',
+        avatarUrl: 'https://ui-avatars.com/api/?name=Admin+Gym&background=0D8ABC&color=fff',
+        role: Role.ADMIN,
+        joinDate: '2023-01-01',
+        membership: { status: MembershipStatus.ACTIVE, startDate: '2024-01-01', endDate: '2030-01-01' },
+        birthDate: '1980-01-01',
+        age: 44,
+        gender: 'Masculino',
+        notificationPreferences: defaultPrefs, privacySettings: defaultPrivacy
+    },
+    ...TRAINERS,
+    ...STAFF,
+    ...STATIC_CLIENTS,
+    ...GENERATED_USERS
 ];

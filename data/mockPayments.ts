@@ -9,58 +9,67 @@ const generateHistoricalPayments = () => {
     const clients = MOCK_USERS.filter(user => user.role === 'CLIENT');
 
     clients.forEach((client, index) => {
-        const tier = MOCK_TIERS.find(t => t.id === client.membership.tierId);
-        if (!tier) return;
+        const tier = MOCK_TIERS.find(t => t.id === client.membership.tierId) || MOCK_TIERS[3]; // Default to basic if undefined
 
-        // Current payment (based on status)
+        // Determine current month status
         let currentStatus = PaymentStatus.COMPLETED;
         if (client.membership.status === MembershipStatus.PENDING) currentStatus = PaymentStatus.PENDING;
         if (client.membership.status === MembershipStatus.EXPIRED) currentStatus = PaymentStatus.FAILED;
 
+        // Current Month Payment
         payments.push({
-            id: `p-${client.id}-current`,
+            id: `p-${client.id}-curr`,
             userId: client.id,
             amount: tier.price,
-            date: new Date().toISOString(), // Today
+            date: new Date().toISOString(),
             status: currentStatus,
             tierId: tier.id,
-            paymentMethod: PaymentMethod.CARD
+            paymentMethod: index % 3 === 0 ? PaymentMethod.CARD : (index % 2 === 0 ? PaymentMethod.TRANSFER : PaymentMethod.CASH),
+            description: `Membresía ${tier.name}`
         });
 
-        // Historical payments (simulate last 3 months if active)
-        if (client.membership.status === MembershipStatus.ACTIVE) {
-            for (let i = 1; i <= 3; i++) {
+        // Historical payments (Last 5 months for everyone to make charts look busy)
+        // In a real app, check joinDate, but for demo, we want full charts.
+        if (client.membership.status === MembershipStatus.ACTIVE || client.membership.status === MembershipStatus.EXPIRED) {
+            for (let i = 1; i <= 5; i++) {
                 const pastDate = new Date();
                 pastDate.setMonth(pastDate.getMonth() - i);
-                // Randomize day slightly
-                pastDate.setDate(Math.max(1, pastDate.getDate() - Math.floor(Math.random() * 5)));
+                pastDate.setDate(Math.max(1, pastDate.getDate() - Math.floor(Math.random() * 15))); // Spread dates
                 
+                // Add some randomness to payment success history
+                const histStatus = Math.random() > 0.05 ? PaymentStatus.COMPLETED : PaymentStatus.FAILED;
+
                 payments.push({
                     id: `p-${client.id}-hist-${i}`,
                     userId: client.id,
                     amount: tier.price,
                     date: pastDate.toISOString(),
-                    status: PaymentStatus.COMPLETED,
+                    status: histStatus,
                     tierId: tier.id,
-                    paymentMethod: i % 2 === 0 ? PaymentMethod.TRANSFER : PaymentMethod.CASH
+                    paymentMethod: Math.random() > 0.6 ? PaymentMethod.CARD : PaymentMethod.TRANSFER,
+                    description: `Membresía ${tier.name}`
                 });
             }
         }
     });
 
-    // Add some random POS sales
-    for (let i = 0; i < 10; i++) {
+    // Add POS sales (high volume)
+    for (let i = 0; i < 150; i++) {
         const date = new Date();
-        date.setDate(date.getDate() - Math.floor(Math.random() * 30)); // Random day in last month
+        date.setMonth(date.getMonth() - Math.floor(Math.random() * 6)); // Spread over 6 months
+        date.setDate(Math.floor(Math.random() * 28) + 1);
+        
+        const randomClient = clients[Math.floor(Math.random() * clients.length)];
+        
         payments.push({
             id: `pos-${i}`,
-            userId: clients[Math.floor(Math.random() * clients.length)].id,
-            amount: Math.floor(Math.random() * 50000) + 5000, // Random amount 5k - 55k
+            userId: randomClient.id,
+            amount: Math.floor(Math.random() * 45000) + 5000, // 5k - 50k
             date: date.toISOString(),
             status: PaymentStatus.COMPLETED,
             tierId: 'POS_SALE',
-            description: 'Compra en Tienda (Agua/Snack)',
-            paymentMethod: PaymentMethod.CASH
+            description: 'Venta Tienda / Cafetería',
+            paymentMethod: Math.random() > 0.5 ? PaymentMethod.CASH : PaymentMethod.CARD
         });
     }
 
