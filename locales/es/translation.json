@@ -201,6 +201,21 @@
         "communication": "Comunicación"
     },
     "admin": {
+        "sidebar": {
+            "dashboard": "Panel de Control",
+            "userManagement": "Usuarios",
+            "reports": "Reportes",
+            "finances": "Finanzas",
+            "classSchedule": "Clases",
+            "announcements": "Anuncios",
+            "challenges": "Desafíos",
+            "equipment": "Equipos",
+            "membershipTiers": "Membresías",
+            "routineTemplates": "Plantillas",
+            "appSettings": "Configuración App",
+            "notifications": "Notificaciones",
+            "mySettings": "Mis Ajustes"
+        },
         "dashboard": {
             "title": "Panel de Administrador",
             "userManagement": "Gestión de Usuarios",

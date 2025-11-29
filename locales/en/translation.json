@@ -201,6 +201,21 @@
         "communication": "Communication"
     },
     "admin": {
+        "sidebar": {
+            "dashboard": "Dashboard",
+            "userManagement": "Users",
+            "reports": "Reports",
+            "finances": "Finances",
+            "classSchedule": "Classes",
+            "announcements": "Announcements",
+            "challenges": "Challenges",
+            "equipment": "Equipment",
+            "membershipTiers": "Memberships",
+            "routineTemplates": "Templates",
+            "appSettings": "App Settings",
+            "notifications": "Notifications",
+            "mySettings": "My Settings"
+        },
         "dashboard": {
             "title": "Admin Dashboard",
             "userManagement": "User Management",
@@ -482,7 +497,7 @@
                 "routine": "Give me a 20-minute HIIT routine",
                 "snack": "What are good post-workout snacks?",
                 "progressive": "Explain progressive overload",
-                "motivate": "Motivate me to workout today",
+                "motivate": "Motívame para entrenar hoy",
                 "sets": "Difference between sets and reps"
             }
         },
