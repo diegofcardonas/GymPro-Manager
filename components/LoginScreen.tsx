@@ -16,6 +16,7 @@ const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  // Default to CLIENT for new registrations
   const [role, setRole] = useState<Role>(Role.CLIENT);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,7 +37,8 @@ const LoginScreen: React.FC = () => {
           setIsLoading(false);
           return;
         }
-        result = await register({ name, email, password, role });
+        // Always registers as Role.CLIENT
+        result = await register({ name, email, password, role: Role.CLIENT });
       }
 
       if (result) {
@@ -74,7 +76,7 @@ const LoginScreen: React.FC = () => {
         <div className="text-center">
           <LogoIcon className="w-16 h-16 mx-auto mb-4" />
           <h1 className="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500 dark:from-blue-400 dark:to-teal-300">
-            {isLoginView ? t('general.appName') : t('login.joinAs', { role: '' }).replace('Join as ', 'Join')}
+            {isLoginView ? t('general.appName') : t('login.joinAs', { role: t('roles.CLIENT') })}
           </h1>
           <p className="mt-2 text-gray-600 dark:text-gray-400 text-sm">
             {isLoginView ? t('login.subtitle') : t('login.createAccountDesc')}
@@ -126,27 +128,6 @@ const LoginScreen: React.FC = () => {
             />
           </div>
 
-          {!isLoginView && (
-             <div className="space-y-2">
-                <p className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('general.role')}</p>
-                <div className="grid grid-cols-2 gap-2">
-                    {Object.values(Role).filter(r => r !== Role.ADMIN).map((r) => (
-                        <label key={r} className={`flex items-center justify-center px-3 py-2 border rounded-lg cursor-pointer transition-all text-xs font-semibold ${role === r ? 'bg-primary/10 border-primary text-primary' : 'border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
-                            <input 
-                                type="radio" 
-                                name="role" 
-                                value={r} 
-                                checked={role === r} 
-                                onChange={() => setRole(r)} 
-                                className="hidden" 
-                            />
-                            <span className="capitalize">{t(`roles.${r}`)}</span>
-                        </label>
-                    ))}
-                </div>
-             </div>
-          )}
-
           {error && (
             <div className="p-3 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-lg text-center animate-pulse">
                 {error}
@@ -165,7 +146,7 @@ const LoginScreen: React.FC = () => {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               ) : (
-                  isLoginView ? t('login.loginAs', {role: ''}).replace(' as ', '') : t('login.createAccount')
+                  isLoginView ? t('login.login') : t('login.createAccount')
               )}
             </button>
           </div>
