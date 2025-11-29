@@ -13,6 +13,7 @@ import { ChartBarIcon } from '../icons/ChartBarIcon';
 import { CogIcon } from '../icons/CogIcon';
 import { GoogleGenAI } from '@google/genai';
 import { SparklesAiIcon } from '../icons/SparklesAiIcon';
+import { useTranslation } from 'react-i18next';
 
 type View = 'dashboard' | 'users' | 'reports' | 'app-settings' | 'settings';
 
@@ -51,6 +52,7 @@ const StatCard: React.FC<{
 );
 
 const ExecutiveSummaryCard: React.FC<{ stats: any }> = ({ stats }) => {
+    const { t, i18n } = useTranslation();
     const [summary, setSummary] = useState<string>('');
     const [loading, setLoading] = useState(true);
 
@@ -66,9 +68,22 @@ const ExecutiveSummaryCard: React.FC<{ stats: any }> = ({ stats }) => {
                 setLoading(true);
                 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
                 
-                const prompt = `
-                    Act as a senior business analyst for a gym called "GymPro".
-                    Analyze these real-time metrics and generate a concise, professional, 2-sentence executive summary (in the same language as the prompt):
+                const prompt = i18n.language.startsWith('es') 
+                ? `Actúa como un analista de negocios senior para un gimnasio llamado "GymPro".
+                    Analiza estas métricas en tiempo real y genera un resumen ejecutivo profesional y conciso de 2 oraciones en Español:
+                    
+                    - Clientes Totales: ${stats.totalClients}
+                    - Miembros Activos: ${stats.active}
+                    - Miembros Vencidos (Riesgo de Abandono): ${stats.expired}
+                    - Renovaciones/Inscripciones Pendientes: ${stats.pending}
+                    - Entrenadores: ${stats.totalTrainers}
+                    
+                    Instrucciones:
+                    1. Primera oración: Destaca el indicador clave de rendimiento o estado de crecimiento.
+                    2. Segunda oración: Proporciona una recomendación específica y accionable basada en los datos.
+                    Tono: Alentador pero basado en datos.`
+                : `Act as a senior business analyst for a gym called "GymPro".
+                    Analyze these real-time metrics and generate a concise, professional, 2-sentence executive summary in English:
                     
                     - Total Clients: ${stats.totalClients}
                     - Active Members: ${stats.active}
@@ -78,9 +93,8 @@ const ExecutiveSummaryCard: React.FC<{ stats: any }> = ({ stats }) => {
                     
                     Instructions:
                     1. First sentence: Highlight the key performance indicator or growth status.
-                    2. Second sentence: Provide a specific, actionable recommendation based on the data (e.g., if Expired is high, suggest retention campaigns; if Pending is high, suggest follow-ups).
-                    Tone: Encouraging but data-driven.
-                `;
+                    2. Second sentence: Provide a specific, actionable recommendation based on the data.
+                    Tone: Encouraging but data-driven.`;
 
                 const response = await ai.models.generateContent({
                     model: 'gemini-2.5-flash',
@@ -90,14 +104,14 @@ const ExecutiveSummaryCard: React.FC<{ stats: any }> = ({ stats }) => {
                 setSummary(response.text || "No summary generated.");
             } catch (error) {
                 console.error("AI Summary Error:", error);
-                setSummary("Unable to generate AI summary at this time. Please analyze metrics manually.");
+                setSummary(t('app.aiCoachError'));
             } finally {
                 setLoading(false);
             }
         };
 
         generateSummary();
-    }, [stats.totalClients, stats.active, stats.expired, stats.pending]);
+    }, [stats.totalClients, stats.active, stats.expired, stats.pending, t, i18n.language]);
 
     return (
         <div className="relative rounded-3xl overflow-hidden p-1 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 shadow-xl col-span-1 md:col-span-2">
@@ -107,7 +121,7 @@ const ExecutiveSummaryCard: React.FC<{ stats: any }> = ({ stats }) => {
                 </div>
                 <div className="flex items-center gap-2 mb-3">
                     <SparklesAiIcon className="w-5 h-5 text-purple-500" />
-                    <h3 className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-orange-500 uppercase tracking-wider text-sm">AI Executive Summary</h3>
+                    <h3 className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-orange-500 uppercase tracking-wider text-sm">{t('admin.dashboard.aiSummary')}</h3>
                 </div>
                 {loading ? (
                      <div className="space-y-2 animate-pulse">
@@ -130,6 +144,7 @@ interface DashboardOverviewProps {
 }
 
 const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate, onUserClick }) => {
+    const { t } = useTranslation();
     const { users } = useContext(AuthContext);
 
     const clients = useMemo(() => users.filter(u => u.role === Role.CLIENT), [users]);
@@ -162,7 +177,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate, onUse
                 <ExecutiveSummaryCard stats={stats} />
 
                 <StatCard 
-                    title="Total Members" 
+                    title={t('admin.dashboard.totalMembers')} 
                     value={stats.totalClients} 
                     icon={<UserGroupIcon className="w-6 h-6" />} 
                     trend="+12%"
@@ -171,7 +186,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate, onUse
                 />
                 
                 <StatCard 
-                    title="Active" 
+                    title={t('admin.dashboard.active')} 
                     value={stats.active} 
                     icon={<CheckCircleIcon className="w-6 h-6" />} 
                     colorClass="from-emerald-500 to-green-400"
@@ -181,10 +196,10 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate, onUse
                  {/* Row 2: Main Chart (Spans 2 cols on md, 2 cols 2 rows on lg) & More Stats */}
                 <div className="col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 bg-white/50 dark:bg-gray-800/50 backdrop-blur-md rounded-3xl p-6 border border-white/20 dark:border-gray-700/50 shadow-lg flex flex-col">
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-xl font-bold text-gray-800 dark:text-white">Growth Trends</h3>
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-white">{t('admin.dashboard.growthTrends')}</h3>
                         <select className="bg-transparent text-sm font-medium text-gray-500 dark:text-gray-400 border-none focus:ring-0 cursor-pointer hover:text-primary">
-                            <option>Last 6 Months</option>
-                            <option>This Year</option>
+                            <option>{t('admin.dashboard.last6Months')}</option>
+                            <option>{t('admin.dashboard.thisYear')}</option>
                         </select>
                     </div>
                     <div className="flex-grow min-h-[250px]">
@@ -216,7 +231,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate, onUse
                 </div>
 
                 <StatCard 
-                    title="Trainers" 
+                    title={t('admin.dashboard.trainers')} 
                     value={stats.totalTrainers} 
                     icon={<UserGroupIcon className="w-6 h-6" />} 
                     colorClass="from-purple-500 to-pink-400"
@@ -224,7 +239,7 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate, onUse
                 />
 
                 <StatCard 
-                    title="Pending" 
+                    title={t('admin.dashboard.pending')} 
                     value={stats.pending} 
                     icon={<ClockIcon className="w-6 h-6" />} 
                     colorClass="from-amber-500 to-orange-400"
@@ -236,17 +251,17 @@ const DashboardOverview: React.FC<DashboardOverviewProps> = ({ onNavigate, onUse
                      <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:bg-primary/30 transition-all duration-700"></div>
                      
                      <div className="relative z-10">
-                        <h3 className="text-2xl font-bold mb-2">Quick Actions</h3>
-                        <p className="text-gray-400 text-sm mb-6">Manage your gym efficiently.</p>
+                        <h3 className="text-2xl font-bold mb-2">{t('admin.dashboard.quickActions')}</h3>
+                        <p className="text-gray-400 text-sm mb-6">{t('admin.dashboard.quickActionsDesc')}</p>
                         
                         <div className="grid grid-cols-2 gap-4">
                              <button onClick={() => onNavigate('users')} className="p-4 bg-white/10 hover:bg-white/20 rounded-2xl flex items-center gap-3 transition-all hover:scale-105 backdrop-blur-sm border border-white/5">
                                 <div className="p-2 bg-blue-500/80 rounded-lg"><PlusIcon className="w-5 h-5 text-white"/></div>
-                                <span className="font-medium">Add Member</span>
+                                <span className="font-medium">{t('admin.dashboard.addMember')}</span>
                             </button>
                              <button onClick={() => onNavigate('reports')} className="p-4 bg-white/10 hover:bg-white/20 rounded-2xl flex items-center gap-3 transition-all hover:scale-105 backdrop-blur-sm border border-white/5">
                                 <div className="p-2 bg-purple-500/80 rounded-lg"><ChartBarIcon className="w-5 h-5 text-white"/></div>
-                                <span className="font-medium">Analytics</span>
+                                <span className="font-medium">{t('admin.dashboard.analytics')}</span>
                             </button>
                         </div>
                      </div>

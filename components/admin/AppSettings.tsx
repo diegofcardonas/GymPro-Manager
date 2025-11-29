@@ -1,42 +1,45 @@
+
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const AppSettings: React.FC = () => {
+    const { t } = useTranslation();
     const [maintenanceMode, setMaintenanceMode] = useState(false);
 
     const handleSave = (section: string) => {
-        alert(`Ajustes de ${section} guardados correctamente! (Simulado)`);
+        alert(t('admin.appSettings.successMessage', { section }));
     };
 
     return (
         <div className="w-full max-w-4xl space-y-8">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Ajustes de la Aplicación</h2>
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{t('admin.appSettings.title')}</h2>
             
-            <SettingSection title="Ajustes de Notificación">
-                <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleSave('Notificación'); }}>
+            <SettingSection title={t('admin.appSettings.notifications')}>
+                <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleSave(t('admin.appSettings.notifications')); }}>
                     <div>
-                        <label className="block text-sm font-medium">Plantilla de Email de "Bienvenida"</label>
-                        <textarea rows={4} className="mt-1 block w-full input-style" defaultValue="¡Bienvenido a GymPro, {name}! Estamos encantados de tenerte."></textarea>
+                        <label className="block text-sm font-medium">{t('admin.appSettings.emailTemplate')}</label>
+                        <textarea rows={4} className="mt-1 block w-full input-style" defaultValue={t('admin.appSettings.emailTemplateDefault')}></textarea>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium">Recordatorio de "Membresía a punto de vencer"</label>
-                         <textarea rows={4} className="mt-1 block w-full input-style" defaultValue="Hola {name}, tu membresía vence en {days} días. ¡Renuévala ahora para seguir disfrutando de nuestras instalaciones!"></textarea>
+                        <label className="block text-sm font-medium">{t('admin.appSettings.expiryReminder')}</label>
+                         <textarea rows={4} className="mt-1 block w-full input-style" defaultValue={t('admin.appSettings.expiryReminderDefault')}></textarea>
                     </div>
                     <div className="flex justify-end">
-                        <button type="submit" className="btn btn-primary">Guardar Plantillas</button>
+                        <button type="submit" className="btn btn-primary">{t('admin.appSettings.saveTemplates')}</button>
                     </div>
                 </form>
             </SettingSection>
 
-            <SettingSection title="Sistema">
+            <SettingSection title={t('admin.appSettings.system')}>
                 <div className="flex items-center justify-between">
                     <div>
-                        <h4 className="font-medium text-gray-800 dark:text-gray-200">Modo de Mantenimiento</h4>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Deshabilita temporalmente el acceso para usuarios no administradores.</p>
+                        <h4 className="font-medium text-gray-800 dark:text-gray-200">{t('admin.appSettings.maintenanceMode')}</h4>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{t('admin.appSettings.maintenanceModeDesc')}</p>
                     </div>
                     <button
                         onClick={() => {
                             setMaintenanceMode(prev => !prev);
-                            handleSave('Modo de Mantenimiento');
+                            handleSave(t('admin.appSettings.maintenanceMode'));
                         }}
                         className={`relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:focus:ring-offset-gray-800 focus:ring-primary ${maintenanceMode ? 'bg-red-600' : 'bg-gray-300 dark:bg-gray-600'}`}
                     >

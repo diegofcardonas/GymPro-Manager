@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { User, Notification, PreEstablishedRoutine, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, Role, MembershipStatus, ToastMessage } from '../types';
+import { User, Notification, PreEstablishedRoutine, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, Role, MembershipStatus, ToastMessage, Expense, Budget } from '../types';
 import { MOCK_TIERS } from '../data/membershipTiers';
 
 interface AuthContextType {
@@ -17,6 +17,8 @@ interface AuthContextType {
   achievements: Achievement[];
   equipment: EquipmentItem[];
   incidents: IncidentReport[];
+  expenses: Expense[];
+  budgets: Budget[];
   
   // Toast State
   toasts: ToastMessage[];
@@ -28,7 +30,7 @@ interface AuthContextType {
   addUser: (user: User) => void;
   updateUser: (user: User) => void;
   deleteUser: (userId: string) => void;
-  resetUsers: () => void; // New method
+  resetUsers: () => void;
   toggleBlockUser: (userIdToBlock: string) => void;
 
   markNotificationAsRead: (notificationId: string) => void;
@@ -76,6 +78,15 @@ interface AuthContextType {
   // POS
   addPayment: (payment: Omit<Payment, 'id'>) => void;
   
+  // Expenses
+  addExpense: (expense: Omit<Expense, 'id'>) => void;
+  deleteExpense: (id: string) => void;
+
+  // Budgets
+  addBudget: (budget: Omit<Budget, 'id'>) => void;
+  updateBudget: (budget: Budget) => void;
+  deleteBudget: (id: string) => void;
+  
   login: (email: string, password: string) => Promise<string | void>;
   register: (user: any) => Promise<string | void>;
 }
@@ -95,6 +106,8 @@ export const AuthContext = createContext<AuthContextType>({
   achievements: [],
   equipment: [],
   incidents: [],
+  expenses: [],
+  budgets: [],
   
   toasts: [],
   addToast: () => {},
@@ -105,7 +118,7 @@ export const AuthContext = createContext<AuthContextType>({
   addUser: () => {},
   updateUser: () => {},
   deleteUser: () => {},
-  resetUsers: () => {}, // Default empty function
+  resetUsers: () => {},
   toggleBlockUser: () => {},
 
   markNotificationAsRead: () => {},
@@ -151,6 +164,13 @@ export const AuthContext = createContext<AuthContextType>({
   addNutritionLog: async () => {},
   
   addPayment: () => {},
+  
+  addExpense: () => {},
+  deleteExpense: () => {},
+
+  addBudget: () => {},
+  updateBudget: () => {},
+  deleteBudget: () => {},
 
   login: async () => {},
   register: async () => {},

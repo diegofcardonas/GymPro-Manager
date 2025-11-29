@@ -104,6 +104,13 @@ export enum PaymentStatus {
     FAILED = 'Fallido',
 }
 
+export enum PaymentMethod {
+    CASH = 'Efectivo',
+    CARD = 'Tarjeta',
+    TRANSFER = 'Transferencia',
+    OTHER = 'Otro'
+}
+
 export interface Payment {
     id: string;
     userId: string;
@@ -111,6 +118,26 @@ export interface Payment {
     date: string;
     status: PaymentStatus;
     tierId: string;
+    paymentMethod?: PaymentMethod; 
+    description?: string; 
+}
+
+export interface Expense {
+    id: string;
+    category: string; 
+    amount: number;
+    date: string; // ISO string
+    description?: string;
+    registeredBy: string; // Admin User ID
+}
+
+// New Interface for Budgets
+export interface Budget {
+    id: string;
+    category: string;
+    amount: number; // The limit
+    period: 'monthly' | 'yearly';
+    year: number;
 }
 
 export interface LoggedSet {

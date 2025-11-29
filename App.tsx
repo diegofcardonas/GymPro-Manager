@@ -1,7 +1,6 @@
-
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { User, Role, Notification, PreEstablishedRoutine, NotificationType, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, MembershipStatus, ToastMessage } from './types';
+import { User, Role, Notification, PreEstablishedRoutine, NotificationType, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, MembershipStatus, ToastMessage, Expense, Budget } from './types';
 import { AuthContext } from './context/AuthContext';
 import { MOCK_USERS } from './data/mockUsers';
 import { MOCK_NOTIFICATIONS } from './data/mockNotifications';
@@ -14,6 +13,8 @@ import { MOCK_ACHIEVEMENTS } from './data/mockAchievements';
 import { MOCK_CHALLENGES } from './data/mockChallenges';
 import { MOCK_EQUIPMENT } from './data/mockEquipment';
 import { MOCK_TIERS } from './data/membershipTiers';
+import { MOCK_EXPENSES } from './data/mockExpenses';
+import { MOCK_BUDGETS } from './data/mockBudgets';
 import { ThemeProvider } from './context/ThemeContext';
 
 import AdminDashboard from './components/AdminDashboard';
@@ -77,6 +78,8 @@ const App: React.FC = () => {
   const [achievements, setAchievements] = usePersistentState<Achievement[]>('gympro_achievements', MOCK_ACHIEVEMENTS);
   const [equipment, setEquipment] = usePersistentState<EquipmentItem[]>('gympro_equipment', MOCK_EQUIPMENT);
   const [incidents, setIncidents] = usePersistentState<IncidentReport[]>('gympro_incidents', []);
+  const [expenses, setExpenses] = usePersistentState<Expense[]>('gympro_expenses', MOCK_EXPENSES);
+  const [budgets, setBudgets] = usePersistentState<Budget[]>('gympro_budgets', MOCK_BUDGETS);
   
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -209,6 +212,8 @@ const App: React.FC = () => {
 
   const resetUsers = useCallback(() => {
       setUsers(MOCK_USERS);
+      setExpenses(MOCK_EXPENSES);
+      setBudgets(MOCK_BUDGETS);
       
       // If current user was a custom one, they might not exist in MOCK_USERS anymore.
       if (currentUser) {
@@ -220,7 +225,7 @@ const App: React.FC = () => {
           }
       }
       addToast(t('toast.usersReset'), 'success');
-  }, [currentUser, setUsers, addToast, t]);
+  }, [currentUser, setUsers, setExpenses, setBudgets, addToast, t]);
 
   const toggleBlockUser = useCallback((userIdToBlock: string) => {
     if (!currentUser) return;
@@ -571,20 +576,47 @@ const App: React.FC = () => {
   // POS Logic
   const addPayment = useCallback((payment: Omit<Payment, 'id'>) => {
       setPayments(prev => [...prev, { ...payment, id: `p${Date.now()}` }]);
-      addToast(t('toast.paymentSuccess') || 'Payment recorded successfully', 'success');
+      addToast(t('toast.paymentSuccess'), 'success');
   }, [setPayments, addToast, t]);
+
+  // Expenses Logic
+  const addExpense = useCallback((expense: Omit<Expense, 'id'>) => {
+      setExpenses(prev => [...prev, { ...expense, id: `e${Date.now()}` }]);
+      addToast(t('toast.expenseAdded'), 'success');
+  }, [setExpenses, addToast, t]);
+
+  const deleteExpense = useCallback((id: string) => {
+      setExpenses(prev => prev.filter(e => e.id !== id));
+      addToast(t('toast.expenseDeleted'), 'info');
+  }, [setExpenses, addToast, t]);
+
+  // Budget Logic
+  const addBudget = useCallback((budget: Omit<Budget, 'id'>) => {
+      setBudgets(prev => [...prev, { ...budget, id: `b${Date.now()}` }]);
+      addToast(t('toast.budgetAdded'), 'success');
+  }, [setBudgets, addToast, t]);
+
+  const updateBudget = useCallback((budget: Budget) => {
+      setBudgets(prev => prev.map(b => b.id === budget.id ? budget : b));
+      addToast(t('toast.budgetUpdated'), 'success');
+  }, [setBudgets, addToast, t]);
+
+  const deleteBudget = useCallback((id: string) => {
+      setBudgets(prev => prev.filter(b => b.id !== id));
+      addToast(t('toast.budgetDeleted'), 'info');
+  }, [setBudgets, addToast, t]);
 
   const myTrainers = useMemo(() => { if (currentUser?.role !== Role.CLIENT) return []; return users.filter(u => u.role === Role.TRAINER && currentUser.trainerIds?.includes(u.id)); }, [currentUser, users]);
   const myClients = useMemo(() => { if (currentUser?.role !== Role.TRAINER) return []; return users.filter(u => u.role === Role.CLIENT && u.trainerIds?.includes(currentUser.id)); }, [currentUser, users]);
 
   const authContextValue = useMemo(() => ({
-    currentUser, users, myClients, myTrainers, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts,
+    currentUser, users, myClients, myTrainers, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets,
     logout, updateCurrentUser, updateUser, addUser, deleteUser, resetUsers, toggleBlockUser, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification, addNotification, addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate, logWorkout, addGymClass, updateGymClass, deleteGymClass, bookClass, sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement,
-    sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement, addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, toggleReportModal, addNutritionLog, addPayment, login, register, addToast, removeToast
+    sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement, addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, toggleReportModal, addNutritionLog, addPayment, addExpense, deleteExpense, addBudget, updateBudget, deleteBudget, login, register, addToast, removeToast
   }), [
-      currentUser, users, myClients, myTrainers, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts,
+      currentUser, users, myClients, myTrainers, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets,
       logout, updateCurrentUser, updateUser, addUser, deleteUser, resetUsers, toggleBlockUser, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification, addNotification, addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate, logWorkout, addGymClass, updateGymClass, deleteGymClass, bookClass, sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement,
-      sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement, addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, toggleReportModal, addNutritionLog, addPayment, login, register, addToast, removeToast
+      sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement, addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, toggleReportModal, addNutritionLog, addPayment, addExpense, deleteExpense, addBudget, updateBudget, deleteBudget, login, register, addToast, removeToast
   ]);
   
   const renderContent = () => {
