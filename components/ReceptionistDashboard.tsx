@@ -1,7 +1,6 @@
 
 import React, { useState, useContext, useMemo, useRef, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
-// FIX: Added NotificationType to imports to fix the error on line 90.
 import { User, Role, MembershipStatus, NotificationType } from '../types';
 import { useTranslation } from 'react-i18next';
 import { LogoIcon } from './icons/LogoIcon';
@@ -15,6 +14,7 @@ import { PointOfSale } from './admin/PointOfSale';
 import TaskBoard from './shared/TaskBoard';
 
 const QRScanner: React.FC<{ onScan: (userId: string) => void, onClose: () => void }> = ({ onScan, onClose }) => {
+    const { t } = useTranslation();
     const videoRef = useRef<HTMLVideoElement>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -25,25 +25,18 @@ const QRScanner: React.FC<{ onScan: (userId: string) => void, onClose: () => voi
                 stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
                 if (videoRef.current) videoRef.current.srcObject = stream;
             } catch (err) {
-                setError("No se pudo acceder a la cámara. Por favor verifica los permisos.");
+                setError(t('receptionist.cameraError'));
             }
         };
         startCamera();
-        
-        // Simulación de escaneo cada 2 segundos
         const interval = setInterval(() => {
-            // En una app real, aquí usaríamos una librería de decodificación de QR sobre el canvas/video
-            // Simulamos detectar a la usuaria Samantha Williams ('2')
-            if(Math.random() > 0.8) {
-                onScan('2');
-            }
+            if(Math.random() > 0.8) onScan('2');
         }, 2000);
-
         return () => {
             if(stream) stream.getTracks().forEach(track => track.stop());
             clearInterval(interval);
         };
-    }, [onScan]);
+    }, [onScan, t]);
 
     return (
         <div className="fixed inset-0 z-[60] bg-black/90 flex flex-col items-center justify-center p-4">
@@ -68,8 +61,8 @@ const QRScanner: React.FC<{ onScan: (userId: string) => void, onClose: () => voi
                     </>
                 )}
             </div>
-            <p className="text-white/70 mt-6 text-sm font-medium animate-pulse">Apunte al código QR del cliente</p>
-            <button onClick={onClose} className="mt-10 px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full font-bold transition-all">Cancelar</button>
+            <p className="text-white/70 mt-6 text-sm font-medium animate-pulse">{t('receptionist.qrTip')}</p>
+            <button onClick={onClose} className="mt-10 px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full font-bold transition-all">{t('general.cancel')}</button>
         </div>
     );
 };
@@ -84,12 +77,12 @@ const ReceptionistDashboard: React.FC = () => {
 
     const handleCheckIn = (user: User) => {
         if (user.membership.status !== MembershipStatus.ACTIVE) {
-            alert(`¡Alerta! La membresía de ${user.name} está ${user.membership.status}`);
+            alert(`Alert: ${user.name} membership is ${user.membership.status}`);
             return;
         }
         setLastCheckIn(user);
         setShowScanner(false);
-        addNotification({ userId: user.id, title: 'Check-In Exitoso', message: `¡Bienvenido al gym, ${user.name}!`, type: NotificationType.SUCCESS });
+        addNotification({ userId: user.id, title: t('receptionist.success'), message: t('receptionist.welcome', { name: user.name }), type: NotificationType.SUCCESS });
         setTimeout(() => setLastCheckIn(null), 5000);
     };
 
@@ -101,13 +94,13 @@ const ReceptionistDashboard: React.FC = () => {
                 <div className="container mx-auto flex justify-between items-center">
                     <div className="flex items-center gap-3">
                         <LogoIcon className="w-10 h-10" />
-                        <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">Recepción GymPro</h1>
+                        <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">{t('receptionist.title')}</h1>
                     </div>
                     <div className="flex items-center gap-4">
                         <nav className="hidden md:flex bg-gray-100 dark:bg-gray-700 p-1 rounded-xl">
                             {['check-in', 'users', 'pos', 'tasks'].map(v => (
                                 <button key={v} onClick={() => setActiveView(v as any)} className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${activeView === v ? 'bg-white dark:bg-gray-900 text-primary shadow-sm' : 'text-gray-500'}`}>
-                                    {v === 'tasks' ? 'Tareas' : t(`receptionist.nav.${v}`)}
+                                    {t(`receptionist.nav.${v === 'check-in' ? 'checkIn' : v === 'pos' ? 'pos' : v === 'tasks' ? 'tasks' : 'users'}`)}
                                 </button>
                             ))}
                         </nav>
@@ -123,8 +116,8 @@ const ReceptionistDashboard: React.FC = () => {
                             <div className="bg-green-500 text-white p-6 rounded-3xl shadow-xl animate-scale-in flex items-center gap-6">
                                 <img src={lastCheckIn.avatarUrl} className="w-20 h-20 rounded-full border-4 border-white/30" />
                                 <div>
-                                    <h2 className="text-2xl font-black">¡Check-In Exitoso!</h2>
-                                    <p className="text-lg opacity-90">Bienvenido, {lastCheckIn.name}</p>
+                                    <h2 className="text-2xl font-black">{t('receptionist.success')}</h2>
+                                    <p className="text-lg opacity-90">{t('receptionist.welcome', { name: lastCheckIn.name })}</p>
                                 </div>
                                 <CheckCircleIcon className="w-16 h-16 ml-auto opacity-50" />
                             </div>
@@ -134,15 +127,15 @@ const ReceptionistDashboard: React.FC = () => {
                             <div className="absolute top-0 right-0 p-8 opacity-5">
                                 <IdentificationIcon className="w-32 h-32" />
                             </div>
-                            <h2 className="text-2xl font-bold mb-6">Acceso de Miembros</h2>
+                            <h2 className="text-2xl font-bold mb-6">{t('receptionist.nav.checkIn')}</h2>
                             <div className="flex flex-col sm:flex-row gap-4">
                                 <div className="relative flex-1">
-                                    <input type="text" placeholder="Buscar por nombre o email..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="w-full p-4 pl-12 bg-gray-100 dark:bg-gray-700 border-none rounded-2xl focus:ring-2 focus:ring-primary text-lg" />
+                                    <input type="text" placeholder={t('admin.userManagement.searchPlaceholder')} value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="w-full p-4 pl-12 bg-gray-100 dark:bg-gray-700 border-none rounded-2xl focus:ring-2 focus:ring-primary text-lg" />
                                     <IdentificationIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" />
                                 </div>
                                 <button onClick={() => setShowScanner(true)} className="px-6 py-4 bg-primary text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
                                     <CameraIcon className="w-6 h-6" />
-                                    <span>Escanear QR</span>
+                                    <span>{t('receptionist.scanQR')}</span>
                                 </button>
                             </div>
 
@@ -159,7 +152,7 @@ const ReceptionistDashboard: React.FC = () => {
                                                     </span>
                                                 </div>
                                             </div>
-                                            <button onClick={() => handleCheckIn(user)} className="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-primary hover:text-white rounded-xl text-sm font-bold transition-all">Check-In</button>
+                                            <button onClick={() => handleCheckIn(user)} className="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-primary hover:text-white rounded-xl text-sm font-bold transition-all">{t('receptionist.nav.checkIn')}</button>
                                         </div>
                                     ))}
                                 </div>

@@ -53,7 +53,6 @@ const AdminDashboard: React.FC = () => {
     const renderContent = () => {
         switch(activeView) {
             case 'dashboard': return <DashboardOverview onNavigate={handleNavigation} onUserClick={handleUserClick} />;
-            // FIX: Removed duplicate 'onFilterClear' prop to resolve the JSX element multiple attributes with the same name error.
             case 'users': return <UserManagement initialFilter={filter} onFilterClear={() => setFilter(null)} initialUser={selectedUserForManagement} />;
             case 'reports': return <Reports />;
             case 'payments': return <Payments />;
@@ -74,22 +73,22 @@ const AdminDashboard: React.FC = () => {
     }
     
     const viewTitles: Record<View, string> = {
-        dashboard: t('admin.dashboard.title'),
-        users: t('admin.dashboard.userManagement'),
-        reports: t('admin.dashboard.reports'),
-        payments: t('admin.dashboard.finances'),
-        pos: t('receptionist.nav.pos'),
-        tasks: 'Gestión de Tareas',
-        'class-schedule': t('admin.dashboard.classSchedule'),
-        announcements: t('admin.dashboard.announcements'),
-        challenges: t('admin.dashboard.challenges'),
-        equipment: t('admin.dashboard.equipment'),
-        'membership-tiers': t('admin.dashboard.membershipTiers'),
-        'routine-templates': t('admin.dashboard.routineTemplates'),
-        'app-settings': t('admin.dashboard.appSettings'),
-        notifications: t('admin.dashboard.notifications'),
-        settings: t('admin.dashboard.settings'),
-        'profile-edit': 'Editar Perfil'
+        dashboard: t('admin.sidebar.dashboard'),
+        users: t('admin.sidebar.users'),
+        reports: t('admin.sidebar.reports'),
+        payments: t('admin.sidebar.payments'),
+        pos: t('admin.sidebar.pos'),
+        tasks: t('admin.sidebar.tasks'),
+        'class-schedule': t('admin.sidebar.classes'),
+        announcements: t('admin.sidebar.announcements'),
+        challenges: t('admin.sidebar.challenges'),
+        equipment: t('admin.sidebar.equipment'),
+        'membership-tiers': t('admin.sidebar.tiers'),
+        'routine-templates': t('admin.sidebar.templates'),
+        'app-settings': t('admin.sidebar.appSettings'),
+        notifications: t('admin.sidebar.notifications'),
+        settings: t('admin.sidebar.settings'),
+        'profile-edit': t('profile.editTitle')
     }
 
     return (
@@ -111,7 +110,7 @@ const AdminDashboard: React.FC = () => {
                              <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors md:hidden">
                                 <MenuIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
                             </button>
-                            <h2 className="text-xl font-semibold capitalize text-gray-900 dark:text-white">{viewTitles[activeView]}</h2>
+                            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{viewTitles[activeView]}</h2>
                         </div>
                         <div className="flex items-center space-x-4">
                             <LanguageSwitcher />

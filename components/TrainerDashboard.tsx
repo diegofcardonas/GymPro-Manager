@@ -58,13 +58,13 @@ const TrainerDashboard: React.FC = () => {
         dashboard: t('trainer.sidebar.dashboard'),
         clients: t('trainer.sidebar.clients'),
         schedule: t('trainer.sidebar.schedule'),
-        tasks: 'Mis Tareas',
+        tasks: t('trainer.sidebar.tasks'),
         messages: t('trainer.sidebar.messages'),
         profile: t('trainer.sidebar.profile'),
         'routine-templates': t('trainer.sidebar.templates'),
         notifications: t('trainer.sidebar.notifications'),
         settings: t('trainer.sidebar.settings'),
-        'profile-edit': 'Editar Mi Perfil'
+        'profile-edit': t('profile.editTitle')
     }
 
     return (
@@ -86,7 +86,7 @@ const TrainerDashboard: React.FC = () => {
                             <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors md:hidden">
                                 <MenuIcon className="w-6 h-6 text-gray-600 dark:text-gray-400" />
                             </button>
-                            <h2 className="text-xl font-semibold capitalize text-gray-900 dark:text-white">{viewTitles[activeView]}</h2>
+                            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{viewTitles[activeView]}</h2>
                         </div>
                         <div className="flex items-center space-x-4">
                             <button onClick={() => setActiveView('messages')} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">

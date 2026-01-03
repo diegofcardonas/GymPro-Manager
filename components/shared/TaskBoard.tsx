@@ -10,28 +10,26 @@ import { useTranslation } from 'react-i18next';
 
 const TaskBoard: React.FC = () => {
     const { t } = useTranslation();
-    const { tasks, currentUser, users, updateTask } = useContext(AuthContext);
+    const { tasks, currentUser, users, updateTask, addToast } = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 1200);
+        }, 800);
         return () => clearTimeout(timer);
     }, []);
 
     const myTasks = useMemo(() => {
         if (!currentUser) return [];
-        return tasks.filter(t => t.assignedToId === currentUser.id);
+        return tasks.filter(t => t.assignedToId === currentUser.id)
+                    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
     }, [tasks, currentUser]);
 
-    const handleToggleStatus = (task: Task) => {
-        const statusMap: Record<TaskStatus, TaskStatus> = {
-            [TaskStatus.PENDING]: TaskStatus.IN_PROGRESS,
-            [TaskStatus.IN_PROGRESS]: TaskStatus.COMPLETED,
-            [TaskStatus.COMPLETED]: TaskStatus.PENDING
-        };
-        updateTask({ ...task, status: statusMap[task.status] });
+    const handleUpdateStatus = (task: Task, newStatus: TaskStatus) => {
+        if (task.status === newStatus) return;
+        updateTask({ ...task, status: newStatus });
+        addToast(t('tasks.statusUpdateSuccess'), 'success');
     };
 
     if (isLoading) {
@@ -45,10 +43,7 @@ const TaskBoard: React.FC = () => {
                     <div key={i} className="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-black/5 flex items-start gap-4">
                         <Skeleton variant="circular" width={32} height={32} />
                         <div className="flex-1 space-y-3">
-                            <div className="flex justify-between items-start">
-                                <Skeleton width="60%" height={20} />
-                                <Skeleton width={40} height={16} />
-                            </div>
+                            <Skeleton width="60%" height={20} />
                             <Skeleton width="90%" height={12} />
                         </div>
                     </div>
@@ -61,66 +56,71 @@ const TaskBoard: React.FC = () => {
         return (
             <div className="bg-white dark:bg-gray-800 p-12 rounded-4xl text-center border border-black/5 opacity-50 flex flex-col items-center animate-fade-in w-full max-w-2xl mx-auto">
                 <ClipboardDocumentCheckIcon className="w-16 h-16 mb-4 text-gray-400" />
-                <p className="font-black uppercase tracking-widest text-sm">No tienes tareas asignadas</p>
-                <p className="text-xs text-gray-400 mt-2">¡Buen trabajo manteniendo tu lista limpia!</p>
+                <p className="font-black uppercase tracking-widest text-sm">{t('tasks.noTasks')}</p>
+                <p className="text-xs text-gray-400 mt-2">{t('tasks.noTasksDesc')}</p>
             </div>
         );
     }
 
     return (
-        <div className="space-y-4 animate-fade-in w-full max-w-2xl mx-auto pb-20">
+        <div className="space-y-6 animate-fade-in w-full max-w-2xl mx-auto pb-24">
             <div className="flex items-center justify-between mb-2 px-2">
-                <h3 className="font-black text-xl text-gray-900 dark:text-white">Mis Tareas</h3>
-                <span className="text-[10px] font-black text-gray-400 uppercase bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-lg">
-                    {myTasks.filter(t => t.status !== TaskStatus.COMPLETED).length} pendientes
-                </span>
+                <h3 className="font-black text-2xl text-gray-900 dark:text-white tracking-tight">{t('tasks.myTasks')}</h3>
+                <div className="flex items-center gap-2">
+                   <span className="text-[10px] font-black text-white uppercase bg-primary px-2.5 py-1 rounded-full shadow-sm">
+                        {myTasks.filter(t => t.status !== TaskStatus.COMPLETED).length}
+                    </span>
+                </div>
             </div>
             
             <div className="space-y-4">
                 {myTasks.map(task => {
                     const assigner = users.find(u => u.id === task.assignedById);
+                    const isOverdue = new Date(task.dueDate) < new Date() && task.status !== TaskStatus.COMPLETED;
+                    
                     return (
                         <div 
                             key={task.id} 
-                            className={`bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-black/5 group flex items-start gap-4 transition-all duration-300 hover:shadow-md ${task.status === TaskStatus.COMPLETED ? 'bg-gray-50/50 dark:bg-gray-900/30' : ''}`}
+                            className={`bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-black/[0.05] dark:border-white/[0.05] flex flex-col transition-all duration-300 hover:shadow-md ${task.status === TaskStatus.COMPLETED ? 'opacity-75 grayscale-[0.5]' : ''}`}
                         >
-                            <button 
-                                onClick={() => handleToggleStatus(task)}
-                                className={`mt-1 p-1 rounded-xl transition-all transform active:scale-75 duration-300 shadow-sm
-                                    ${task.status === TaskStatus.COMPLETED 
-                                        ? 'bg-green-500 text-white shadow-green-500/20 scale-100 rotate-0 animate-spring-pop' 
-                                        : 'bg-gray-50 dark:bg-gray-700 text-gray-300 hover:text-primary hover:scale-110'
-                                    }`}
-                            >
-                                <CheckCircleIcon className={`w-6 h-6 transition-all duration-500 ${task.status === TaskStatus.COMPLETED ? 'scale-100 rotate-0' : 'scale-75 -rotate-12 opacity-50'}`} />
-                            </button>
-                            
-                            <div className="flex-1 min-w-0">
-                                <div className="flex justify-between items-start mb-1 gap-2">
-                                    <h4 className={`font-bold text-base truncate transition-all duration-500 ${task.status === TaskStatus.COMPLETED ? 'line-through text-gray-400 translate-x-1' : 'text-gray-900 dark:text-white'}`}>
+                            <div className="flex justify-between items-start mb-3">
+                                <div className="flex flex-col">
+                                    <h4 className={`font-bold text-lg leading-tight transition-all ${task.status === TaskStatus.COMPLETED ? 'line-through text-gray-400' : 'text-gray-900 dark:text-white'}`}>
                                         {task.title}
                                     </h4>
-                                    <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase flex-shrink-0 transition-opacity duration-500
-                                        ${task.status === TaskStatus.COMPLETED ? 'opacity-30' : 'opacity-100'}
-                                        ${task.priority === 'High' ? 'bg-red-50 text-red-500 border border-red-100' : task.priority === 'Medium' ? 'bg-orange-50 text-orange-500 border border-orange-100' : 'bg-blue-50 text-blue-500 border border-blue-100'}
-                                    `}>
-                                        {t(`tasks.priority.${task.priority}`)}
-                                    </span>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">
+                                        {t('tasks.assignedBy')}: {assigner?.name || 'Admin'}
+                                    </p>
                                 </div>
-                                <p className={`text-xs transition-all duration-500 line-clamp-2 leading-relaxed ${task.status === TaskStatus.COMPLETED ? 'text-gray-400 opacity-50' : 'text-gray-500'}`}>{task.description}</p>
-                                
-                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-[10px] font-black text-gray-300 uppercase tracking-tighter">
-                                    <div className={`p-1 rounded-md transition-colors ${new Date(task.dueDate) < new Date() && task.status !== TaskStatus.COMPLETED ? 'text-red-400' : ''}`}>
-                                        <ClockIcon className="w-3.5 h-3.5 inline mr-1" />
-                                        Límite: {new Date(task.dueDate).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
-                                    </div>
-                                    <div className="flex items-center gap-1 text-gray-400/60">
-                                        <span>Asignado por:</span>
-                                        <span className="text-gray-500 dark:text-gray-400 font-black">{assigner?.name || 'Sistema'}</span>
-                                    </div>
-                                    <span className={`ml-auto transition-colors px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 ${task.status === TaskStatus.IN_PROGRESS ? 'text-primary' : task.status === TaskStatus.COMPLETED ? 'text-green-500/50' : ''}`}>
-                                        {task.status}
-                                    </span>
+                                <span className={`px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-tighter shadow-sm
+                                    ${task.priority === 'High' ? 'bg-red-500 text-white' : task.priority === 'Medium' ? 'bg-orange-400 text-white' : 'bg-blue-400 text-white'}
+                                `}>
+                                    {t(`enums.TaskPriority.${task.priority}`)}
+                                </span>
+                            </div>
+
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-5 leading-relaxed">{task.description}</p>
+                            
+                            <div className="flex flex-col sm:flex-row gap-4 justify-between items-center pt-4 border-t border-gray-50 dark:border-white/[0.03]">
+                                <div className={`flex items-center gap-1.5 text-[10px] font-black uppercase tracking-tight ${isOverdue ? 'text-red-500' : 'text-gray-400'}`}>
+                                    <ClockIcon className="w-4 h-4" />
+                                    {new Date(task.dueDate).toLocaleDateString(undefined, { day: 'numeric', month: 'long' })}
+                                </div>
+
+                                <div className="flex bg-gray-100 dark:bg-gray-900/50 p-1 rounded-2xl shadow-inner border border-black/5 w-full sm:w-auto">
+                                    {Object.values(TaskStatus).map((status) => (
+                                        <button
+                                            key={status}
+                                            onClick={() => handleUpdateStatus(task, status)}
+                                            className={`flex-1 sm:flex-initial px-3 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-xl transition-all
+                                                ${task.status === status 
+                                                    ? (status === TaskStatus.COMPLETED ? 'bg-green-500 text-white shadow-lg' : status === TaskStatus.IN_PROGRESS ? 'bg-blue-500 text-white shadow-lg' : 'bg-gray-400 text-white shadow-lg')
+                                                    : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                                                }`}
+                                        >
+                                            {t(`enums.TaskStatus.${status.replace(' ', '_').toUpperCase()}`)}
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
                         </div>

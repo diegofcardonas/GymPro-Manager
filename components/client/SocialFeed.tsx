@@ -19,7 +19,6 @@ const SocialFeed: React.FC = () => {
         if (!newPostContent.trim() || !currentUser) return;
 
         setIsPosting(true);
-        // Simular pequeño retraso
         setTimeout(() => {
             addPost({
                 userId: currentUser.id,
@@ -36,14 +35,13 @@ const SocialFeed: React.FC = () => {
     return (
         <div className="w-full max-w-2xl mx-auto space-y-6 pb-20">
             <div className="flex items-center justify-between px-4 sm:px-0">
-                <h2 className="text-3xl font-black text-gray-900 dark:text-white">Comunidad</h2>
+                <h2 className="text-3xl font-black text-gray-900 dark:text-white">{t('client.social.title')}</h2>
                 <div className="flex items-center gap-2 text-xs font-bold text-gray-500 uppercase bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    En Vivo
+                    {t('client.social.live')}
                 </div>
             </div>
 
-            {/* Post Creator */}
             <div className="bg-white dark:bg-gray-800 sm:rounded-3xl shadow-sm border border-black/5 p-4 animate-fade-in">
                 <form onSubmit={handleCreatePost} className="space-y-4">
                     <div className="flex gap-4">
@@ -51,14 +49,14 @@ const SocialFeed: React.FC = () => {
                         <textarea 
                             value={newPostContent}
                             onChange={e => setNewPostContent(e.target.value)}
-                            placeholder={`¿Qué hay de nuevo, ${currentUser?.name.split(' ')[0]}?`}
+                            placeholder={t('client.social.placeholder', { name: currentUser?.name.split(' ')[0] })}
                             className="flex-1 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl p-4 text-sm focus:ring-2 focus:ring-primary min-h-[100px] resize-none"
                         />
                     </div>
                     <div className="flex justify-between items-center pl-16">
                         <button type="button" className="p-2 text-gray-400 hover:text-primary hover:bg-primary/5 rounded-xl transition-all flex items-center gap-2 text-xs font-bold">
                             <CameraIcon className="w-5 h-5" />
-                            <span>Foto / Vídeo</span>
+                            <span>{t('client.social.photoVideo')}</span>
                         </button>
                         <button 
                             type="submit" 
@@ -66,13 +64,12 @@ const SocialFeed: React.FC = () => {
                             className="px-6 py-2 bg-primary text-white rounded-xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 transition-all disabled:opacity-50 flex items-center gap-2"
                         >
                             {isPosting ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div> : <SendIcon className="w-4 h-4" />}
-                            Publicar
+                            {t('client.social.post')}
                         </button>
                     </div>
                 </form>
             </div>
 
-            {/* Posts List */}
             {posts.length > 0 ? posts.map(post => (
                 <div key={post.id} className="bg-white dark:bg-gray-800 sm:rounded-3xl shadow-sm border border-black/5 dark:border-white/5 overflow-hidden animate-slide-up">
                     <div className="p-4 flex items-center gap-3">
@@ -115,8 +112,8 @@ const SocialFeed: React.FC = () => {
             )) : (
                 <div className="py-20 text-center flex flex-col items-center justify-center opacity-50">
                     <TrophyIcon className="w-16 h-16 mb-4 text-gray-400" />
-                    <p className="font-bold text-gray-400">Aún no hay publicaciones sociales.</p>
-                    <p className="text-sm text-gray-400">¡Sé el primero en compartir algo!</p>
+                    <p className="font-bold text-gray-400">{t('client.social.noPosts')}</p>
+                    <p className="text-sm text-gray-400">{t('client.social.firstPost')}</p>
                 </div>
             )}
         </div>

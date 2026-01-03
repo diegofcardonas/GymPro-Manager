@@ -37,17 +37,17 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
 
     const tabs = useMemo(() => {
         const baseTabs: { id: TabId; label: string; icon: any }[] = [
-            { id: 'personal', label: 'Personal', icon: UserCircleIcon },
-            { id: 'emergency', label: 'Emergencia', icon: IdentificationIcon }
+            { id: 'personal', label: t('profile.personal'), icon: UserCircleIcon },
+            { id: 'emergency', label: t('profile.emergency'), icon: IdentificationIcon }
         ];
         if (currentUser.role === Role.CLIENT) {
-            baseTabs.splice(1, 0, { id: 'fitness', label: 'Salud & Metas', icon: FireIcon });
+            baseTabs.splice(1, 0, { id: 'fitness', label: t('profile.fitness'), icon: FireIcon });
         }
         if ([Role.TRAINER, Role.NUTRITIONIST, Role.PHYSIOTHERAPIST].includes(currentUser.role)) {
-            baseTabs.splice(1, 0, { id: 'professional', label: 'Carrera', icon: TrophyIcon });
+            baseTabs.splice(1, 0, { id: 'professional', label: t('profile.career'), icon: TrophyIcon });
         }
         return baseTabs;
-    }, [currentUser.role]);
+    }, [currentUser.role, t]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -91,12 +91,11 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
             const finalData = { 
                 ...formData, 
                 age: calculateAge(formData.birthDate || ''),
-                // Ensure numeric fields are correctly typed
                 height: Number(formData.height),
                 weight: Number(formData.weight)
             };
             updateUser(finalData);
-            addToast('Perfil actualizado con éxito', 'success');
+            addToast(t('profile.success'), 'success');
             setIsSaving(false);
             if (onCancel) onCancel();
         }, 1200);
@@ -175,34 +174,34 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
                         <div className="space-y-10 animate-fade-in">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Nombre Completo</label>
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.fullName')}</label>
                                     <input name="name" value={formData.name} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold text-gray-900 dark:text-white" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Teléfono Móvil</label>
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.mobile')}</label>
                                     <input name="phone" value={formData.phone} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold text-gray-900 dark:text-white" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Fecha de Nacimiento</label>
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.birthDate')}</label>
                                     <input type="date" name="birthDate" value={formData.birthDate?.split('T')[0]} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold text-gray-900 dark:text-white" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Género</label>
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.gender')}</label>
                                     <select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold text-gray-900 dark:text-white">
-                                        <option value="Masculino">Masculino</option>
-                                        <option value="Femenino">Femenino</option>
-                                        <option value="Otro">Otro</option>
-                                        <option value="Prefiero no decirlo">Prefiero no decirlo</option>
+                                        <option value="Masculino">{t('genders.Masculino')}</option>
+                                        <option value="Femenino">{t('genders.Femenino')}</option>
+                                        <option value="Otro">{t('genders.Otro')}</option>
+                                        <option value="Prefiero no decirlo">{t('genders.Prefiero no decirlo')}</option>
                                     </select>
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Dirección de Residencia</label>
-                                <input name="address" value={formData.address || ''} onChange={handleChange} placeholder="Ej: Calle 123 #45-67, Ciudad" className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold text-gray-900 dark:text-white" />
+                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.address')}</label>
+                                <input name="address" value={formData.address || ''} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold text-gray-900 dark:text-white" />
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Sobre mí / Bio</label>
-                                <textarea name="bio" value={formData.bio || ''} onChange={handleChange} rows={4} placeholder="Escribe algo breve sobre ti..." className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary text-sm font-medium text-gray-700 dark:text-gray-300" />
+                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.bio')}</label>
+                                <textarea name="bio" value={formData.bio || ''} onChange={handleChange} rows={4} placeholder={t('profile.bioPlaceholder')} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary text-sm font-medium text-gray-700 dark:text-gray-300" />
                             </div>
                         </div>
                     )}
@@ -211,15 +210,15 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
                         <div className="space-y-12 animate-fade-in">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1 text-center block">Altura (cm)</label>
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1 text-center block">{t('profile.height')} ({t('general.cm')})</label>
                                     <NumberInputWithButtons value={formData.height || 0} onChange={(v) => setFormData({...formData, height: v as number})} />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1 text-center block">Peso (kg)</label>
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1 text-center block">{t('profile.weight')} ({t('general.kg')})</label>
                                     <NumberInputWithButtons value={formData.weight || 0} onChange={(v) => setFormData({...formData, weight: v as number})} step={0.5} />
                                 </div>
                                 <div className="bg-emerald-50 dark:bg-emerald-900/10 p-4 rounded-3xl flex flex-col items-center justify-center border border-emerald-100 dark:border-emerald-800/30 shadow-inner">
-                                    <span className="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-400">IMC Estimado</span>
+                                    <span className="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-400">{t('profile.imc')}</span>
                                     <span className="text-3xl font-black text-emerald-700 dark:text-emerald-300">{imc || '--'}</span>
                                 </div>
                             </div>
@@ -227,19 +226,19 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
                             <div className="space-y-4">
                                 <div className="flex items-center gap-2">
                                     <TrophyIcon className="w-5 h-5 text-amber-500" />
-                                    <h3 className="text-sm font-black uppercase tracking-widest text-gray-500">Récords Personales (PRs)</h3>
+                                    <h3 className="text-sm font-black uppercase tracking-widest text-gray-500">{t('profile.prs')}</h3>
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1 block">Bench Press (kg)</label>
+                                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1 block">Bench Press ({t('general.kg')})</label>
                                         <NumberInputWithButtons value={formData.personalBests?.benchPress || 0} onChange={(v) => setFormData({...formData, personalBests: {...formData.personalBests, benchPress: v as number}})} step={2.5} />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1 block">Squat (kg)</label>
+                                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1 block">Squat ({t('general.kg')})</label>
                                         <NumberInputWithButtons value={formData.personalBests?.squat || 0} onChange={(v) => setFormData({...formData, personalBests: {...formData.personalBests, squat: v as number}})} step={2.5} />
                                     </div>
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1 block">Deadlift (kg)</label>
+                                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1 block">Deadlift ({t('general.kg')})</label>
                                         <NumberInputWithButtons value={formData.personalBests?.deadlift || 0} onChange={(v) => setFormData({...formData, personalBests: {...formData.personalBests, deadlift: v as number}})} step={2.5} />
                                     </div>
                                 </div>
@@ -247,7 +246,7 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
 
                             <div className="space-y-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Nivel de Condición</label>
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.fitnessLevel')}</label>
                                     <div className="grid grid-cols-3 gap-3">
                                         {Object.values(FitnessLevel).map(level => (
                                             <button 
@@ -256,18 +255,18 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
                                                 className={`p-4 rounded-2xl text-[10px] font-black uppercase border-2 transition-all
                                                     ${formData.fitnessLevel === level ? 'border-primary bg-primary/5 text-primary' : 'border-black/5 hover:border-black/10 text-gray-400 dark:border-white/5'}`}
                                             >
-                                                {level}
+                                                {t(`fitnessLevels.${level}`)}
                                             </button>
                                         ))}
                                     </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Objetivos Principales</label>
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.goals')}</label>
                                     <textarea name="fitnessGoals" value={formData.fitnessGoals} onChange={handleChange} rows={3} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary text-sm font-medium" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Condiciones Médicas / Lesiones</label>
-                                    <textarea name="medicalConditions" value={formData.medicalConditions} onChange={handleChange} placeholder="Ninguna" rows={3} className="w-full p-4 bg-red-50/30 dark:bg-red-900/10 border-none rounded-2xl focus:ring-2 focus:ring-red-500 text-sm font-medium text-red-700 dark:text-red-300" />
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.medical')}</label>
+                                    <textarea name="medicalConditions" value={formData.medicalConditions} onChange={handleChange} rows={3} className="w-full p-4 bg-red-50/30 dark:bg-red-900/10 border-none rounded-2xl focus:ring-2 focus:ring-red-500 text-sm font-medium text-red-700 dark:text-red-300" />
                                 </div>
                             </div>
                         </div>
@@ -277,20 +276,20 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
                         <div className="space-y-8 animate-fade-in">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Años de Experiencia</label>
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.experience')}</label>
                                     <NumberInputWithButtons value={formData.experienceYears || 0} onChange={(v) => setFormData({...formData, experienceYears: v as number})} />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Especialidades / Habilidades</label>
-                                <textarea name="skills" value={formData.skills} onChange={handleChange} placeholder="Ej: CrossFit L-1, Nutrición Deportiva, Rehabilitación..." rows={4} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary text-sm font-medium" />
+                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.skills')}</label>
+                                <textarea name="skills" value={formData.skills} onChange={handleChange} rows={4} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary text-sm font-medium" />
                             </div>
                             
                             <div className="space-y-4">
-                                <h3 className="text-sm font-black uppercase tracking-widest text-gray-500">Enlaces Sociales</h3>
+                                <h3 className="text-sm font-black uppercase tracking-widest text-gray-500">{t('profile.socialLinks')}</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Instagram (@usuario)</label>
+                                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Instagram (@user)</label>
                                         <input name="socialLinks.instagram" value={formData.socialLinks?.instagram || ''} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold" />
                                     </div>
                                     <div className="space-y-2">
@@ -309,22 +308,22 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
                                     <IdentificationIcon className="w-6 h-6" />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-sm font-bold text-blue-800 dark:text-blue-200">Información Crítica</p>
-                                    <p className="text-xs text-blue-600 dark:text-blue-400 leading-relaxed">Estos datos son esenciales para tu seguridad. Solo serán consultados por el personal administrativo en caso de una urgencia médica dentro de las instalaciones.</p>
+                                    <p className="text-sm font-bold text-blue-800 dark:text-blue-200">{t('profile.emergencyInfoTitle')}</p>
+                                    <p className="text-xs text-blue-600 dark:text-blue-400 leading-relaxed">{t('profile.emergencyInfoDesc')}</p>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Nombre de Contacto</label>
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.contactName')}</label>
                                     <input name="emergencyContact.name" value={formData.emergencyContact?.name || ''} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Parentesco / Relación</label>
-                                    <input name="emergencyContact.relation" value={formData.emergencyContact?.relation || ''} onChange={handleChange} placeholder="Ej: Esposo, Madre, Amigo" className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold" />
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.relation')}</label>
+                                    <input name="emergencyContact.relation" value={formData.emergencyContact?.relation || ''} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold" />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Teléfono de Contacto</label>
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('general.phone')}</label>
                                     <input name="emergencyContact.phone" value={formData.emergencyContact?.phone || ''} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold" />
                                 </div>
                             </div>
@@ -337,7 +336,7 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
             <div className="p-8 bg-gray-50 dark:bg-gray-900 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="text-gray-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
                     <CheckCircleIcon className="w-4 h-4 text-primary" />
-                    Tus datos se almacenan localmente y de forma segura
+                    {t('components.settingsView.passwordSuccess').includes('success') ? 'Data is stored locally and securely' : 'Tus datos se almacenan localmente'}
                 </div>
                 <div className="flex gap-4 w-full sm:w-auto">
                     <button 
@@ -350,14 +349,14 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
                         ) : (
                             <CheckCircleIcon className="w-6 h-6" />
                         )}
-                        {isSaving ? 'GUARDANDO...' : 'GUARDAR CAMBIOS'}
+                        {isSaving ? t('profile.saving') : t('profile.saveChanges')}
                     </button>
                     {onCancel && (
                         <button 
                             onClick={onCancel}
                             className="px-8 py-4 bg-white dark:bg-gray-800 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-2xl font-black transition-all border border-black/5 shadow-sm"
                         >
-                            CANCELAR
+                            {t('general.cancel').toUpperCase()}
                         </button>
                     )}
                 </div>

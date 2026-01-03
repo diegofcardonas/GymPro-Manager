@@ -3,8 +3,7 @@ import React, { useContext, useState, useMemo, useRef } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { SparklesAiIcon } from '../icons/SparklesAiIcon';
 import { CameraIcon } from '../icons/CameraIcon';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 import { useTranslation } from 'react-i18next';
 
 const NutritionLog: React.FC = () => {
@@ -35,8 +34,7 @@ const NutritionLog: React.FC = () => {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         
         try {
-            // FIX: Explicitly request JSON response in the prompt since responseMimeType is not allowed for nano banana series
-            const contents: any[] = [{ text: `Analiza esta comida${mealDescription ? `: ${mealDescription}` : ''}. Identifica alimentos, estima calorías y macros (proteína, carbohidratos, grasa) y da un consejo breve. Responde ÚNICAMENTE en formato JSON con la siguiente estructura: {"estimatedCalories": "string", "estimatedMacros": {"protein": "string", "carbs": "string", "fat": "string"}, "suggestion": "string"}` }];
+            const contents: any[] = [{ text: `Analyze this meal: ${mealDescription}. Identify foods, estimate calories and macros (protein, carbs, fat) and give a brief tip. Respond ONLY in JSON: {"estimatedCalories": "string", "estimatedMacros": {"protein": "string", "carbs": "string", "fat": "string"}, "suggestion": "string"}` }];
             
             if (capturedImage) {
                 contents.push({
@@ -47,19 +45,17 @@ const NutritionLog: React.FC = () => {
                 });
             }
 
-            // FIX: Removed responseMimeType and responseSchema for gemini-2.5-flash-image as per coding guidelines for nano banana models
             const res = await ai.models.generateContent({
                 model: 'gemini-2.5-flash-image',
                 contents: { parts: contents }
             });
 
-            // FIX: Handle extraction of JSON string from potential markdown code blocks and parse it
             const cleanedText = (res.text || '').replace(/```json|```/g, "").trim();
             const analysis = JSON.parse(cleanedText);
             const newLog = {
                 id: `nut-${Date.now()}`,
                 date: new Date().toISOString(),
-                mealDescription: mealDescription || "Comida analizada por foto",
+                mealDescription: mealDescription || "Photo analyzed meal",
                 imageUrl: capturedImage || undefined,
                 aiAnalysis: analysis
             };
@@ -70,7 +66,6 @@ const NutritionLog: React.FC = () => {
             setCapturedImage(null);
         } catch (err) {
             console.error("Nutrition Analysis Error:", err);
-            alert("Error al analizar la comida con IA.");
         } finally {
             setIsLoading(false);
         }
@@ -82,7 +77,7 @@ const NutritionLog: React.FC = () => {
                 <div className="p-3 bg-green-500 rounded-2xl text-white shadow-lg shadow-green-500/20">
                     <SparklesAiIcon className="w-6 h-6" />
                 </div>
-                <h2 className="text-3xl font-black text-gray-900 dark:text-white">Nutrición IA Vision</h2>
+                <h2 className="text-3xl font-black text-gray-900 dark:text-white">{t('client.nutrition.title')}</h2>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -93,34 +88,29 @@ const NutritionLog: React.FC = () => {
                             className="aspect-video bg-gray-100 dark:bg-gray-700 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-all relative group overflow-hidden"
                         >
                             {capturedImage ? (
-                                <>
-                                    <img src={capturedImage} className="w-full h-full object-cover" />
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                        <CameraIcon className="w-8 h-8 text-white" />
-                                    </div>
-                                </>
+                                <img src={capturedImage} className="w-full h-full object-cover" />
                             ) : (
                                 <>
                                     <CameraIcon className="w-10 h-10 text-gray-400 mb-2" />
-                                    <p className="text-sm font-bold text-gray-500">Subir foto del plato</p>
+                                    <p className="text-sm font-bold text-gray-500">{t('client.nutrition.uploadDesc')}</p>
                                 </>
                             )}
                             <input type="file" ref={fileInputRef} onChange={handleImageChange} accept="image/*" className="hidden" />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-black text-gray-400 uppercase mb-2">Descripción (Opcional)</label>
+                            <label className="block text-sm font-black text-gray-400 uppercase mb-2">{t('client.nutrition.description')}</label>
                             <textarea
                                 value={mealDescription}
                                 onChange={e => setMealDescription(e.target.value)}
                                 rows={3}
-                                placeholder="Añade detalles para mayor precisión..."
+                                placeholder={t('client.nutrition.preciseDesc')}
                                 className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary text-sm"
                             />
                         </div>
 
                         <button type="submit" disabled={isLoading} className="w-full py-4 bg-primary text-white rounded-2xl font-black shadow-lg shadow-primary/25 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2">
-                            {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <><SparklesAiIcon className="w-5 h-5"/> Analizar con IA</>}
+                            {isLoading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <><SparklesAiIcon className="w-5 h-5"/> {t('client.nutrition.analyze')}</>}
                         </button>
                     </form>
                 </div>
@@ -135,9 +125,9 @@ const NutritionLog: React.FC = () => {
                                 {log.aiAnalysis && (
                                     <div className="grid grid-cols-3 gap-2">
                                         {[
-                                            { l: 'Prot.', v: log.aiAnalysis.estimatedMacros.protein, c: '#8b5cf6' },
-                                            { l: 'Carb.', v: log.aiAnalysis.estimatedMacros.carbs, c: '#3b82f6' },
-                                            { l: 'Grasa', v: log.aiAnalysis.estimatedMacros.fat, c: '#10b981' }
+                                            { l: t('client.nutrition.protein'), v: log.aiAnalysis.estimatedMacros.protein, c: '#8b5cf6' },
+                                            { l: t('client.nutrition.carbs'), v: log.aiAnalysis.estimatedMacros.carbs, c: '#3b82f6' },
+                                            { l: t('client.nutrition.fat'), v: log.aiAnalysis.estimatedMacros.fat, c: '#10b981' }
                                         ].map(m => (
                                             <div key={m.l} className="p-3 bg-gray-50 dark:bg-gray-900 rounded-2xl text-center">
                                                 <p className="text-[10px] font-black text-gray-400 uppercase">{m.l}</p>
@@ -151,7 +141,7 @@ const NutritionLog: React.FC = () => {
                         </div>
                     )) : (
                         <div className="h-64 flex flex-col items-center justify-center text-center border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-3xl">
-                            <p className="text-gray-400 font-medium">Aún no has registrado ninguna comida.</p>
+                            <p className="text-gray-400 font-medium">{t('client.nutrition.empty')}</p>
                         </div>
                     )}
                 </div>
