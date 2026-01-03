@@ -13,6 +13,7 @@ import MessagingView from './MessagingView';
 import AICoachView from './client/AICoachView';
 import SocialFeed from './client/SocialFeed';
 import NutritionLog from './client/NutritionLog';
+import PostureAnalysis from './client/PostureAnalysis';
 import ChallengesView from './client/ChallengesView';
 import AchievementsView from './client/AchievementsView';
 import Footer from './Footer';
@@ -23,8 +24,9 @@ import { LogoIcon } from './icons/LogoIcon';
 import { GoogleGenAI } from '@google/genai';
 import { SparklesAiIcon } from './icons/SparklesAiIcon';
 import ProfileEditor from './shared/ProfileEditor';
+import { CameraIcon } from './icons/CameraIcon';
 
-type View = 'dashboard' | 'social' | 'routine' | 'workout-log' | 'progress' | 'classes' | 'messages' | 'membership-card' | 'profile' | 'notifications' | 'settings' | 'ai-coach' | 'nutrition-log' | 'challenges' | 'achievements' | 'profile-edit';
+type View = 'dashboard' | 'social' | 'routine' | 'workout-log' | 'progress' | 'classes' | 'messages' | 'membership-card' | 'profile' | 'notifications' | 'settings' | 'ai-coach' | 'nutrition-log' | 'challenges' | 'achievements' | 'profile-edit' | 'posture-analysis';
 
 const ClientDashboard: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -90,9 +92,10 @@ const ClientDashboard: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
                     {[
                         { id: 'nutrition-log', label: t('nav.nutritionLog'), color: 'bg-emerald-500' },
+                        { id: 'posture-analysis', label: 'Técnica IA', color: 'bg-rose-500', icon: <CameraIcon className="w-6 h-6"/> },
                         { id: 'progress', label: t('nav.progress'), color: 'bg-amber-500' },
                         { id: 'ai-coach', label: t('nav.aiCoach'), color: 'bg-violet-500' },
                         { id: 'social', label: t('nav.social'), color: 'bg-blue-500' }
@@ -103,9 +106,9 @@ const ClientDashboard: React.FC = () => {
                             className="bg-white dark:bg-gray-800 p-4 rounded-3xl shadow-sm border border-black/5 hover:shadow-md transition-all flex flex-col items-center gap-2 group"
                         >
                             <div className={`w-10 h-10 rounded-2xl ${btn.color} flex items-center justify-center text-white group-hover:scale-110 transition-transform`}>
-                                <LogoIcon className="w-6 h-6" />
+                                {btn.icon || <LogoIcon className="w-6 h-6" />}
                             </div>
-                            <span className="text-xs font-black uppercase tracking-tighter text-gray-500 dark:text-gray-400">{btn.label}</span>
+                            <span className="text-[10px] font-black uppercase tracking-tighter text-gray-500 dark:text-gray-400 text-center">{btn.label}</span>
                         </button>
                     ))}
                 </div>
@@ -118,6 +121,7 @@ const ClientDashboard: React.FC = () => {
           case 'messages': return <MessagingView />;
           case 'ai-coach': return <AICoachView />;
           case 'nutrition-log': return <NutritionLog />;
+          case 'posture-analysis': return <PostureAnalysis />;
           case 'challenges': return <ChallengesView />;
           case 'achievements': return <AchievementsView />;
           case 'membership-card': return <MembershipCard user={currentUser} />;
@@ -155,7 +159,7 @@ const ClientDashboard: React.FC = () => {
                 </div>
 
                 <nav className="hidden md:flex items-center gap-1 bg-gray-100/50 dark:bg-gray-800/50 p-1 rounded-2xl border border-black/[0.02] dark:border-white/[0.02]">
-                    {['dashboard', 'social', 'ai-coach', 'nutrition-log'].map(v => (
+                    {['dashboard', 'social', 'ai-coach', 'nutrition-log', 'posture-analysis'].map(v => (
                         <button 
                             key={v} 
                             onClick={() => setActiveView(v as any)} 
@@ -165,7 +169,7 @@ const ClientDashboard: React.FC = () => {
                                     : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
                                 }`}
                         >
-                            {t(`nav.${v === 'nutrition-log' ? 'nutritionLog' : v === 'ai-coach' ? 'aiCoach' : v}`)}
+                            {v === 'posture-analysis' ? 'Técnica IA' : t(`nav.${v === 'nutrition-log' ? 'nutritionLog' : v === 'ai-coach' ? 'aiCoach' : v}`)}
                             {activeView === v && (
                                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-primary rounded-full"></span>
                             )}

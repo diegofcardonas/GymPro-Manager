@@ -2,6 +2,7 @@
   "name": "GymPro Manager",
   "description": "Plataforma integral de gestión de gimnasios moderna, receptiva y potenciada por Inteligencia Artificial (Gemini).",
   "requestFramePermissions": [
-    "camera"
+    "camera",
+    "microphone"
   ]
 }

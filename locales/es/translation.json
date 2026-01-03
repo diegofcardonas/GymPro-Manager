@@ -23,7 +23,9 @@
     "user": "Usuario",
     "warning": "Atención",
     "unassigned": "Sin asignar",
-    "add": "Añadir"
+    "add": "Añadir",
+    "logout": "Cerrar Sesión",
+    "settings": "Ajustes"
   },
   "nav": {
     "dashboard": "Panel Inicio",
@@ -49,7 +51,22 @@
     "progress": "Mi Progreso",
     "aiCoach": "Coach IA",
     "profile": "Perfil",
-    "logout": "Cerrar Sesión"
+    "logout": "Cerrar Sesión",
+    "analysis": "Análisis Postura"
+  },
+  "player": {
+    "start": "Comenzar Entrenamiento",
+    "next": "Siguiente Ejercicio",
+    "finish": "Terminar Rutina",
+    "rest": "Tiempo de Descanso",
+    "skip": "Saltar",
+    "wellDone": "¡Excelente trabajo!"
+  },
+  "analysis": {
+    "title": "Análisis de Técnica IA",
+    "upload": "Subir Foto de Ejercicio",
+    "analyzing": "La IA está analizando tu técnica...",
+    "feedback": "Feedback del Coach"
   },
   "splash": {
     "tagline": "Forjando tu mejor versión",
