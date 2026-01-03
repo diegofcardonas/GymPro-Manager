@@ -1,8 +1,9 @@
+
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import i18n from 'i18next';
-import { I18nextProvider, initReactI18next } from 'react-i18next';
+import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import HttpApi from 'i18next-http-backend';
 
@@ -11,14 +12,17 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json',
-    },
-    ns: ['translation'],
-    defaultNS: 'translation',
     fallbackLng: 'en',
+    supportedLngs: ['en', 'es'],
+    backend: {
+      loadPath: '/locales/{{lng}}/translation.json',
+    },
     interpolation: {
-      escapeValue: false, // React already safes from xss
+      escapeValue: false,
+    },
+    detection: {
+      order: ['localStorage', 'navigator'],
+      caches: ['localStorage'],
     },
   });
 
@@ -30,10 +34,8 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <Suspense fallback="Loading...">
-      <I18nextProvider i18n={i18n}>
-        <App />
-      </I18nextProvider>
+    <Suspense fallback={<div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 font-bold">GymPro Loading...</div>}>
+      <App />
     </Suspense>
   </React.StrictMode>
 );

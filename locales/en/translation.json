@@ -1,9 +1,8 @@
 
 {
-  "common": {
+  "general": {
     "appName": "GymPro Manager",
     "save": "Save",
-    "saveChanges": "Save Changes",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
@@ -18,76 +17,75 @@
     "view": "View",
     "create": "Create",
     "kg": "kg",
-    "cm": "cm"
-  },
-  "auth": {
-    "login": "Log In",
-    "signup": "Sign Up",
-    "email": "Email Address",
-    "password": "Password",
-    "name": "Full Name",
-    "forgotPassword": "Forgot password?",
-    "dontHaveAccount": "Don't have an account?",
-    "alreadyHaveAccount": "Already have an account?",
-    "demoAccess": "Demo Access",
-    "errorMissingFields": "Please fill all fields",
-    "errorUnexpected": "An unexpected error occurred"
-  },
-  "nav": {
-    "dashboard": "Dashboard",
-    "social": "Community",
-    "tasks": "Tasks",
-    "users": "Users",
-    "classes": "Classes",
-    "routines": "Routines",
-    "finances": "Finances",
+    "cm": "cm",
+    "messages": "Messages",
     "settings": "Settings",
     "logout": "Log Out",
-    "progress": "My Progress",
-    "aiCoach": "AI Coach",
-    "nutrition": "AI Nutrition",
-    "profile": "My Profile"
+    "user": "User",
+    "warning": "Warning"
   },
-  "tasks": {
-    "title": "Task Management",
-    "subtitle": "Supervise team responsibilities.",
-    "myTasks": "My Tasks",
-    "newTask": "New Task",
-    "editTask": "Edit Task",
-    "status": "Status",
-    "priority": "Priority",
-    "dueDate": "Due Date",
-    "assignedBy": "Assigned by",
-    "assignTo": "Assign to",
-    "description": "Description",
-    "taskName": "Task Name",
-    "noTasks": "No tasks assigned",
-    "noTasksDesc": "Great job! Your list is clear.",
-    "statusUpdateSuccess": "Status updated"
+  "sidebar": {
+    "overview": "Overview",
+    "summary": "Summary",
+    "home": "Home",
+    "management": "Management",
+    "gymOperations": "Gym Operations",
+    "community": "Community",
+    "system": "System",
+    "training": "Training",
+    "account": "Account",
+    "communication": "Communication"
   },
-  "progress": {
-    "title": "My Evolution",
-    "subtitle": "Track your gains and records.",
-    "maxWeight": "Max Weight",
-    "maxVolume": "Total Volume",
-    "est1rm": "Est. 1RM",
-    "totalSessions": "Sessions",
-    "strengthTrend": "Strength Trend",
-    "noDataDesc": "Log your first workout to see your progress chart."
+  "admin": {
+    "sidebar": {
+      "dashboard": "Main Panel",
+      "reports": "Data Reports",
+      "userManagement": "User Control",
+      "finances": "Accounting",
+      "tasks": "Team Tasks",
+      "membershipTiers": "Memberships",
+      "classSchedule": "Class Calendar",
+      "routineTemplates": "Workouts",
+      "equipment": "Inventory",
+      "announcements": "Bulletins",
+      "challenges": "Challenges",
+      "notifications": "Notifications",
+      "appSettings": "System Config",
+      "mySettings": "Personal Prefs"
+    }
   },
-  "profile": {
-    "editTitle": "Edit Profile",
-    "personal": "Personal Info",
-    "fitness": "Health & Goals",
-    "career": "Professional",
-    "emergency": "Emergency",
-    "fullName": "Full Name",
-    "mobile": "Mobile",
-    "height": "Height",
-    "weight": "Weight",
-    "imc": "BMI",
-    "prs": "Personal Records",
-    "success": "Profile updated successfully"
+  "client": {
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "social": "Community Feed",
+      "ai-coach": "AI Personal Coach",
+      "routine": "Current Routine",
+      "workout-log": "Record Workout",
+      "nutrition-log": "Meal Analysis",
+      "progress": "My Statistics",
+      "classes": "Book Class",
+      "challenges": "Challenges",
+      "messages": "Support Chat",
+      "membership-card": "Digital ID",
+      "profile": "My Profile",
+      "settings": "Preferences"
+    }
+  },
+  "trainer": {
+    "sidebar": {
+      "dashboard": "Overview",
+      "tasks": "My To-Do List",
+      "clients": "My Clients",
+      "schedule": "My Schedule",
+      "templates": "Routine Library",
+      "messages": "Messages",
+      "profile": "Profile",
+      "notifications": "Alerts",
+      "settings": "Settings"
+    }
+  },
+  "app": {
+    "reportProblem": "Report Issue"
   },
   "enums": {
     "Role": {
@@ -96,6 +94,7 @@
       "TRAINER": "Trainer",
       "RECEPTIONIST": "Receptionist",
       "GENERAL_MANAGER": "Manager",
+      "GROUP_INSTRUCTOR": "Instructor",
       "NUTRITIONIST": "Nutritionist",
       "PHYSIOTHERAPIST": "Physio"
     },
@@ -116,11 +115,19 @@
     }
   },
   "toast": {
-    "welcome": "Welcome back, {{name}}!",
+    "welcome": "Welcome, {{name}}!",
     "loggedOut": "Logged out successfully",
-    "passwordError": "Invalid email or password",
-    "emailExists": "Email already registered",
-    "accountCreated": "Account created!"
+    "passwordError": "Invalid credentials",
+    "emailExists": "User already exists",
+    "accountCreated": "Account registered"
+  },
+  "profile": {
+    "personal": "Personal Info",
+    "fitness": "Fitness Goals",
+    "career": "Professional Info",
+    "emergency": "Emergency Contact",
+    "editTitle": "Edit My Profile",
+    "success": "Profile saved!"
   },
   "days": {
     "Monday": "Monday",

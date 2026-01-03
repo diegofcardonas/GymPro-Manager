@@ -1,5 +1,5 @@
 
-import React, { useState, useContext, useMemo } from 'react';
+import React, { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AuthContext } from '../context/AuthContext';
 import DashboardOverview from './admin/DashboardOverview';
@@ -34,10 +34,8 @@ const AdminDashboard: React.FC = () => {
     const { currentUser, logout } = useContext(AuthContext);
     const [activeView, setActiveView] = useState<View>('dashboard');
     const [filter, setFilter] = useState<DashboardFilter>(null);
-    
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
     const [selectedUserForManagement, setSelectedUserForManagement] = useState<User | null>(null);
 
     const handleNavigation = (view: any, newFilter: DashboardFilter = null) => {
@@ -73,21 +71,21 @@ const AdminDashboard: React.FC = () => {
     }
     
     const viewTitles: Record<View, string> = {
-        dashboard: t('admin.sidebar.dashboard'),
-        users: t('admin.sidebar.users'),
-        reports: t('admin.sidebar.reports'),
-        payments: t('admin.sidebar.payments'),
-        pos: t('admin.sidebar.pos'),
-        tasks: t('admin.sidebar.tasks'),
-        'class-schedule': t('admin.sidebar.classes'),
-        announcements: t('admin.sidebar.announcements'),
-        challenges: t('admin.sidebar.challenges'),
-        equipment: t('admin.sidebar.equipment'),
-        'membership-tiers': t('admin.sidebar.tiers'),
-        'routine-templates': t('admin.sidebar.templates'),
-        'app-settings': t('admin.sidebar.appSettings'),
-        notifications: t('admin.sidebar.notifications'),
-        settings: t('admin.sidebar.settings'),
+        dashboard: t('nav.dashboard'),
+        users: t('nav.users'),
+        reports: t('nav.reports'),
+        payments: t('nav.payments'),
+        pos: t('nav.pos'),
+        tasks: t('nav.tasks'),
+        'class-schedule': t('nav.classes'),
+        announcements: t('nav.announcements'),
+        challenges: t('nav.challenges'),
+        equipment: t('nav.equipment'),
+        'membership-tiers': t('nav.tiers'),
+        'routine-templates': t('nav.templates'),
+        'app-settings': t('nav.appSettings'),
+        notifications: t('nav.notifications'),
+        settings: t('nav.mySettings'),
         'profile-edit': t('profile.editTitle')
     }
 

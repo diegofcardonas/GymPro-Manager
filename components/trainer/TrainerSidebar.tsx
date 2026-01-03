@@ -33,7 +33,7 @@ const TrainerSidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isO
             title: t('sidebar.summary'),
             items: [
                 { id: 'dashboard', label: t('trainer.sidebar.dashboard'), icon: ChartBarIcon },
-                { id: 'tasks', label: 'Mis Tareas', icon: ClipboardDocumentCheckIcon },
+                { id: 'tasks', label: t('trainer.sidebar.tasks'), icon: ClipboardDocumentCheckIcon },
             ]
         },
         {

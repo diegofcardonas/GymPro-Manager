@@ -1,9 +1,8 @@
 
 {
-  "common": {
+  "general": {
     "appName": "GymPro Manager",
     "save": "Guardar",
-    "saveChanges": "Guardar Cambios",
     "cancel": "Cancelar",
     "delete": "Eliminar",
     "edit": "Editar",
@@ -18,76 +17,75 @@
     "view": "Ver",
     "create": "Crear",
     "kg": "kg",
-    "cm": "cm"
-  },
-  "auth": {
-    "login": "Iniciar Sesión",
-    "signup": "Registrarse",
-    "email": "Correo Electrónico",
-    "password": "Contraseña",
-    "name": "Nombre Completo",
-    "forgotPassword": "¿Olvidaste tu contraseña?",
-    "dontHaveAccount": "¿No tienes cuenta?",
-    "alreadyHaveAccount": "¿Ya tienes cuenta?",
-    "demoAccess": "Acceso de Demostración",
-    "errorMissingFields": "Por favor completa todos los campos",
-    "errorUnexpected": "Ocurrió un error inesperado"
-  },
-  "nav": {
-    "dashboard": "Panel",
-    "social": "Comunidad",
-    "tasks": "Tareas",
-    "users": "Usuarios",
-    "classes": "Clases",
-    "routines": "Rutinas",
-    "finances": "Finanzas",
+    "cm": "cm",
+    "messages": "Mensajes",
     "settings": "Ajustes",
     "logout": "Cerrar Sesión",
-    "progress": "Mi Progreso",
-    "aiCoach": "Coach IA",
-    "nutrition": "Nutrición IA",
-    "profile": "Mi Perfil"
+    "user": "Usuario",
+    "warning": "Atención"
   },
-  "tasks": {
-    "title": "Gestión de Tareas",
-    "subtitle": "Supervisa las responsabilidades del equipo.",
-    "myTasks": "Mis Tareas",
-    "newTask": "Nueva Tarea",
-    "editTask": "Editar Tarea",
-    "status": "Estado",
-    "priority": "Prioridad",
-    "dueDate": "Fecha Límite",
-    "assignedBy": "Asignado por",
-    "assignTo": "Asignar a",
-    "description": "Descripción",
-    "taskName": "Nombre de la Tarea",
-    "noTasks": "Sin tareas asignadas",
-    "noTasksDesc": "¡Buen trabajo! Tu lista está limpia.",
-    "statusUpdateSuccess": "Estado actualizado"
+  "sidebar": {
+    "overview": "Resumen",
+    "summary": "Sumario",
+    "home": "Inicio",
+    "management": "Gestión",
+    "gymOperations": "Operaciones",
+    "community": "Comunidad",
+    "system": "Sistema",
+    "training": "Entrenamiento",
+    "account": "Cuenta",
+    "communication": "Comunicación"
   },
-  "progress": {
-    "title": "Mi Evolución",
-    "subtitle": "Sigue tus ganancias y récords.",
-    "maxWeight": "Peso Máx",
-    "maxVolume": "Volumen Total",
-    "est1rm": "Est. 1RM",
-    "totalSessions": "Sesiones",
-    "strengthTrend": "Tendencia de Fuerza",
-    "noDataDesc": "Registra tu primer entrenamiento para ver tu gráfica de progreso."
+  "admin": {
+    "sidebar": {
+      "dashboard": "Panel Principal",
+      "reports": "Reportes",
+      "userManagement": "Usuarios",
+      "finances": "Finanzas",
+      "tasks": "Tareas de Equipo",
+      "membershipTiers": "Membresías",
+      "classSchedule": "Calendario Clases",
+      "routineTemplates": "Rutinas Base",
+      "equipment": "Inventario Equipos",
+      "announcements": "Anuncios App",
+      "challenges": "Desafíos",
+      "notifications": "Notificaciones",
+      "appSettings": "Ajustes App",
+      "mySettings": "Mis Ajustes"
+    }
   },
-  "profile": {
-    "editTitle": "Editar Perfil",
-    "personal": "Info Personal",
-    "fitness": "Salud y Metas",
-    "career": "Profesional",
-    "emergency": "Emergencia",
-    "fullName": "Nombre Completo",
-    "mobile": "Móvil",
-    "height": "Altura",
-    "weight": "Peso",
-    "imc": "IMC",
-    "prs": "Récords Personales",
-    "success": "Perfil actualizado con éxito"
+  "client": {
+    "sidebar": {
+      "dashboard": "Panel Inicio",
+      "social": "Muro Social",
+      "ai-coach": "Coach IA",
+      "routine": "Mi Rutina",
+      "workout-log": "Registrar Entreno",
+      "nutrition-log": "Nutrición IA",
+      "progress": "Mi Progreso",
+      "classes": "Reservar Clase",
+      "challenges": "Desafíos",
+      "messages": "Mensajes",
+      "membership-card": "Carnet Digital",
+      "profile": "Mi Perfil",
+      "settings": "Preferencias"
+    }
+  },
+  "trainer": {
+    "sidebar": {
+      "dashboard": "Resumen",
+      "tasks": "Mis Tareas",
+      "clients": "Mis Clientes",
+      "schedule": "Mi Horario",
+      "templates": "Biblioteca Rutinas",
+      "messages": "Mensajes",
+      "profile": "Perfil",
+      "notifications": "Alertas",
+      "settings": "Ajustes"
+    }
+  },
+  "app": {
+    "reportProblem": "Informar Problema"
   },
   "enums": {
     "Role": {
@@ -96,6 +94,7 @@
       "TRAINER": "Entrenador",
       "RECEPTIONIST": "Recepcionista",
       "GENERAL_MANAGER": "Gerente",
+      "GROUP_INSTRUCTOR": "Instructor",
       "NUTRITIONIST": "Nutricionista",
       "PHYSIOTHERAPIST": "Fisioterapeuta"
     },
@@ -116,11 +115,19 @@
     }
   },
   "toast": {
-    "welcome": "¡Bienvenido de nuevo, {{name}}!",
-    "loggedOut": "Sesión cerrada correctamente",
-    "passwordError": "Email o contraseña incorrectos",
-    "emailExists": "El email ya está registrado",
-    "accountCreated": "¡Cuenta creada!"
+    "welcome": "¡Bienvenido, {{name}}!",
+    "loggedOut": "Sesión cerrada",
+    "passwordError": "Credenciales inválidas",
+    "emailExists": "El usuario ya existe",
+    "accountCreated": "Cuenta registrada"
+  },
+  "profile": {
+    "personal": "Datos Personales",
+    "fitness": "Salud y Metas",
+    "career": "Profesional",
+    "emergency": "Contacto Emergencia",
+    "editTitle": "Editar Mi Perfil",
+    "success": "Perfil actualizado!"
   },
   "days": {
     "Monday": "Lunes",

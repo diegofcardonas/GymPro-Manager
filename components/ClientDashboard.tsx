@@ -41,22 +41,24 @@ const ClientDashboard: React.FC = () => {
         if (!currentUser || !process.env.API_KEY) return;
         try {
             const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-            const prompt = `Genera una frase de motivación fitness muy corta (máximo 15 palabras) para ${currentUser.name}. Idioma: ${i18n.language}.`;
+            const prompt = `Generate a very short fitness motivation quote (max 15 words) for ${currentUser.name}. Language: ${i18n.language}.`;
             const res = await ai.models.generateContent({ 
                 model: 'gemini-3-flash-preview', 
                 contents: prompt 
             });
-            setDailyQuote(res.text || 'Hoy es un gran día para superar tus límites.');
+            setDailyQuote(res.text || t('client.dashboard.aiQuote'));
         } catch (e) {
-            setDailyQuote('Forja tu mejor versión hoy mismo.');
+            setDailyQuote(t('client.dashboard.aiQuote'));
         } finally {
             setLoadingQuote(false);
         }
     };
     if (activeView === 'dashboard') fetchQuote();
-  }, [currentUser, i18n.language, activeView]);
+  }, [currentUser, i18n.language, activeView, t]);
 
   if (!currentUser) return null;
+
+  const daysLeft = Math.ceil((new Date(currentUser.membership.endDate).getTime() - new Date().getTime())/(1000*60*60*24));
 
   const renderContent = () => {
       switch (activeView) {
@@ -64,18 +66,18 @@ const ClientDashboard: React.FC = () => {
               <div className="w-full max-w-4xl space-y-6 animate-fade-in">
                 <div className="bg-white dark:bg-gray-800/50 rounded-4xl shadow-xl p-8 border border-black/5 flex flex-col md:flex-row items-center gap-8">
                     <div className="flex-1 text-center md:text-left">
-                        <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-2">¡Hola, {currentUser.name.split(' ')[0]}!</h2>
-                        <p className="text-gray-500 mb-8 font-medium">Tienes {Math.ceil((new Date(currentUser.membership.endDate).getTime() - new Date().getTime())/(1000*60*60*24))} días de membresía restantes.</p>
+                        <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-2">{t('client.dashboard.welcome', { name: currentUser.name.split(' ')[0] })}</h2>
+                        <p className="text-gray-500 mb-8 font-medium">{t('client.dashboard.daysLeft', { count: daysLeft })}</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <button onClick={() => setActiveView('workout-log')} className="p-4 bg-primary text-white rounded-3xl font-black text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">Empezar a Entrenar</button>
-                            <button onClick={() => setActiveView('classes')} className="p-4 bg-gray-100 dark:bg-gray-700 rounded-3xl font-black text-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">Ver Clases</button>
+                            <button onClick={() => setActiveView('workout-log')} className="p-4 bg-primary text-white rounded-3xl font-black text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">{t('client.dashboard.startTraining')}</button>
+                            <button onClick={() => setActiveView('classes')} className="p-4 bg-gray-100 dark:bg-gray-700 rounded-3xl font-black text-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">{t('client.dashboard.viewClasses')}</button>
                         </div>
                     </div>
                     
                     <div className="w-full md:w-72 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-6 text-white relative overflow-hidden shadow-2xl group">
                         <SparklesAiIcon className="absolute -right-4 -top-4 w-24 h-24 opacity-10 group-hover:scale-125 transition-transform duration-1000" />
                         <div className="relative z-10 flex flex-col h-full">
-                            <span className="text-[10px] font-black uppercase tracking-widest opacity-70 mb-3">Chispa Diaria IA</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest opacity-70 mb-3">{t('client.dashboard.aiQuote')}</span>
                             {loadingQuote ? (
                                 <div className="space-y-2">
                                     <div className="h-3 bg-white/20 rounded w-full animate-pulse"></div>
@@ -90,10 +92,10 @@ const ClientDashboard: React.FC = () => {
 
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     {[
-                        { id: 'nutrition-log', label: 'Comida', color: 'bg-emerald-500' },
-                        { id: 'progress', label: 'Metas', color: 'bg-amber-500' },
-                        { id: 'ai-coach', label: 'Coach IA', color: 'bg-violet-500' },
-                        { id: 'social', label: 'Muro', color: 'bg-blue-500' }
+                        { id: 'nutrition-log', label: t('nav.nutritionLog'), color: 'bg-emerald-500' },
+                        { id: 'progress', label: t('nav.progress'), color: 'bg-amber-500' },
+                        { id: 'ai-coach', label: t('nav.aiCoach'), color: 'bg-violet-500' },
+                        { id: 'social', label: t('nav.social'), color: 'bg-blue-500' }
                     ].map(btn => (
                         <button 
                             key={btn.id}
@@ -128,8 +130,8 @@ const ClientDashboard: React.FC = () => {
                   <h2 className="text-3xl font-black">{currentUser.name}</h2>
                   <p className="text-gray-500 mb-8 font-medium">{currentUser.email}</p>
                   <div className="grid grid-cols-2 gap-4">
-                    <button onClick={() => setActiveView('profile-edit')} className="p-4 bg-primary text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 transition-all">Editar Perfil</button>
-                    <button onClick={() => setActiveView('settings')} className="p-4 bg-gray-100 dark:bg-gray-700 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition-all">Ajustes</button>
+                    <button onClick={() => setActiveView('profile-edit')} className="p-4 bg-primary text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 transition-all">{t('profile.editTitle')}</button>
+                    <button onClick={() => setActiveView('settings')} className="p-4 bg-gray-100 dark:bg-gray-700 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition-all">{t('general.settings')}</button>
                   </div>
               </div>
           );
@@ -163,7 +165,7 @@ const ClientDashboard: React.FC = () => {
                                     : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
                                 }`}
                         >
-                            {t(`client.sidebar.${v}`)}
+                            {t(`nav.${v === 'nutrition-log' ? 'nutritionLog' : v === 'ai-coach' ? 'aiCoach' : v}`)}
                             {activeView === v && (
                                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-primary rounded-full"></span>
                             )}

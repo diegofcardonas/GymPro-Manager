@@ -49,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, on
             items: [
                 { id: 'users', label: t('admin.sidebar.userManagement'), icon: UserGroupIcon },
                 { id: 'payments', label: t('admin.sidebar.finances'), icon: CurrencyDollarIcon },
-                { id: 'tasks', label: 'Tareas del Equipo', icon: ClipboardDocumentCheckIcon },
+                { id: 'tasks', label: t('admin.sidebar.tasks'), icon: ClipboardDocumentCheckIcon },
                 { id: 'membership-tiers', label: t('admin.sidebar.membershipTiers'), icon: CreditCardIcon },
             ]
         },
@@ -114,7 +114,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, on
                                     <button 
                                         onClick={() => {
                                             setActiveView(item.id as View);
-                                            // Only close on mobile
                                             if (window.innerWidth < 768) onClose();
                                         }}
                                         className={`w-full flex items-center p-2 rounded-lg transition-colors group relative
@@ -160,7 +159,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, on
                 </button>
             </div>
             
-            {/* Toggle Button for Desktop */}
             <div className="hidden md:flex p-4 border-t border-black/5 dark:border-white/5 justify-end">
                 <button 
                     onClick={toggleCollapse}
