@@ -69,9 +69,6 @@ const App: React.FC = () => {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   
-  const ai = useMemo(() => new GoogleGenAI({ apiKey: process.env.API_KEY }), []);
-  const aiChatSessions = useMemo(() => new Map<string, any>(), []);
-
   useEffect(() => { setTimeout(() => setIsLoading(false), 2000); }, []);
 
   const addToast = useCallback((message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info', duration = 3000) => {
@@ -128,13 +125,94 @@ const App: React.FC = () => {
     setNotifications(prev => [{ ...n, id: `n${Date.now()}`, timestamp: new Date().toISOString(), isRead: false }, ...prev]);
   }, [setNotifications]);
 
+  const markNotificationAsRead = useCallback((id: string) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
+  }, [setNotifications]);
+
+  const markAllNotificationsAsRead = useCallback((userId: string) => {
+    setNotifications(prev => prev.map(n => n.userId === userId ? { ...n, isRead: true } : n));
+  }, [setNotifications]);
+
   const addPayment = useCallback((p: Omit<Payment, 'id'>) => setPayments(prev => [{ ...p, id: `p${Date.now()}` }, ...prev]), [setPayments]);
+
+  const logWorkout = useCallback((userId: string, session: WorkoutSession) => {
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      const updatedUser = { ...user, workoutHistory: [session, ...(user.workoutHistory || [])] };
+      updateUser(updatedUser);
+      addToast(t('toast.workoutLogged'), 'success');
+    }
+  }, [users, updateUser, addToast, t]);
+
+  const sendAICoachMessage = useCallback(async (userId: string, message: AICoachMessage) => {
+    const user = users.find(u => u.id === userId);
+    if (!user) return null;
+
+    const history = user.aiCoachHistory || [];
+    const updatedUserWithUserMsg = { ...user, aiCoachHistory: [...history, message] };
+    updateUser(updatedUserWithUserMsg);
+
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+      const response = await ai.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: message.text,
+        config: {
+          systemInstruction: t('client.aiCoach.systemInstruction'),
+        }
+      });
+      
+      const modelMessage: AICoachMessage = {
+        role: 'model',
+        text: response.text || '',
+        timestamp: new Date().toISOString()
+      };
+
+      const finalHistory = [...updatedUserWithUserMsg.aiCoachHistory, modelMessage];
+      updateUser({ ...updatedUserWithUserMsg, aiCoachHistory: finalHistory });
+      return modelMessage;
+    } catch (error) {
+      console.error("AI Coach Error:", error);
+      addToast(t('app.aiCoachError'), 'error');
+      return null;
+    }
+  }, [users, updateUser, addToast, t]);
+
+  const bookClass = useCallback((classId: string, userId: string) => {
+    setGymClasses(prev => prev.map(c => {
+      if (c.id !== classId) return c;
+      if (c.bookedClientIds.includes(userId)) {
+        addToast(t('toast.alreadyBooked'), 'warning');
+        return c;
+      }
+      if (c.bookedClientIds.length >= c.capacity) {
+        addToast(t('toast.classFull'), 'error');
+        return c;
+      }
+      addToast(t('toast.bookedSuccess', { name: c.name }), 'success');
+      return { ...c, bookedClientIds: [...c.bookedClientIds, userId] };
+    }));
+  }, [setGymClasses, addToast, t]);
+
+  const sendMessage = useCallback((msg: Omit<Message, 'id' | 'timestamp' | 'isRead'>) => {
+    const newMsg: Message = {
+      ...msg,
+      id: `m-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      isRead: false
+    };
+    setMessages(prev => [...prev, newMsg]);
+  }, [setMessages]);
+
+  const markMessagesAsRead = useCallback((conversationId: string, userId: string) => {
+    setMessages(prev => prev.map(m => m.conversationId === conversationId && m.receiverId === userId ? { ...m, isRead: true } : m));
+  }, [setMessages]);
 
   const contextValue = useMemo(() => ({
     currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts,
-    login, logout, updateUser, addNotification, unlockAchievement, addPayment, addPost, likePost, toggleReportModal: () => setIsReportModalOpen(prev => !prev),
-    addToast, removeToast
-  }), [currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, login, logout, updateUser, addNotification, unlockAchievement, addPayment, addPost, likePost, addToast, removeToast]);
+    login, logout, updateUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, unlockAchievement, addPayment, addPost, likePost, toggleReportModal: () => setIsReportModalOpen(prev => !prev),
+    addToast, removeToast, logWorkout, sendAICoachMessage, bookClass, sendMessage, markMessagesAsRead
+  }), [currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, login, logout, updateUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, unlockAchievement, addPayment, addPost, likePost, addToast, removeToast, logWorkout, sendAICoachMessage, bookClass, sendMessage, markMessagesAsRead]);
 
   return (
     <ThemeProvider>
