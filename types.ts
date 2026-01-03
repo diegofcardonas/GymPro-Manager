@@ -29,6 +29,23 @@ export enum NotificationType {
     ALERT = 'alert',
 }
 
+export enum TaskStatus {
+    PENDING = 'Pendiente',
+    IN_PROGRESS = 'En Progreso',
+    COMPLETED = 'Completado',
+}
+
+export interface Task {
+    id: string;
+    title: string;
+    description: string;
+    assignedToId: string;
+    assignedById: string;
+    dueDate: string;
+    status: TaskStatus;
+    priority: 'Baja' | 'Media' | 'Alta';
+}
+
 export interface Notification {
     id: string;
     userId: string;

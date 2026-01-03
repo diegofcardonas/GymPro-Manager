@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { User, Role, Notification, PreEstablishedRoutine, NotificationType, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, MembershipStatus, ToastMessage, Expense, Budget, SocialPost } from './types';
+import { User, Role, Notification, PreEstablishedRoutine, NotificationType, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, MembershipStatus, ToastMessage, Expense, Budget, SocialPost, Task } from './types';
 import { AuthContext } from './context/AuthContext';
 import { MOCK_USERS } from './data/mockUsers';
 import { MOCK_NOTIFICATIONS } from './data/mockNotifications';
@@ -16,6 +16,7 @@ import { MOCK_EQUIPMENT } from './data/mockEquipment';
 import { MOCK_TIERS } from './data/membershipTiers';
 import { MOCK_EXPENSES } from './data/mockExpenses';
 import { MOCK_BUDGETS } from './data/mockBudgets';
+import { MOCK_TASKS } from './data/mockTasks';
 import { ThemeProvider } from './context/ThemeContext';
 
 import AdminDashboard from './components/AdminDashboard';
@@ -65,6 +66,7 @@ const App: React.FC = () => {
   const [expenses, setExpenses] = usePersistentState<Expense[]>('gympro_expenses', MOCK_EXPENSES);
   const [budgets, setBudgets] = usePersistentState<Budget[]>('gympro_budgets', MOCK_BUDGETS);
   const [posts, setPosts] = usePersistentState<SocialPost[]>('gympro_posts', []);
+  const [tasks, setTasks] = usePersistentState<Task[]>('gympro_tasks', MOCK_TASKS);
   
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -208,11 +210,26 @@ const App: React.FC = () => {
     setMessages(prev => prev.map(m => m.conversationId === conversationId && m.receiverId === userId ? { ...m, isRead: true } : m));
   }, [setMessages]);
 
+  const addTask = useCallback((task: Omit<Task, 'id'>) => {
+    const newTask = { ...task, id: `task-${Date.now()}` };
+    setTasks(prev => [newTask, ...prev]);
+    addToast(t('toast.taskAdded'), 'success');
+  }, [setTasks, addToast, t]);
+
+  const updateTask = useCallback((updatedTask: Task) => {
+    setTasks(prev => prev.map(t => t.id === updatedTask.id ? updatedTask : t));
+  }, [setTasks]);
+
+  const deleteTask = useCallback((id: string) => {
+    setTasks(prev => prev.filter(t => t.id !== id));
+    addToast(t('toast.taskDeleted'), 'info');
+  }, [setTasks, addToast, t]);
+
   const contextValue = useMemo(() => ({
-    currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts,
+    currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, tasks,
     login, logout, updateUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, unlockAchievement, addPayment, addPost, likePost, toggleReportModal: () => setIsReportModalOpen(prev => !prev),
-    addToast, removeToast, logWorkout, sendAICoachMessage, bookClass, sendMessage, markMessagesAsRead
-  }), [currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, login, logout, updateUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, unlockAchievement, addPayment, addPost, likePost, addToast, removeToast, logWorkout, sendAICoachMessage, bookClass, sendMessage, markMessagesAsRead]);
+    addToast, removeToast, logWorkout, sendAICoachMessage, bookClass, sendMessage, markMessagesAsRead, addTask, updateTask, deleteTask
+  }), [currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, tasks, login, logout, updateUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, unlockAchievement, addPayment, addPost, likePost, addToast, removeToast, logWorkout, sendAICoachMessage, bookClass, sendMessage, markMessagesAsRead, addTask, updateTask, deleteTask]);
 
   return (
     <ThemeProvider>

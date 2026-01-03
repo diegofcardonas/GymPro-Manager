@@ -18,9 +18,10 @@ import { WrenchIcon } from './icons/WrenchIcon';
 import { ChevronLeftIcon } from './icons/ChevronLeftIcon';
 import { ChevronRightIcon } from './icons/ChevronRightIcon';
 import { ExclamationTriangleIcon } from './icons/ExclamationTriangleIcon';
+import { ClipboardDocumentCheckIcon } from './icons/ClipboardDocumentCheckIcon';
 import { AuthContext } from '../context/AuthContext';
 
-type View = 'dashboard' | 'users' | 'reports' | 'membership-tiers' | 'routine-templates' | 'app-settings' | 'notifications' | 'settings' | 'payments' | 'class-schedule' | 'announcements' | 'challenges' | 'equipment';
+type View = 'dashboard' | 'users' | 'reports' | 'membership-tiers' | 'routine-templates' | 'app-settings' | 'notifications' | 'settings' | 'payments' | 'class-schedule' | 'announcements' | 'challenges' | 'equipment' | 'tasks';
 
 interface SidebarProps {
     activeView: View;
@@ -48,6 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, on
             items: [
                 { id: 'users', label: t('admin.sidebar.userManagement'), icon: UserGroupIcon },
                 { id: 'payments', label: t('admin.sidebar.finances'), icon: CurrencyDollarIcon },
+                { id: 'tasks', label: 'Tareas del Equipo', icon: ClipboardDocumentCheckIcon },
                 { id: 'membership-tiers', label: t('admin.sidebar.membershipTiers'), icon: CreditCardIcon },
             ]
         },

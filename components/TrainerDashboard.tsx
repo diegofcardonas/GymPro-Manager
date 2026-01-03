@@ -24,8 +24,9 @@ import { ChatBubbleLeftRightIcon } from './icons/ChatBubbleLeftRightIcon';
 import Footer from './Footer';
 import { UserProfileMenu } from './shared/UserProfileMenu';
 import { useTranslation } from 'react-i18next';
+import TaskBoard from './shared/TaskBoard';
 
-type View = 'dashboard' | 'clients' | 'schedule' | 'messages' | 'profile' | 'routine-templates' | 'notifications' | 'settings';
+type View = 'dashboard' | 'clients' | 'schedule' | 'messages' | 'profile' | 'routine-templates' | 'notifications' | 'settings' | 'tasks';
 
 const TrainerProfileView: React.FC<{user: User, onEdit: () => void}> = ({ user, onEdit }) => {
     const { t } = useTranslation();
@@ -169,6 +170,8 @@ const TrainerDashboard: React.FC = () => {
                 return <MyClientsView myClients={myClients} handleOpenModal={handleOpenModal} />;
             case 'schedule':
                 return <TrainerSchedule />;
+            case 'tasks':
+                return <TaskBoard />;
             case 'messages':
                 return <MessagingView />;
             case 'profile':
@@ -188,6 +191,7 @@ const TrainerDashboard: React.FC = () => {
         dashboard: t('trainer.sidebar.dashboard'),
         clients: t('trainer.sidebar.clients'),
         schedule: t('trainer.sidebar.schedule'),
+        tasks: 'Mis Tareas',
         messages: t('trainer.sidebar.messages'),
         profile: t('trainer.sidebar.profile'),
         'routine-templates': t('trainer.sidebar.templates'),
@@ -650,7 +654,7 @@ const RoutineEditor: React.FC<{client: User; trainer: User; onSave: (client: Use
     const activeDayRoutine = useMemo(() => routine.find(r => r.day === activeDay), [routine, activeDay]);
 
     return (
-         <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden">
+        <form onSubmit={handleSubmit} className="flex-1 flex flex-col overflow-hidden">
              <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 flex flex-col sm:flex-row items-center gap-4 flex-shrink-0">
                 <label htmlFor="routine-template" className="text-sm font-medium text-gray-700 dark:text-gray-300 flex-shrink-0">{t('trainer.routine.applyTemplate')}:</label>
                 <select

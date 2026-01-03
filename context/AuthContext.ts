@@ -1,6 +1,6 @@
+
 import { createContext } from 'react';
-import { User, Notification, PreEstablishedRoutine, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, Role, MembershipStatus, ToastMessage, Expense, Budget } from '../types';
-import { MOCK_TIERS } from '../data/membershipTiers';
+import { User, Notification, PreEstablishedRoutine, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, Role, MembershipStatus, ToastMessage, Expense, Budget, Task } from '../types';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -19,6 +19,7 @@ interface AuthContextType {
   incidents: IncidentReport[];
   expenses: Expense[];
   budgets: Budget[];
+  tasks: Task[];
   
   // Toast State
   toasts: ToastMessage[];
@@ -86,6 +87,11 @@ interface AuthContextType {
   addBudget: (budget: Omit<Budget, 'id'>) => void;
   updateBudget: (budget: Budget) => void;
   deleteBudget: (id: string) => void;
+
+  // Tasks
+  addTask: (task: Omit<Task, 'id'>) => void;
+  updateTask: (task: Task) => void;
+  deleteTask: (id: string) => void;
   
   login: (email: string, password: string) => Promise<string | void>;
   register: (user: any) => Promise<string | void>;
@@ -108,6 +114,7 @@ export const AuthContext = createContext<AuthContextType>({
   incidents: [],
   expenses: [],
   budgets: [],
+  tasks: [],
   
   toasts: [],
   addToast: () => {},
@@ -171,6 +178,10 @@ export const AuthContext = createContext<AuthContextType>({
   addBudget: () => {},
   updateBudget: () => {},
   deleteBudget: () => {},
+
+  addTask: () => {},
+  updateTask: () => {},
+  deleteTask: () => {},
 
   login: async () => {},
   register: async () => {},

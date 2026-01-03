@@ -22,6 +22,7 @@ import ClassSchedule from './admin/ClassSchedule';
 import Announcements from './admin/Announcements';
 import ChallengesManagement from './admin/ChallengesManagement';
 import EquipmentManagement from './admin/EquipmentManagement';
+import TaskManagement from './admin/TaskManagement';
 import { MOCK_TIERS } from '../data/membershipTiers';
 import { XCircleIcon } from './icons/XCircleIcon';
 import { PencilIcon } from './icons/PencilIcon';
@@ -32,7 +33,7 @@ import { PointOfSale } from './admin/PointOfSale';
 import { UserDetailsModal } from './admin/UserDetailsModal'; // Import the new component if needed for direct usage, though UserManagement handles it now.
 
 
-type View = 'dashboard' | 'users' | 'reports' | 'membership-tiers' | 'routine-templates' | 'app-settings' | 'settings' | 'notifications' | 'payments' | 'class-schedule' | 'announcements' | 'challenges' | 'equipment' | 'pos';
+type View = 'dashboard' | 'users' | 'reports' | 'membership-tiers' | 'routine-templates' | 'app-settings' | 'settings' | 'notifications' | 'payments' | 'class-schedule' | 'announcements' | 'challenges' | 'equipment' | 'pos' | 'tasks';
 export type DashboardFilter = { type: 'status', value: MembershipStatus } | { type: 'role', value: Role.CLIENT | Role.TRAINER } | { type: 'unassigned' } | null;
 
 const AdminDashboard: React.FC = () => {
@@ -75,6 +76,8 @@ const AdminDashboard: React.FC = () => {
                 return <Payments />;
             case 'pos':
                 return <PointOfSale />;
+            case 'tasks':
+                return <TaskManagement />;
             case 'class-schedule':
                 return <ClassSchedule />;
             case 'announcements':
@@ -104,6 +107,7 @@ const AdminDashboard: React.FC = () => {
         reports: t('admin.dashboard.reports'),
         payments: t('admin.dashboard.finances'),
         pos: t('receptionist.nav.pos'),
+        tasks: 'Gestión de Tareas',
         'class-schedule': t('admin.dashboard.classSchedule'),
         announcements: t('admin.dashboard.announcements'),
         challenges: t('admin.dashboard.challenges'),

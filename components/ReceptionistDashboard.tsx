@@ -12,6 +12,7 @@ import { CameraIcon } from './icons/CameraIcon';
 import Footer from './Footer';
 import { UserProfileMenu } from './shared/UserProfileMenu';
 import { PointOfSale } from './admin/PointOfSale';
+import TaskBoard from './shared/TaskBoard';
 
 const QRScanner: React.FC<{ onScan: (userId: string) => void, onClose: () => void }> = ({ onScan, onClose }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -76,7 +77,7 @@ const QRScanner: React.FC<{ onScan: (userId: string) => void, onClose: () => voi
 const ReceptionistDashboard: React.FC = () => {
     const { t } = useTranslation();
     const { currentUser, logout, users, addNotification } = useContext(AuthContext);
-    const [activeView, setActiveView] = useState<'check-in' | 'users' | 'pos'>('check-in');
+    const [activeView, setActiveView] = useState<'check-in' | 'users' | 'pos' | 'tasks'>('check-in');
     const [searchTerm, setSearchTerm] = useState('');
     const [showScanner, setShowScanner] = useState(false);
     const [lastCheckIn, setLastCheckIn] = useState<User | null>(null);
@@ -104,9 +105,9 @@ const ReceptionistDashboard: React.FC = () => {
                     </div>
                     <div className="flex items-center gap-4">
                         <nav className="hidden md:flex bg-gray-100 dark:bg-gray-700 p-1 rounded-xl">
-                            {['check-in', 'users', 'pos'].map(v => (
+                            {['check-in', 'users', 'pos', 'tasks'].map(v => (
                                 <button key={v} onClick={() => setActiveView(v as any)} className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${activeView === v ? 'bg-white dark:bg-gray-900 text-primary shadow-sm' : 'text-gray-500'}`}>
-                                    {t(`receptionist.nav.${v}`)}
+                                    {v === 'tasks' ? 'Tareas' : t(`receptionist.nav.${v}`)}
                                 </button>
                             ))}
                         </nav>
@@ -167,6 +168,7 @@ const ReceptionistDashboard: React.FC = () => {
                     </div>
                 )}
                 {activeView === 'pos' && <PointOfSale />}
+                {activeView === 'tasks' && <TaskBoard />}
             </main>
             <Footer />
             {showScanner && <QRScanner onScan={(id) => { const u = users.find(u => u.id === id); if(u) handleCheckIn(u); }} onClose={() => setShowScanner(false)} />}

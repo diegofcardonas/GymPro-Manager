@@ -12,8 +12,9 @@ import { CalendarDaysIcon } from '../icons/CalendarDaysIcon';
 import { ChatBubbleLeftRightIcon } from '../icons/ChatBubbleLeftRightIcon';
 import { ChevronLeftIcon } from '../icons/ChevronLeftIcon';
 import { ChevronRightIcon } from '../icons/ChevronRightIcon';
+import { ClipboardDocumentCheckIcon } from '../icons/ClipboardDocumentCheckIcon';
 
-type View = 'dashboard' | 'clients' | 'schedule' | 'messages' | 'profile' | 'routine-templates' | 'notifications' | 'settings';
+type View = 'dashboard' | 'clients' | 'schedule' | 'messages' | 'profile' | 'routine-templates' | 'notifications' | 'settings' | 'tasks';
 
 interface SidebarProps {
     activeView: View;
@@ -32,6 +33,7 @@ const TrainerSidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isO
             title: t('sidebar.summary'),
             items: [
                 { id: 'dashboard', label: t('trainer.sidebar.dashboard'), icon: ChartBarIcon },
+                { id: 'tasks', label: 'Mis Tareas', icon: ClipboardDocumentCheckIcon },
             ]
         },
         {
