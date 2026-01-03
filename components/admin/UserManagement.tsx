@@ -43,8 +43,10 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
     const [currentPage, setCurrentPage] = useState(1);
     
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [preselectedRole, setPreselectedRole] = useState<Role | null>(null);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [viewingUser, setViewingUser] = useState<User | null>(null);
+    const [showRolePicker, setShowRolePicker] = useState(false);
 
     const [statusFilter, setStatusFilter] = useState<MembershipStatus | null>(null);
     const [trainerFilter, setTrainerFilter] = useState<string | null>(null);
@@ -85,7 +87,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
     
     const usersForTab = useMemo(() => {
         if (activeTab === 'OPERATIONAL') {
-            return users.filter(u => [Role.RECEPTIONIST, Role.GENERAL_MANAGER, Role.GROUP_INSTRUCTOR].includes(u.role));
+            return users.filter(u => [Role.RECEPTIONIST, Role.GENERAL_MANAGER, Role.GROUP_INSTRUCTOR, Role.SALES_AGENT, Role.MAINTENANCE].includes(u.role));
         }
         if (activeTab === 'HEALTH') {
             return users.filter(u => [Role.NUTRITIONIST, Role.PHYSIOTHERAPIST].includes(u.role));
@@ -141,8 +143,21 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
         return sortConfig.direction === 'ascending' ? <ChevronUpIcon className="h-4 w-4" /> : <ChevronDownIcon className="h-4 w-4" />;
     };
 
-    const handleOpenModal = (user: User | null) => { setSelectedUser(user); setIsModalOpen(true); };
-    const handleCloseModal = () => { setIsModalOpen(false); setSelectedUser(null); };
+    const handleOpenAdd = () => {
+        if (activeTab === 'HEALTH' || activeTab === 'OPERATIONAL') {
+            setShowRolePicker(true);
+        } else {
+            handleOpenModal(null, activeTab === Role.TRAINER ? Role.TRAINER : Role.CLIENT);
+        }
+    };
+
+    const handleOpenModal = (user: User | null, forcedRole?: Role) => { 
+        setSelectedUser(user); 
+        setPreselectedRole(forcedRole || null);
+        setIsModalOpen(true); 
+    };
+
+    const handleCloseModal = () => { setIsModalOpen(false); setSelectedUser(null); setPreselectedRole(null); };
     const handleSaveUser = (user: User) => { if (user.id && user.id !== '') updateUser(user); else addUser({ ...user, id: `u-${Date.now()}` }); handleCloseModal(); };
     const handleDeleteUser = (userId: string, e?: React.MouseEvent) => { e?.stopPropagation(); setDeleteConfirmation({ isOpen: true, id: userId, isBulk: false }); };
     const confirmDelete = () => { if (deleteConfirmation.isBulk) { selectedUserIds.forEach(id => deleteUser(id)); setSelectedUserIds([]); } else if (deleteConfirmation.id) deleteUser(deleteConfirmation.id); setDeleteConfirmation({ isOpen: false }); };
@@ -160,6 +175,12 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
         { key: 'phone', label: 'Teléfono' }, { key: 'joinDate', label: 'Alta' }, 
         { key: 'actions', label: t('general.actions'), sortable: false }
     ];
+
+    const rolesInTab = useMemo(() => {
+        if (activeTab === 'HEALTH') return [Role.NUTRITIONIST, Role.PHYSIOTHERAPIST];
+        if (activeTab === 'OPERATIONAL') return [Role.RECEPTIONIST, Role.GENERAL_MANAGER, Role.GROUP_INSTRUCTOR, Role.SALES_AGENT, Role.MAINTENANCE];
+        return [];
+    }, [activeTab]);
 
     return (
         <div className="bg-white dark:bg-gray-800/50 rounded-4xl ring-1 ring-black/5 dark:ring-white/10 w-full overflow-hidden shadow-2xl animate-fade-in">
@@ -183,7 +204,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
                                 <span>{selectedUserIds.length}</span>
                             </button>
                         )}
-                        <button onClick={() => handleOpenModal(null)} className="flex-1 lg:flex-none px-6 py-3 bg-primary text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all flex items-center justify-center gap-2">
+                        <button onClick={handleOpenAdd} className="flex-1 lg:flex-none px-6 py-3 bg-primary text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-primary/20 hover:scale-105 transition-all flex items-center justify-center gap-2">
                             <PlusIcon className="h-4 w-4" />
                             <span>{t('general.add')}</span>
                         </button>
@@ -234,7 +255,28 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
                 </div>
             </div>
              
-             {isModalOpen && <UserModal user={selectedUser} activeTab={activeTab} trainers={trainers} onSave={handleSaveUser} onClose={handleCloseModal} />}
+            {showRolePicker && (
+                <div className="fixed inset-0 bg-black/80 z-[110] flex items-center justify-center p-4 backdrop-blur-md animate-fade-in">
+                    <div className="bg-white dark:bg-gray-800 rounded-4xl w-full max-w-sm shadow-2xl overflow-hidden p-8 animate-scale-in">
+                        <h3 className="text-xl font-black text-center mb-6 uppercase tracking-tighter">¿Qué perfil desea crear?</h3>
+                        <div className="grid grid-cols-1 gap-3">
+                            {rolesInTab.map(role => (
+                                <button
+                                    key={role}
+                                    onClick={() => { setShowRolePicker(false); handleOpenModal(null, role); }}
+                                    className="p-4 bg-gray-100 dark:bg-gray-700 hover:bg-primary hover:text-white rounded-2xl font-bold transition-all text-left flex items-center justify-between group"
+                                >
+                                    <span>{t(`enums.Role.${role}`)}</span>
+                                    <PlusIcon className="w-5 h-5 opacity-50 group-hover:opacity-100" />
+                                </button>
+                            ))}
+                        </div>
+                        <button onClick={() => setShowRolePicker(false)} className="w-full mt-6 py-3 text-gray-400 font-bold uppercase text-[10px] tracking-widest">Cancelar</button>
+                    </div>
+                </div>
+            )}
+
+             {isModalOpen && <UserModal user={selectedUser} activeTab={activeTab} trainers={trainers} onSave={handleSaveUser} onClose={handleCloseModal} forcedRole={preselectedRole} />}
              {viewingUser && <UserDetailsModal user={viewingUser} allUsers={users} onClose={() => setViewingUser(null)} onEdit={(u) => { setViewingUser(null); handleOpenModal(u); }} />}
              <ConfirmationModal isOpen={deleteConfirmation.isOpen} onClose={() => setDeleteConfirmation({ ...deleteConfirmation, isOpen: false })} onConfirm={confirmDelete} title={t('general.warning')} message={t('general.confirmDelete')} isDangerous />
         </div>
@@ -286,12 +328,13 @@ const UserRow: React.FC<{ user: User; trainers: User[]; onEdit: (user: User) => 
     );
 };
 
-const UserModal: React.FC<{ user: User | null, activeTab: UserTab, trainers: User[], onSave: (u: User) => void, onClose: () => void }> = ({ user, activeTab, trainers, onSave, onClose }) => {
+const UserModal: React.FC<{ user: User | null, activeTab: UserTab, trainers: User[], onSave: (u: User) => void, onClose: () => void, forcedRole?: Role | null }> = ({ user, activeTab, trainers, onSave, onClose, forcedRole }) => {
     const { t } = useTranslation();
     const [activeFormTab, setActiveFormTab] = useState<'personal' | 'membership' | 'fitness' | 'professional'>(user?.role === Role.CLIENT ? 'personal' : 'personal');
     
     // Determine default role based on tab
     const getDefaultRole = (tab: UserTab) => {
+        if (forcedRole) return forcedRole;
         if (tab === Role.CLIENT) return Role.CLIENT;
         if (tab === Role.TRAINER) return Role.TRAINER;
         if (tab === 'OPERATIONAL') return Role.RECEPTIONIST;
@@ -407,7 +450,6 @@ const UserModal: React.FC<{ user: User | null, activeTab: UserTab, trainers: Use
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Rol en el Gimnasio</label>
                                     <select name="role" value={formData.role} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner">
-                                        {/* Filter roles based on tab if needed, or show all */}
                                         {Object.values(Role).map(r => <option key={r} value={r}>{t(`enums.Role.${r}`)}</option>)}
                                     </select>
                                 </div>

@@ -47,7 +47,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, on
         {
             title: t('sidebar.management'),
             items: [
-                { id: 'users', label: t('nav.users'), icon: UserGroupIcon },
+                { id: 'users', label: t('sidebar.users'), icon: UserGroupIcon },
                 { id: 'payments', label: t('nav.payments'), icon: CurrencyDollarIcon },
                 { id: 'tasks', label: t('nav.tasks'), icon: ClipboardDocumentCheckIcon },
                 { id: 'membership-tiers', label: t('nav.tiers'), icon: CreditCardIcon },

@@ -1,11 +1,14 @@
 
-import React, { useState, useContext, useMemo, useEffect } from 'react';
+import React, { useState, useContext, useMemo } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { EquipmentItem, EquipmentStatus, IncidentReport } from '../../types';
+import { EquipmentItem, EquipmentStatus } from '../../types';
 import { PlusIcon } from '../icons/PlusIcon';
 import { PencilIcon } from '../icons/PencilIcon';
 import { TrashIcon } from '../icons/TrashIcon';
 import { useTranslation } from 'react-i18next';
+import { WrenchIcon } from '../icons/WrenchIcon';
+import { CheckCircleIcon } from '../icons/CheckCircleIcon';
+import { ExclamationTriangleIcon } from '../icons/ExclamationTriangleIcon';
 
 const EquipmentManagement: React.FC = () => {
     const { t } = useTranslation();
@@ -13,180 +16,141 @@ const EquipmentManagement: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingEquipment, setEditingEquipment] = useState<EquipmentItem | null>(null);
 
-    const handleAddNew = () => {
-        setEditingEquipment(null);
-        setIsModalOpen(true);
-    };
-
-    const handleEdit = (item: EquipmentItem) => {
-        setEditingEquipment(item);
-        setIsModalOpen(true);
-    };
-
-    const handleDelete = (id: string) => {
-        if (window.confirm(t('components.equipment.confirmDelete'))) {
-            deleteEquipment(id);
-        }
-    };
-
-    const handleSave = (item: Omit<EquipmentItem, 'id'> & { id?: string }) => {
-        if (item.id) {
-            updateEquipment(item as EquipmentItem);
-        } else {
-            addEquipment(item);
-        }
-        setIsModalOpen(false);
-    };
-
     const unresolvedIncidents = useMemo(() => incidents.filter(i => !i.isResolved), [incidents]);
     
     return (
-        <div className="w-full max-w-6xl space-y-8">
-            <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{t('components.equipment.title')}</h2>
-                <button onClick={handleAddNew} className="btn-primary">
+        <div className="w-full space-y-10 animate-fade-in pb-20">
+            <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-black/5 pb-8">
+                <div>
+                    <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase italic">Activos e Inventario</h2>
+                    <p className="text-gray-500 font-medium">Control de estado físico y mantenimiento de la maquinaria.</p>
+                </div>
+                <button onClick={() => { setEditingEquipment(null); setIsModalOpen(true); }} className="w-full md:w-auto px-10 py-5 bg-primary text-white rounded-3xl font-black uppercase text-xs tracking-widest shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
                     <PlusIcon className="h-5 w-5" />
-                    <span>{t('components.equipment.newEquipment')}</span>
+                    <span>AÑADIR EQUIPO</span>
                 </button>
             </div>
             
-            {/* Incidents Section */}
             {unresolvedIncidents.length > 0 && (
-                 <div className="bg-red-100 dark:bg-red-900/30 p-6 rounded-xl ring-1 ring-red-500/20">
-                    <h3 className="text-xl font-bold text-red-800 dark:text-red-200 mb-4">{t('components.equipment.activeIncidents')} ({unresolvedIncidents.length})</h3>
-                     <div className="space-y-3 max-h-60 overflow-y-auto">
-                         {unresolvedIncidents.map(incident => {
-                             const item = equipment.find(e => e.id === incident.equipmentId);
-                             return (
-                                <div key={incident.id} className="bg-white dark:bg-gray-800 p-3 rounded-lg flex justify-between items-center">
-                                    <div>
-                                        <p className="font-semibold">{item?.name || t('components.equipment.unknownEquipment')}</p>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400">{incident.description}</p>
+                 <div className="bg-rose-500 rounded-4xl p-1 shadow-2xl">
+                    <div className="bg-white dark:bg-gray-900 rounded-[calc(2rem-2px)] p-8">
+                        <h3 className="text-xl font-black text-rose-500 mb-6 flex items-center gap-3 uppercase tracking-tighter italic">
+                            <ExclamationTriangleIcon className="w-6 h-6 animate-pulse" /> Alertas de Mantenimiento ({unresolvedIncidents.length})
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {unresolvedIncidents.map(incident => {
+                                const item = equipment.find(e => e.id === incident.equipmentId);
+                                return (
+                                    <div key={incident.id} className="bg-rose-50 dark:bg-rose-900/10 p-5 rounded-3xl flex justify-between items-center border border-rose-100 dark:border-rose-900/30 group animate-slide-up">
+                                        <div className="flex-1 mr-4">
+                                            <p className="font-black text-gray-900 dark:text-white uppercase text-xs tracking-tight">{item?.name || 'Desconocido'}</p>
+                                            <p className="text-sm text-gray-600 dark:text-rose-200 mt-1 italic font-medium">"{incident.description}"</p>
+                                        </div>
+                                        <button onClick={() => resolveIncident(incident.id)} className="px-6 py-2.5 text-[10px] font-black text-white bg-rose-500 rounded-2xl hover:bg-rose-600 shadow-lg shadow-rose-500/30 transition-all uppercase tracking-widest">Resolver</button>
                                     </div>
-                                    <button onClick={() => resolveIncident(incident.id)} className="px-3 py-1 text-xs font-semibold text-white bg-green-600 rounded-md hover:bg-green-700">{t('components.equipment.markResolved')}</button>
-                                </div>
-                             )
-                         })}
+                                )
+                            })}
+                        </div>
                     </div>
                 </div>
             )}
 
-            {/* Equipment Table */}
-            <div className="bg-white dark:bg-gray-800/50 rounded-xl ring-1 ring-black/5 dark:ring-white/10 shadow-lg overflow-hidden">
-                <table className="w-full">
-                    <thead className="bg-gray-50 dark:bg-gray-800">
-                        <tr>
-                            <th className="p-4 text-left text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase">{t('components.equipment.headers.name')}</th>
-                            <th className="p-4 text-left text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase">{t('components.equipment.headers.type')}</th>
-                            <th className="p-4 text-left text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase">{t('components.equipment.headers.status')}</th>
-                            <th className="p-4"></th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                        {equipment.map(item => <EquipmentRow key={item.id} item={item} onEdit={handleEdit} onDelete={handleDelete} />)}
-                    </tbody>
-                </table>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                {equipment.map(item => (
+                    <EquipmentCard key={item.id} item={item} onEdit={(i) => { setEditingEquipment(i); setIsModalOpen(true); }} onDelete={deleteEquipment} />
+                ))}
             </div>
             
-            {isModalOpen && <EquipmentModal equipment={editingEquipment} onSave={handleSave} onClose={() => setIsModalOpen(false)} />}
+            {isModalOpen && <EquipmentModal equipment={editingEquipment} onSave={(i: any) => { if(i.id) updateEquipment(i); else addEquipment({...i, id: `eq-${Date.now()}`}); setIsModalOpen(false); }} onClose={() => setIsModalOpen(false)} />}
+        </div>
+    );
+};
+
+const EquipmentCard: React.FC<{ item: EquipmentItem; onEdit: (i: EquipmentItem) => void; onDelete: (id: string) => void }> = ({ item, onEdit, onDelete }) => {
+    const { t } = useTranslation();
+    const statusData = {
+        [EquipmentStatus.OPERATIONAL]: { label: 'OPERATIVO', color: 'bg-emerald-500', text: 'text-emerald-500', icon: CheckCircleIcon },
+        [EquipmentStatus.IN_REPAIR]: { label: 'EN REPARACIÓN', color: 'bg-amber-500', text: 'text-amber-500', icon: WrenchIcon },
+        [EquipmentStatus.OUT_OF_SERVICE]: { label: 'FUERA DE SERVICIO', color: 'bg-rose-500', text: 'text-rose-500', icon: ExclamationTriangleIcon },
+    };
+    const StatusIcon = statusData[item.status].icon;
+
+    return (
+        <div className="bg-white dark:bg-gray-800 rounded-4xl p-8 border border-black/5 dark:border-white/10 shadow-sm hover:shadow-2xl transition-all duration-500 group relative flex flex-col overflow-hidden">
+            <div className={`absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity ${statusData[item.status].text}`}>
+                <StatusIcon className="w-32 h-32 rotate-12" />
+            </div>
             
-            {/* FIX: Removed non-standard "jsx" prop from style tag. */}
-            <style>{`
-                .btn-primary { display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.5rem 1rem; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.5rem; font-weight: 600; transition: background-color 0.2s; }
-                .btn-primary:hover { background-color: hsl(var(--primary) / 0.9); }
-            `}</style>
+            <div className="flex justify-between items-start mb-6">
+                <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${statusData[item.status].color} text-white shadow-lg`}>
+                    {statusData[item.status].label}
+                </span>
+                <p className="text-[10px] font-black text-gray-300 uppercase italic tracking-widest">{item.type}</p>
+            </div>
+
+            <div className="flex-1">
+                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight group-hover:text-primary transition-colors">{item.name}</h3>
+                <p className="text-xs text-gray-400 font-bold uppercase mt-2 flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-gray-300"></div> {item.location}
+                </p>
+            </div>
+
+            <div className="mt-10 flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity translate-y-4 group-hover:translate-y-0 duration-300">
+                <button onClick={() => onEdit(item)} className="p-4 bg-gray-50 dark:bg-gray-700 text-gray-500 hover:text-primary rounded-2xl transition-all hover:scale-110">
+                    <PencilIcon className="h-5 w-5" />
+                </button>
+                <button onClick={() => { if(window.confirm(t('general.confirmDelete'))) onDelete(item.id); }} className="p-4 bg-gray-50 dark:bg-gray-700 text-gray-500 hover:text-rose-500 rounded-2xl transition-all hover:scale-110">
+                    <TrashIcon className="h-5 w-5" />
+                </button>
+            </div>
         </div>
     );
 };
 
-const EquipmentRow: React.FC<{ item: EquipmentItem, onEdit: (i: EquipmentItem) => void, onDelete: (id: string) => void }> = ({ item, onEdit, onDelete }) => {
-    const { t } = useTranslation();
-    const statusColors: Record<EquipmentStatus, string> = {
-        [EquipmentStatus.OPERATIONAL]: 'bg-green-100 text-green-800 dark:bg-green-500/20 dark:text-green-300',
-        [EquipmentStatus.IN_REPAIR]: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/20 dark:text-yellow-300',
-        [EquipmentStatus.OUT_OF_SERVICE]: 'bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-300',
-    };
+const EquipmentModal = ({ equipment, onSave, onClose }: any) => {
+    const [formData, setFormData] = useState(equipment || { name: '', type: 'Cardio', location: 'Piso 1', status: EquipmentStatus.OPERATIONAL });
     return (
-        <tr className="hover:bg-gray-50 dark:hover:bg-gray-800">
-            <td className="p-4 font-medium text-gray-900 dark:text-white">{item.name}</td>
-            <td className="p-4 text-gray-600 dark:text-gray-400">{t(`equipmentTypes.${item.type}`, { defaultValue: item.type })}</td>
-            <td className="p-4"><span className={`px-2 py-1 text-xs font-semibold rounded-full ${statusColors[item.status]}`}>{t(`statuses.equipment.${item.status}`)}</span></td>
-            <td className="p-4 text-right">
-                 <div className="flex justify-end space-x-2">
-                    <button onClick={() => onEdit(item)} className="p-2 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary"><PencilIcon className="h-5 w-5" /></button>
-                    <button onClick={() => onDelete(item.id)} className="p-2 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"><TrashIcon className="h-5 w-5" /></button>
+        <div className="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-4 backdrop-blur-2xl animate-fade-in">
+            <div className="bg-white dark:bg-gray-900 rounded-4xl w-full max-w-xl shadow-2xl overflow-hidden animate-scale-in">
+                <div className="p-10 bg-primary text-white relative overflow-hidden">
+                    <h2 className="text-3xl font-black uppercase tracking-tighter italic">{equipment ? "Editar Equipo" : "Nuevo Equipo"}</h2>
+                    <p className="text-white/70 text-[10px] font-black uppercase tracking-[0.2em] mt-2">Auditoría Física de Activos</p>
                 </div>
-            </td>
-        </tr>
-    );
-};
-
-const EquipmentModal: React.FC<{
-    equipment: EquipmentItem | null;
-    onSave: (item: Omit<EquipmentItem, 'id'> & { id?: string }) => void;
-    onClose: () => void;
-}> = ({ equipment, onSave, onClose }) => {
-    const { t } = useTranslation();
-    const [formData, setFormData] = useState(equipment || { name: '', type: '', location: '', status: EquipmentStatus.OPERATIONAL });
-
-    useEffect(() => {
-        if (equipment) {
-            setFormData(equipment);
-        } else {
-            setFormData({ name: '', type: '', location: '', status: EquipmentStatus.OPERATIONAL });
-        }
-    }, [equipment]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSave(formData);
-    };
-
-    return (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-            <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-lg animate-scale-in">
-                <h2 className="text-2xl font-bold p-6 border-b dark:border-gray-700 text-gray-900 dark:text-white">{equipment ? t('components.equipment.modal.editTitle') : t('components.equipment.modal.addTitle')}</h2>
-                <div className="p-6 space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('components.equipment.modal.name')}</label>
-                        <input type="text" name="name" value={formData.name} onChange={handleChange} className="mt-1 block w-full input-style" required />
+                <div className="p-10 space-y-6">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nombre Comercial del Equipo</label>
+                        <input type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full p-5 bg-gray-50 dark:bg-gray-800 border-none rounded-3xl font-bold focus:ring-2 focus:ring-primary" placeholder="Ej: Power Rack V3" />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('components.equipment.modal.type')}</label>
-                         <input type="text" name="type" value={formData.type} onChange={handleChange} placeholder={t('components.equipment.modal.typePlaceholder')} className="mt-1 block w-full input-style" required />
+                    <div className="grid grid-cols-2 gap-4">
+                         <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Ubicación</label>
+                            <input type="text" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className="w-full p-5 bg-gray-50 dark:bg-gray-800 border-none rounded-3xl font-bold focus:ring-2 focus:ring-primary" />
+                        </div>
+                         <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Tipo</label>
+                            <select value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} className="w-full p-5 bg-gray-50 dark:bg-gray-800 border-none rounded-3xl font-bold">
+                                {['Cardio', 'Strength', 'Free Weights', 'Machine'].map(t => <option key={t}>{t}</option>)}
+                            </select>
+                        </div>
                     </div>
-                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('components.equipment.modal.location')}</label>
-                         <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder={t('components.equipment.modal.locationPlaceholder')} className="mt-1 block w-full input-style" required />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">{t('components.equipment.modal.status')}</label>
-                        <select name="status" value={formData.status} onChange={handleChange} className="mt-1 block w-full input-style" required>
-                            {Object.values(EquipmentStatus).map(s => <option key={s} value={s}>{t(`statuses.equipment.${s}`)}</option>)}
-                        </select>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Estado de Operación</label>
+                        <div className="grid grid-cols-3 gap-3">
+                            {Object.values(EquipmentStatus).map(s => (
+                                <button key={s} type="button" onClick={() => setFormData({...formData, status: s})} className={`py-4 px-2 rounded-2xl text-[9px] font-black uppercase transition-all border-2 ${formData.status === s ? 'bg-primary border-primary text-white shadow-xl' : 'bg-gray-50 dark:bg-gray-800 border-black/5 text-gray-400'}`}>
+                                    {s.replace(/_/g, ' ')}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 </div>
-                <div className="flex justify-end space-x-4 p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
-                    <button type="button" onClick={onClose} className="btn-secondary">{t('components.equipment.modal.cancel')}</button>
-                    <button type="submit" className="btn-primary">{t('components.equipment.modal.save')}</button>
+                <div className="p-10 flex gap-4 bg-gray-50 dark:bg-gray-800/50">
+                    <button onClick={onClose} className="flex-1 py-5 font-black uppercase text-xs text-gray-400 tracking-widest">Cancelar</button>
+                    <button onClick={() => onSave(formData)} className="flex-[2] py-5 bg-primary text-white rounded-3xl font-black shadow-2xl hover:scale-105 transition-all uppercase text-xs tracking-widest">Guardar Cambios</button>
                 </div>
-                {/* FIX: Removed non-standard "jsx" prop from style tag. */}
-                <style>{`
-                    .input-style { background-color: #f3f4f6; border: 1px solid #d1d5db; border-radius: 0.375rem; color: #111827; padding: 0.5rem 0.75rem; }
-                    .dark .input-style { background-color: #374151; border-color: #4b5563; color: #f9fafb; }
-                    .input-style:focus { --tw-ring-color: hsl(var(--primary)); border-color: hsl(var(--primary)); }
-                    .btn-primary { padding: 0.5rem 1rem; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.5rem; font-weight: 600; transition: background-color 0.2s; }
-                    .btn-primary:hover { background-color: hsl(var(--primary) / 0.9); }
-                    .btn-secondary { padding: 0.5rem 1rem; background-color: #e5e7eb; color: #1f2937; border-radius: 0.5rem; font-weight: 600; transition: background-color 0.2s; }
-                    .dark .btn-secondary { background-color: #4b5563; color: #f9fafb; }
-                `}</style>
-            </form>
+            </div>
         </div>
     );
-}
+};
 
 export default EquipmentManagement;

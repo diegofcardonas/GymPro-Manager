@@ -15,6 +15,7 @@ import { XCircleIcon } from './icons/XCircleIcon';
 import { LogoIcon } from './icons/LogoIcon';
 import { useTranslation } from 'react-i18next';
 
+// FIX: Added missing Roles (SALES_AGENT, MAINTENANCE) to roleColors to match Record<Role, string>
 const roleColors: Record<Role, string> = {
     [Role.ADMIN]: 'bg-red-100 text-red-800',
     [Role.CLIENT]: 'bg-blue-100 text-blue-800',
@@ -24,6 +25,8 @@ const roleColors: Record<Role, string> = {
     [Role.GROUP_INSTRUCTOR]: 'bg-pink-100 text-pink-800',
     [Role.NUTRITIONIST]: 'bg-green-100 text-green-800',
     [Role.PHYSIOTHERAPIST]: 'bg-teal-100 text-teal-800',
+    [Role.SALES_AGENT]: 'bg-amber-100 text-amber-800',
+    [Role.MAINTENANCE]: 'bg-slate-100 text-slate-800',
 };
 
 const MessagingView: React.FC = () => {

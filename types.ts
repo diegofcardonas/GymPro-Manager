@@ -8,6 +8,8 @@ export enum Role {
   GROUP_INSTRUCTOR = 'GROUP_INSTRUCTOR',
   NUTRITIONIST = 'NUTRITIONIST',
   PHYSIOTHERAPIST = 'PHYSIOTHERAPIST',
+  SALES_AGENT = 'SALES_AGENT',
+  MAINTENANCE = 'MAINTENANCE',
 }
 
 export enum MembershipStatus {
@@ -48,38 +50,72 @@ export interface Task {
     priority: TaskPriority;
 }
 
-export interface SupportTicket {
-    id: string;
-    userId: string;
-    category: 'technical' | 'billing' | 'equipment' | 'suggestion' | 'other';
-    subject: string;
-    message: string;
-    timestamp: string;
-    status: 'open' | 'closed';
-}
-
-export interface Notification {
-    id: string;
-    userId: string;
-    title: string;
-    message: string;
-    timestamp: string;
-    isRead: boolean;
-    type: NotificationType;
-    linkTo?: string;
-}
-
-export interface ToastMessage {
-    id: string;
-    message: string;
-    type: 'success' | 'error' | 'info' | 'warning';
-    duration?: number;
-}
-
-export interface Exercise {
+export interface User {
+  id: string;
   name: string;
-  sets: number;
-  reps: string;
+  email: string;
+  password?: string;
+  phone: string;
+  address?: string;
+  avatarUrl: string;
+  role: Role;
+  joinDate: string;
+  membership: {
+    status: MembershipStatus;
+    startDate: string;
+    endDate: string;
+    tierId?: string;
+  };
+  trainerIds?: string[];
+  assignedRoutines?: AssignedRoutine[];
+  fitnessGoals?: string;
+  dietaryPreferences?: string;
+  height?: number;
+  weight?: number;
+  birthDate?: string;
+  age?: number;
+  gender?: 'Masculino' | 'Femenino' | 'Otro' | 'Prefiero no decirlo';
+  fitnessLevel?: FitnessLevel;
+  medicalConditions?: string;
+  personalBests?: {
+      benchPress?: number;
+      squat?: number;
+      deadlift?: number;
+  };
+  emergencyContact?: {
+      name: string;
+      phone: string;
+      relation?: string;
+  };
+  skills?: string;
+  bio?: string;
+  experienceYears?: number;
+  socialLinks?: {
+      instagram?: string;
+      linkedin?: string;
+  };
+  progressNotes?: { date: string; note: string }[];
+  workoutHistory?: WorkoutSession[];
+  achievements?: string[];
+  aiCoachHistory?: AICoachMessage[];
+  nutritionLogs?: NutritionLog[];
+  blockedUserIds?: string[];
+  notificationPreferences?: {
+    newMessages: boolean;
+    routineUpdates: boolean;
+    classReminders: boolean;
+    pushNotifications?: boolean;
+  };
+  privacySettings?: {
+    profileVisibility: Visibility;
+    activityVisibility: Visibility;
+    showInSearch: boolean;
+  };
+}
+
+export interface AssignedRoutine {
+  trainerId: string;
+  routine: DailyRoutine[];
 }
 
 export interface DailyRoutine {
@@ -87,9 +123,10 @@ export interface DailyRoutine {
   exercises: Exercise[];
 }
 
-export interface AssignedRoutine {
-  trainerId: string;
-  routine: DailyRoutine[];
+export interface Exercise {
+  name: string;
+  sets: number;
+  reps: string;
 }
 
 export interface PreEstablishedRoutine {
@@ -295,65 +332,20 @@ export interface Theme {
   };
 }
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  password?: string;
-  phone: string;
-  address?: string;
-  avatarUrl: string;
-  role: Role;
-  joinDate: string;
-  membership: {
-    status: MembershipStatus;
-    startDate: string;
-    endDate: string;
-    tierId?: string;
-  };
-  trainerIds?: string[];
-  assignedRoutines?: AssignedRoutine[];
-  fitnessGoals?: string;
-  dietaryPreferences?: string;
-  height?: number;
-  weight?: number;
-  birthDate?: string;
-  age?: number;
-  gender?: 'Masculino' | 'Femenino' | 'Otro' | 'Prefiero no decirlo';
-  fitnessLevel?: FitnessLevel;
-  medicalConditions?: string;
-  personalBests?: {
-      benchPress?: number;
-      squat?: number;
-      deadlift?: number;
-  };
-  emergencyContact?: {
-      name: string;
-      phone: string;
-      relation?: string;
-  };
-  skills?: string;
-  bio?: string;
-  experienceYears?: number;
-  socialLinks?: {
-      instagram?: string;
-      linkedin?: string;
-  };
-  progressNotes?: { date: string; note: string }[];
-  workoutHistory?: WorkoutSession[];
-  achievements?: string[];
-  aiCoachHistory?: AICoachMessage[];
-  nutritionLogs?: NutritionLog[];
-  blockedUserIds?: string[];
-  notificationPreferences?: {
-    newMessages: boolean;
-    routineUpdates: boolean;
-    classReminders: boolean;
-    pushNotifications?: boolean;
-  };
-  privacySettings?: {
-    profileVisibility: Visibility;
-    activityVisibility: Visibility;
-    showInSearch: boolean;
-  };
+export interface Notification {
+    id: string;
+    userId: string;
+    title: string;
+    message: string;
+    timestamp: string;
+    isRead: boolean;
+    type: NotificationType;
+    linkTo?: string;
+}
+
+export interface ToastMessage {
+    id: string;
+    message: string;
+    type: 'success' | 'error' | 'info' | 'warning';
+    duration?: number;
 }

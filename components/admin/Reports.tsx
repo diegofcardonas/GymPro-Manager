@@ -4,6 +4,7 @@ import { ResponsiveContainer, BarChart, Bar, LineChart, Line, XAxis, YAxis, Cart
 import { AuthContext } from '../../context/AuthContext';
 import { Role, User } from '../../types';
 import { useTranslation } from 'react-i18next';
+import { ChartBarIcon } from '../icons/ChartBarIcon';
 
 export const Reports: React.FC = () => {
     const { t } = useTranslation();
@@ -14,32 +15,10 @@ export const Reports: React.FC = () => {
 
     const trainerLoadData = useMemo(() => {
         return trainers.map(trainer => ({
-            name: trainer.name,
+            name: trainer.name.split(' ')[0],
             clients: clients.filter(client => client.trainerIds?.includes(trainer.id)).length
         }));
     }, [clients, trainers]);
-
-    const expirationForecastData = useMemo(() => {
-        const months: { [key: string]: number } = {};
-        const now = new Date();
-        for (let i = 0; i < 6; i++) {
-            const date = new Date(now.getFullYear(), now.getMonth() + i, 1);
-            const monthName = date.toLocaleString('default', { month: 'short' });
-            months[monthName] = 0;
-        }
-
-        clients.forEach(client => {
-            const endDate = new Date(client.membership.endDate);
-            if (endDate >= now && endDate < new Date(now.getFullYear(), now.getMonth() + 6, 1)) {
-                const monthName = endDate.toLocaleString('default', { month: 'short' });
-                if (months[monthName] !== undefined) {
-                    months[monthName]++;
-                }
-            }
-        });
-
-        return Object.entries(months).map(([name, count]) => ({ name, expiring: count }));
-    }, [clients]);
 
     const genderData = useMemo(() => {
         const counts = clients.reduce((acc, client) => {
@@ -50,73 +29,62 @@ export const Reports: React.FC = () => {
         return Object.entries(counts).map(([name, value]) => ({ name, value }));
     }, [clients, t]);
 
-    const fitnessLevelData = useMemo(() => {
-         const counts = clients.reduce((acc, client) => {
-            const level = client.fitnessLevel || t('admin.reports.notSet');
-            acc[level] = (acc[level] || 0) + 1;
-            return acc;
-        }, {} as Record<string, number>);
-        return Object.entries(counts).map(([name, value]) => ({ name, value }));
-    }, [clients, t]);
-
-    const GENDER_COLORS = ['#38bdf8', '#f472b6', '#a78bfa', '#a8a29e']; // blue, pink, purple, gray
-    const LEVEL_COLORS = ['#facc15', '#fb923c', '#22c55e', '#a8a29e']; // yellow, orange, green, gray
+    const GENDER_COLORS = ['#3b82f6', '#ec4899', '#8b5cf6', '#94a3b8'];
 
     return (
-        <div className="w-full space-y-8">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{t('admin.reports.title')}</h2>
+        <div className="w-full space-y-10 animate-fade-in pb-20">
+            <div className="border-b border-black/5 pb-6">
+                <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase italic">Análisis Avanzado</h2>
+                <p className="text-gray-500 font-medium">Métricas de operación y demografía en tiempo real.</p>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-white dark:bg-gray-800/50 p-6 rounded-xl ring-1 ring-black/5 dark:ring-white/10">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">{t('admin.reports.trainerLoad')}</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={trainerLoadData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-gray-200 dark:text-white/10" />
-                            <XAxis dataKey="name" tick={{ fill: 'currentColor' }} className="text-xs text-gray-500 dark:text-gray-400" />
-                            <YAxis tick={{ fill: 'currentColor' }} className="text-xs text-gray-500 dark:text-gray-400" allowDecimals={false} />
-                            <Tooltip cursor={{fill: 'rgba(100,100,100,0.1)'}} contentStyle={{ backgroundColor: 'rgba(255,255,255,0.8)', borderRadius: '8px' }} />
-                            <Legend />
-                            <Bar dataKey="clients" name={t('admin.reports.clients')} fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+                <ReportCard title="Carga de Trabajo: Entrenadores" subtitle="Número de clientes asignados por coach profesional">
+                    <ResponsiveContainer width="100%" height={350}>
+                        <BarChart data={trainerLoadData} margin={{ top: 20, right: 30, left: -20, bottom: 0 }}>
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} strokeOpacity={0.05} />
+                            <XAxis dataKey="name" axisLine={false} tickLine={false} className="text-[10px] font-black text-gray-400" />
+                            <YAxis axisLine={false} tickLine={false} className="text-[10px] font-black text-gray-400" allowDecimals={false} />
+                            <Tooltip cursor={{fill: 'rgba(0,0,0,0.02)'}} contentStyle={{ borderRadius: '1.5rem', border: 'none', boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)' }} />
+                            <Bar dataKey="clients" fill="hsl(var(--primary))" radius={[10, 10, 0, 0]} barSize={40} />
                         </BarChart>
                     </ResponsiveContainer>
-                </div>
-                 <div className="bg-white dark:bg-gray-800/50 p-6 rounded-xl ring-1 ring-black/5 dark:ring-white/10">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">{t('admin.reports.expirationForecast')}</h3>
-                     <ResponsiveContainer width="100%" height={300}>
-                        <LineChart data={expirationForecastData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-gray-200 dark:text-white/10" />
-                            <XAxis dataKey="name" tick={{ fill: 'currentColor' }} className="text-xs text-gray-500 dark:text-gray-400" />
-                            <YAxis tick={{ fill: 'currentColor' }} className="text-xs text-gray-500 dark:text-gray-400" allowDecimals={false} />
-                            <Tooltip contentStyle={{ backgroundColor: 'rgba(255,255,255,0.8)', borderRadius: '8px' }} />
-                            <Legend />
-                            <Line type="monotone" dataKey="expiring" stroke="#f43f5e" name={t('admin.reports.expiringMemberships')} strokeWidth={3} />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
-                 <div className="bg-white dark:bg-gray-800/50 p-6 rounded-xl ring-1 ring-black/5 dark:ring-white/10">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">{t('admin.reports.demographicsGender')}</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <PieChart>
-                            <Pie data={genderData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
-                                {genderData.map((entry, index) => <Cell key={`cell-${index}`} fill={GENDER_COLORS[index % GENDER_COLORS.length]} />)}
-                            </Pie>
-                            <Tooltip />
-                            <Legend />
-                        </PieChart>
-                    </ResponsiveContainer>
-                </div>
-                <div className="bg-white dark:bg-gray-800/50 p-6 rounded-xl ring-1 ring-black/5 dark:ring-white/10">
-                    <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">{t('admin.reports.demographicsLevel')}</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <PieChart>
-                            <Pie data={fitnessLevelData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
-                                {fitnessLevelData.map((entry, index) => <Cell key={`cell-${index}`} fill={LEVEL_COLORS[index % LEVEL_COLORS.length]} />)}
-                            </Pie>
-                            <Tooltip />
-                            <Legend />
-                        </PieChart>
-                    </ResponsiveContainer>
-                </div>
+                </ReportCard>
+
+                <ReportCard title="Segmentación por Género" subtitle="Distribución demográfica de la base de usuarios">
+                    <div className="flex flex-col md:flex-row items-center">
+                        <ResponsiveContainer width="100%" height={350}>
+                            <PieChart>
+                                <Pie data={genderData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={80} outerRadius={120} paddingAngle={5}>
+                                    {genderData.map((entry, index) => <Cell key={`cell-${index}`} fill={GENDER_COLORS[index % GENDER_COLORS.length]} stroke="none" />)}
+                                </Pie>
+                                <Tooltip contentStyle={{ borderRadius: '1.5rem', border: 'none' }} />
+                            </PieChart>
+                        </ResponsiveContainer>
+                        <div className="space-y-4 px-10 w-full md:w-auto">
+                            {genderData.map((entry, index) => (
+                                <div key={index} className="flex items-center justify-between gap-6">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: GENDER_COLORS[index % GENDER_COLORS.length] }}></div>
+                                        <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{entry.name}</span>
+                                    </div>
+                                    <span className="text-lg font-black text-gray-800 dark:text-white italic">{entry.value}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </ReportCard>
             </div>
         </div>
     );
 };
+
+const ReportCard: React.FC<{ title: string; subtitle: string; children: React.ReactNode }> = ({ title, subtitle, children }) => (
+    <div className="bg-white dark:bg-gray-800/50 rounded-4xl p-8 border border-black/5 dark:border-white/10 shadow-sm group hover:shadow-2xl transition-all duration-500">
+        <div className="mb-10">
+            <h3 className="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tighter italic">{title}</h3>
+            <p className="text-sm text-gray-400 font-bold mt-1 uppercase tracking-widest text-[10px]">{subtitle}</p>
+        </div>
+        {children}
+    </div>
+);

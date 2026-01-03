@@ -10,6 +10,12 @@ import { NumberInputWithButtons } from '../shared/NumberInputWithButtons';
 import { ShareIcon } from '../icons/ShareIcon';
 import ShareRoutineModal from '../shared/ShareRoutineModal';
 import { useTranslation } from 'react-i18next';
+import { SparklesAiIcon } from '../icons/SparklesAiIcon';
+import { ClockIcon } from '../icons/ClockIcon';
+import { FireIcon } from '../icons/FireIcon';
+// FIX: Added missing import for XCircleIcon
+import { XCircleIcon } from '../icons/XCircleIcon';
+import { GoogleGenAI } from "@google/genai";
 
 const RoutineTemplates: React.FC = () => {
     const { preEstablishedRoutines, addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate } = useContext(AuthContext);
@@ -44,25 +50,33 @@ const RoutineTemplates: React.FC = () => {
     };
 
     return (
-        <div className="w-full space-y-8">
-            <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{t('admin.dashboard.routineTemplates')}</h2>
-                <button onClick={handleAddNew} className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2 text-primary-foreground">
+        <div className="w-full space-y-8 animate-fade-in">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase italic">
+                        {t('admin.dashboard.routineTemplates')}
+                    </h2>
+                    <p className="text-gray-500 font-medium text-sm">Crea estándares de excelencia para tus entrenamientos.</p>
+                </div>
+                <button onClick={handleAddNew} className="w-full sm:w-auto px-8 py-4 bg-primary text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
                     <PlusIcon className="h-5 w-5" />
-                    <span>{t('general.add')}</span>
+                    <span>NUEVA PLANTILLA MAESTRA</span>
                 </button>
             </div>
 
             {preEstablishedRoutines.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                     {preEstablishedRoutines.map(template => (
                         <TemplateCard key={template.id} template={template} onEdit={handleEdit} onDelete={handleDelete} onShare={setSharingTemplate} />
                     ))}
                 </div>
             ) : (
-                <div className="text-center py-12 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
-                    <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">No Routine Templates Found</h3>
-                    <p className="mt-2 text-gray-500 dark:text-gray-400">Get started by creating a new template.</p>
+                <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-4xl border-2 border-dashed border-black/5 flex flex-col items-center">
+                    <div className="p-6 bg-gray-50 dark:bg-gray-900 rounded-full mb-4">
+                        <PlusIcon className="w-12 h-12 text-gray-300" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-400">No hay plantillas creadas</h3>
+                    <p className="mt-2 text-gray-400 text-sm">Empieza a estandarizar los procesos de entreno.</p>
                 </div>
             )}
 
@@ -86,17 +100,49 @@ const RoutineTemplates: React.FC = () => {
 
 const TemplateCard: React.FC<{ template: PreEstablishedRoutine, onEdit: (template: PreEstablishedRoutine) => void, onDelete: (id: string) => void, onShare: (template: PreEstablishedRoutine) => void }> = ({ template, onEdit, onDelete, onShare }) => {
     const workoutDays = useMemo(() => template.routines.filter(r => r.exercises.length > 0).length, [template.routines]);
+    const totalExercises = useMemo(() => template.routines.reduce((acc, curr) => acc + curr.exercises.length, 0), [template.routines]);
+    
     return (
-        <div className="bg-white dark:bg-gray-800/50 rounded-xl ring-1 ring-black/5 dark:ring-white/10 shadow-lg flex flex-col">
-            <div className="p-6 flex-grow">
-                <h3 className="text-xl font-bold text-gray-900 dark:text-white">{template.name}</h3>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-4 h-16 overflow-hidden">{template.description}</p>
-                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-primary/10 text-primary">{workoutDays} workout day{workoutDays !== 1 ? 's' : ''}</span>
+        <div className="group bg-white dark:bg-gray-800/50 rounded-4xl shadow-sm hover:shadow-2xl border border-black/5 transition-all duration-500 flex flex-col overflow-hidden relative">
+            <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
+                <SparklesAiIcon className="w-32 h-32 rotate-12" />
             </div>
-            <div className="p-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex justify-end space-x-2">
-                <button onClick={() => onShare(template)} className="p-2 text-gray-500 hover:text-green-500 dark:text-gray-400 dark:hover:text-green-400"><ShareIcon className="h-5 w-5" /></button>
-                <button onClick={() => onEdit(template)} className="p-2 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary"><PencilIcon className="h-5 w-5" /></button>
-                <button onClick={() => onDelete(template.id)} className="p-2 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"><TrashIcon className="h-5 w-5" /></button>
+
+            <div className="p-8 flex-grow">
+                <div className="flex justify-between items-start mb-4">
+                    <div className="px-3 py-1 bg-primary/10 text-primary rounded-full text-[9px] font-black uppercase tracking-widest">
+                        {workoutDays} DÍAS ACTIVOS
+                    </div>
+                    <span className="text-[10px] font-black text-gray-300 uppercase italic">MASTER TEMPLATE</span>
+                </div>
+                
+                <h3 className="text-2xl font-black text-gray-900 dark:text-white tracking-tight group-hover:text-primary transition-colors">{template.name}</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 line-clamp-2 h-10 font-medium">{template.description}</p>
+                
+                <div className="mt-8 grid grid-cols-2 gap-4">
+                    <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-3xl">
+                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Ejercicios</p>
+                        <p className="text-xl font-black text-gray-800 dark:text-white">{totalExercises}</p>
+                    </div>
+                    <div className="p-4 bg-gray-50 dark:bg-gray-900 rounded-3xl">
+                        <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Volumen</p>
+                        <p className="text-xl font-black text-primary">Alta</p>
+                    </div>
+                </div>
+            </div>
+
+            <div className="px-8 py-6 bg-gray-50/50 dark:bg-gray-900/20 border-t border-black/5 flex justify-between items-center">
+                <button onClick={() => onShare(template)} className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:text-green-500 transition-all">
+                    <ShareIcon className="w-4 h-4" /> COMPARTIR
+                </button>
+                <div className="flex gap-2">
+                    <button onClick={() => onEdit(template)} className="p-3 bg-white dark:bg-gray-700 text-gray-500 hover:text-primary rounded-2xl shadow-sm hover:scale-110 transition-all">
+                        <PencilIcon className="h-5 w-5" />
+                    </button>
+                    <button onClick={() => onDelete(template.id)} className="p-3 bg-white dark:bg-gray-700 text-gray-500 hover:text-red-500 rounded-2xl shadow-sm hover:scale-110 transition-all">
+                        <TrashIcon className="h-5 w-5" />
+                    </button>
+                </div>
             </div>
         </div>
     );
@@ -109,6 +155,7 @@ const RoutineTemplateModal: React.FC<{ template: PreEstablishedRoutine | null, o
     
     const [formData, setFormData] = useState(template || { id: '', name: '', description: '', routines: initialRoutine });
     const [activeDay, setActiveDay] = useState<DailyRoutine['day']>('Monday');
+    const [isAiLoading, setIsAiLoading] = useState(false);
 
     useEffect(() => {
         if (template) {
@@ -128,13 +175,8 @@ const RoutineTemplateModal: React.FC<{ template: PreEstablishedRoutine | null, o
             let dayRoutine = newData.routines.find(r => r.day === activeDay);
             if (dayRoutine) {
                 dayRoutine.exercises.push({ name: '', sets: 3, reps: '10' });
-            } else {
-                // This case should not happen with initialization, but as a fallback:
-                const newDayRoutine = { day: activeDay, exercises: [{ name: '', sets: 3, reps: '10' }] };
-                const dayIndex = weekDays.indexOf(activeDay);
-                newData.routines.splice(dayIndex, 0, newDayRoutine);
             }
-            return { ...newData, routines: [...newData.routines] }; // Ensure re-render
+            return { ...newData, routines: [...newData.routines] };
         });
     };
     
@@ -144,7 +186,7 @@ const RoutineTemplateModal: React.FC<{ template: PreEstablishedRoutine | null, o
             if (dayRoutine) {
                 dayRoutine.exercises.splice(exIndex, 1);
             }
-            return { ...currentData, routines: [...currentData.routines] }; // Ensure re-render
+            return { ...currentData, routines: [...currentData.routines] };
         });
     };
 
@@ -154,10 +196,38 @@ const RoutineTemplateModal: React.FC<{ template: PreEstablishedRoutine | null, o
             if (dayRoutine) {
                 dayRoutine.exercises[exIndex] = { ...dayRoutine.exercises[exIndex], [field]: value };
             }
-            return { ...currentData, routines: [...currentData.routines]}; // Ensure re-render
+            return { ...currentData, routines: [...currentData.routines]};
         });
     };
     
+    const generateWithAi = async () => {
+        if (!process.env.API_KEY || !formData.name) return;
+        setIsAiLoading(true);
+        try {
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+            const prompt = `Genera una lista de 5 ejercicios efectivos para el día ${activeDay} de la rutina "${formData.name}". 
+            Responde SOLO con un array JSON válido: [{"name": "string", "sets": number, "reps": "string"}]. 
+            Usa nombres de ejercicios conocidos.`;
+            
+            const res = await ai.models.generateContent({
+                model: 'gemini-3-flash-preview',
+                contents: prompt
+            });
+            
+            const cleaned = (res.text || '').replace(/```json|```/g, "").trim();
+            const exercises = JSON.parse(cleaned);
+            
+            setFormData(prev => ({
+                ...prev,
+                routines: prev.routines.map(r => r.day === activeDay ? { ...r, exercises } : r)
+            }));
+        } catch (e) {
+            console.error("AI Generation Error", e);
+        } finally {
+            setIsAiLoading(false);
+        }
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSave(formData);
@@ -166,94 +236,117 @@ const RoutineTemplateModal: React.FC<{ template: PreEstablishedRoutine | null, o
     const activeDayRoutine = useMemo(() => formData.routines.find(r => r.day === activeDay), [formData.routines, activeDay]);
     
     return (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-            <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col">
-                <h2 className="text-2xl font-bold p-6 border-b border-gray-200 dark:border-gray-700">Plantilla de Rutina {template ? 'Editar' : 'Crear'}</h2>
-                <div className="p-6 space-y-4 border-b border-gray-200 dark:border-gray-700 flex-shrink-0 overflow-y-auto max-h-48">
-                    <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-gray-600 dark:text-gray-400">{t('general.name')}</label>
-                        <input type="text" name="name" id="name" value={formData.name} onChange={handleInfoChange} className="mt-1 block w-full input-style" required />
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 backdrop-blur-md animate-fade-in">
+            <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-4xl shadow-2xl w-full max-w-5xl max-h-[95vh] flex flex-col overflow-hidden animate-scale-in">
+                <div className="p-8 bg-primary text-white flex justify-between items-center relative overflow-hidden flex-shrink-0">
+                    <SparklesAiIcon className="absolute -right-6 -top-6 w-32 h-32 opacity-10" />
+                    <div className="relative z-10">
+                        <h2 className="text-3xl font-black uppercase tracking-tighter">Editor de Plantilla</h2>
+                        <p className="text-primary-foreground/70 text-[10px] font-black uppercase tracking-widest mt-1">Configuración Maestro de Rutinas</p>
                     </div>
-                     <div>
-                        <label htmlFor="description" className="block text-sm font-medium text-gray-600 dark:text-gray-400">{t('general.description')}</label>
-                        <textarea name="description" id="description" value={formData.description} onChange={handleInfoChange} rows={2} className="mt-1 block w-full input-style" />
+                    <button onClick={onClose} type="button" className="relative z-10 p-2 hover:bg-white/10 rounded-full transition-all">
+                        <XCircleIcon className="w-8 h-8" />
+                    </button>
+                </div>
+
+                <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6 border-b border-black/5 bg-gray-50/50 dark:bg-gray-900/20 flex-shrink-0">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Nombre Estándar</label>
+                        <input type="text" name="name" value={formData.name} onChange={handleInfoChange} className="w-full p-4 bg-white dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-sm" required placeholder="Ej: Hipertrofia Push/Pull/Legs" />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Descripción de Objetivo</label>
+                        <input type="text" name="description" value={formData.description} onChange={handleInfoChange} className="w-full p-4 bg-white dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-medium shadow-sm" placeholder="Define el propósito de esta rutina..." />
                     </div>
                 </div>
 
-                <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-                    <div className="p-4 border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-700 overflow-x-auto md:overflow-y-auto flex-shrink-0">
-                         <nav className="flex flex-row md:flex-col space-x-2 md:space-x-0 md:space-y-1">
-                            {weekDays.map(day => (
-                                <button type="button" key={day} onClick={() => setActiveDay(day)} className={`w-full text-left p-2 px-3 text-sm font-semibold rounded-md transition-colors whitespace-nowrap ${activeDay === day ? 'bg-primary/10 text-primary' : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700/50'}`}>{day}</button>
-                            ))}
-                        </nav>
+                <div className="flex-1 flex flex-col md:flex-row overflow-hidden min-h-0">
+                    <div className="w-full md:w-56 bg-gray-50 dark:bg-gray-900/50 border-r border-black/5 p-4 flex flex-row md:flex-col gap-2 overflow-x-auto">
+                        {weekDays.map(day => (
+                            <button 
+                                type="button" 
+                                key={day} 
+                                onClick={() => setActiveDay(day)} 
+                                className={`flex-shrink-0 flex items-center justify-between px-5 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all ${activeDay === day ? 'bg-primary text-white shadow-lg' : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}
+                            >
+                                <span>{t(`days.${day}`)}</span>
+                                <div className={`w-2 h-2 rounded-full ${formData.routines.find(r => r.day === day)?.exercises.length ? 'bg-emerald-400' : 'bg-transparent'}`} />
+                            </button>
+                        ))}
                     </div>
-                    <div className="flex-1 p-6 overflow-y-auto">
-                         <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 mb-4">Rutina del {activeDay}</h3>
-                         <div className="space-y-3">
-                            {activeDayRoutine && activeDayRoutine.exercises.length > 0 && (
-                                <div className="hidden sm:flex items-center gap-2">
-                                    <div className="flex-grow text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Ejercicio</div>
-                                    <div className="w-28 flex-shrink-0 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Series</div>
-                                    <div className="w-32 flex-shrink-0 text-center text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Repeticiones</div>
-                                    <div className="w-9 flex-shrink-0"></div> {/* Spacer for delete button */}
-                                </div>
-                            )}
+
+                    <div className="flex-1 p-8 overflow-y-auto custom-scrollbar flex flex-col">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                            <div>
+                                <h3 className="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase italic">
+                                    {t(`days.${activeDay}`)}
+                                </h3>
+                                <p className="text-gray-400 font-bold uppercase tracking-widest text-[9px]">Configura los ejercicios de este bloque</p>
+                            </div>
+                            <button 
+                                type="button" 
+                                onClick={generateWithAi} 
+                                disabled={isAiLoading || !formData.name}
+                                className="w-full sm:w-auto px-6 py-3 bg-violet-600 text-white rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-violet-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                            >
+                                {isAiLoading ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <SparklesAiIcon className="w-4 h-4" />}
+                                GENERAR CON IA
+                            </button>
+                        </div>
+
+                        <div className="space-y-4 flex-1">
                             {activeDayRoutine?.exercises.map((ex, exIndex) => (
-                                <div key={exIndex} className="flex flex-col sm:flex-row sm:items-center gap-2 bg-gray-50 dark:bg-gray-700/30 p-3 rounded-lg sm:p-0 sm:bg-transparent sm:dark:bg-transparent">
-                                    <div className="flex-grow w-full sm:w-auto">
-                                        <label className="text-xs font-semibold text-gray-500 sm:hidden mb-1 block">Ejercicio</label>
-                                        <select value={ex.name} onChange={(e) => handleExerciseChange(exIndex, 'name', e.target.value)} className="w-full input-style">
-                                            <option value="" disabled>Selecciona un ejercicio...</option>
-                                            {MOCK_EXERCISES.map(exerciseName => (
-                                                <option key={exerciseName} value={exerciseName}>{exerciseName}</option>
-                                            ))}
+                                <div key={exIndex} className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-3xl border border-black/[0.02] flex flex-col lg:flex-row items-center gap-4 group animate-slide-up">
+                                    <div className="flex-1 w-full">
+                                        <label className="text-[8px] font-black text-gray-400 uppercase ml-2 block mb-1">Ejercicio</label>
+                                        <select 
+                                            value={ex.name} 
+                                            onChange={(e) => handleExerciseChange(exIndex, 'name', e.target.value)} 
+                                            className="w-full p-4 bg-white dark:bg-gray-800 border-none rounded-2xl font-bold text-sm focus:ring-2 focus:ring-primary shadow-sm"
+                                        >
+                                            <option value="">Seleccionar...</option>
+                                            {MOCK_EXERCISES.map(name => <option key={name} value={name}>{name}</option>)}
                                         </select>
                                     </div>
-                                    <div className="flex items-center gap-2 justify-between sm:justify-start w-full sm:w-auto">
-                                        <div className="flex flex-col sm:block w-24 sm:w-28">
-                                            <label className="text-xs font-semibold text-gray-500 sm:hidden mb-1 block">Series</label>
-                                            <NumberInputWithButtons value={ex.sets} onChange={(v) => handleExerciseChange(exIndex, 'sets', v as number)} className="w-full" />
-                                        </div>
-                                        <div className="flex flex-col sm:block w-28 sm:w-32">
-                                            <label className="text-xs font-semibold text-gray-500 sm:hidden mb-1 block">Reps</label>
-                                            <NumberInputWithButtons value={ex.reps} onChange={(v) => handleExerciseChange(exIndex, 'reps', v as string)} className="w-full" />
-                                        </div>
-                                        <div className="sm:w-9 flex justify-end sm:justify-center mt-4 sm:mt-0">
-                                            <button type="button" onClick={() => handleRemoveExercise(exIndex)} className="p-2 text-gray-400 hover:text-red-500 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"><TrashIcon className="h-5 w-5" /></button>
-                                        </div>
+                                    <div className="w-full lg:w-32">
+                                        <label className="text-[8px] font-black text-gray-400 uppercase ml-2 block mb-1">Series</label>
+                                        <NumberInputWithButtons value={ex.sets} onChange={(v) => handleExerciseChange(exIndex, 'sets', v as number)} />
                                     </div>
+                                    <div className="w-full lg:w-32">
+                                        <label className="text-[8px] font-black text-gray-400 uppercase ml-2 block mb-1">Reps</label>
+                                        <NumberInputWithButtons value={ex.reps} onChange={(v) => handleExerciseChange(exIndex, 'reps', v as string)} />
+                                    </div>
+                                    <button type="button" onClick={() => handleRemoveExercise(exIndex)} className="p-3 text-gray-300 hover:text-red-500 transition-colors self-end lg:self-center">
+                                        <TrashIcon className="h-6 w-6" />
+                                    </button>
                                 </div>
                             ))}
-                         </div>
-                         {(!activeDayRoutine || activeDayRoutine.exercises.length === 0) && <div className="text-center py-10 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg"><p className="font-semibold text-gray-500 dark:text-gray-400">Día de Descanso</p></div>}
-                        <div className="mt-4">
-                            <button type="button" onClick={handleAddExercise} className="w-full flex items-center justify-center space-x-2 px-4 py-2 border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-primary hover:text-primary dark:hover:border-primary dark:hover:text-primary rounded-lg font-semibold transition-colors text-gray-500 dark:text-gray-400">
-                                <PlusIcon className="h-5 w-5" />
-                                <span>Añadir Nuevo Ejercicio</span>
+
+                            {(!activeDayRoutine || activeDayRoutine.exercises.length === 0) && (
+                                <div className="py-16 text-center border-2 border-dashed border-black/5 rounded-4xl flex flex-col items-center">
+                                    <ClockIcon className="w-12 h-12 text-gray-200 mb-2" />
+                                    <p className="font-bold text-gray-300 uppercase tracking-widest text-[10px]">Bloque de Descanso</p>
+                                </div>
+                            )}
+
+                            <button type="button" onClick={handleAddExercise} className="w-full py-5 border-2 border-dashed border-black/5 rounded-3xl font-black text-gray-400 text-xs uppercase tracking-widest hover:border-primary/30 hover:text-primary transition-all">
+                                + AÑADIR EJERCICIO
                             </button>
                         </div>
                     </div>
-               </div>
-
-                <div className="flex justify-end space-x-4 p-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 sticky bottom-0">
-                    <button type="button" onClick={onClose} className="px-4 py-2 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-lg font-semibold transition-colors text-gray-800 dark:text-gray-200">{t('general.cancel')}</button>
-                    <button type="submit" className="px-4 py-2 bg-primary hover:bg-primary/90 rounded-lg font-semibold transition-colors text-primary-foreground">{t('general.save')}</button>
                 </div>
-                 {/* FIX: Removed non-standard "jsx" prop from style tag. */}
-                 <style>{`
-                    .input-style {
-                        background-color: #f3f4f6; border: 1px solid #d1d5db; border-radius: 0.375rem; color: #111827; padding: 0.5rem 0.75rem;
-                    }
-                    .dark .input-style {
-                        background-color: #374151; border-color: #4b5563; color: #f9fafb;
-                    }
-                    .input-style:focus { --tw-ring-color: hsl(var(--primary)); border-color: hsl(var(--primary)); }
-                `}</style>
+
+                <div className="p-8 bg-gray-50 dark:bg-gray-900 border-t border-black/5 flex flex-col sm:flex-row gap-4 flex-shrink-0">
+                    <button type="button" onClick={onClose} className="flex-1 py-4 bg-white dark:bg-gray-800 text-gray-400 hover:text-gray-600 rounded-2xl font-black uppercase text-xs tracking-widest transition-all">
+                        {t('general.cancel')}
+                    </button>
+                    <button type="submit" className="flex-[2] py-4 bg-primary text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all">
+                        {t('general.saveChanges')}
+                    </button>
+                </div>
             </form>
         </div>
     );
 };
-
 
 export default RoutineTemplates;

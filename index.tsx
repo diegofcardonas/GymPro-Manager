@@ -76,7 +76,8 @@ const resources = {
         system: "System",
         home: "Home",
         training: "Training",
-        account: "Account"
+        account: "Account",
+        users: "Users"
       },
       admin: {
         dashboard: { notifications: "Notifications", settings: "Settings", classSchedule: "Class Schedule", routineTemplates: "Routine Templates" },
@@ -88,33 +89,33 @@ const resources = {
         reports: { title: "Reports & Analytics", trainerLoad: "Trainer Load", clients: "Clients", expirationForecast: "Expiration Forecast", expiringMemberships: "Expiring Memberships", demographicsGender: "Demographics by Gender", demographicsLevel: "Demographics by Level", notSet: "Not Set" },
         appSettings: { title: "Application Settings", notifications: "Notifications", emailTemplate: "Email Template", emailTemplateDefault: "Welcome to GymPro...", expiryReminder: "Expiry Reminder", expiryReminderDefault: "Your membership is expiring...", saveTemplates: "Save Templates", system: "System", maintenanceMode: "Maintenance Mode", maintenanceModeDesc: "Prevents non-admin users from logging in.", successMessage: "{{section}} saved successfully." },
         userDetailsModal: { keyInfo: "Key Information", status: "Status", tier: "Tier", clientLoad: "Client Load", clientsCount: "{{count}} Active Clients", memberSince: "Member Since", expiresOn: "Expires On", assignedTrainers: "Assigned Trainers", none: "None", personalInfo: "Personal Info", phone: "Phone", gender: "Gender", age: "Age", ageYears: "{{age}} years", healthFitness: "Health & Fitness", fitnessLevel: "Fitness Level", height: "Height", heightCm: "{{height}} cm", weight: "Weight", weightKg: "{{weight}} kg", fitnessGoals: "Fitness Goals", dietaryPreferences: "Dietary Preferences", medicalConditions: "Medical Conditions", professionalInfo: "Professional Info", skills: "Skills", emergencyContact: "Emergency Contact", name: "Name", close: "Close", editUser: "Edit User", notApplicable: "N/A" },
-        finances: { title: "Financial Overview", tabs: { overview: "Overview", transactions: "Transactions", budgets: "Budgets", reports: "Reports" }, stats: { netProfit: "Net Profit", totalIncome: "Total Income", totalExpenses: "Total Expenses", cashFlow: "Cash Flow" } }
+        finances: { title: "Financial Overview", tabs: { overview: "Overview", transactions: "Transactions", budgets: "Budgets", reports: "Reports" }, stats: { netProfit: "Net Profit", totalIncome: "Total Income", totalExpenses: "Total Expenses", cashFlow: "Flow" } }
       },
-      finance: {
-        categories: { Rent: "Rent", Salaries: "Salaries", Utilities: "Utilities", Marketing: "Marketing", Equipment: "Equipment", Maintenance: "Maintenance", Sales: "Sales", POS_SALE: "POS Sale", Other: "Other" }
+      roles: { 
+        ADMIN: "Administrator", 
+        CLIENT: "Client", 
+        TRAINER: "Trainer", 
+        RECEPTIONIST: "Receptionist", 
+        GENERAL_MANAGER: "Manager", 
+        GROUP_INSTRUCTOR: "Instructor", 
+        NUTRITIONIST: "Nutritionist", 
+        PHYSIOTHERAPIST: "Physio",
+        SALES_AGENT: "Sales Agent",
+        MAINTENANCE: "Maintenance Staff"
       },
-      auth: { login: "Log In", signup: "Sign Up", name: "Full Name", email: "Email Address", password: "Password", forgotPassword: "Forgot password?", dontHaveAccount: "Don't have an account?", alreadyHaveAccount: "Already have an account?", demoAccess: "Demo Access", errorMissingFields: "Please fill all fields", errorUnexpected: "An unexpected error occurred" },
-      client: {
-        dashboard: { welcome: "Hello, {{name}}!", daysLeft: "You have {{count}} membership days left.", startTraining: "Start Training", viewClasses: "View Classes", aiQuote: "Daily AI Motivation", endDate: "Expires" },
-        sidebar: { home: "Home", training: "Training", community: "Community", account: "Account", routine: "Routine", classes: "Classes", profile: "Profile", 'membership-card': "Digital Card" },
-        social: { feed: "Social Feed", ranking: "Leaderboard", placeholder: "Share your progress, {{name}}...", photoVideo: "Photo/Video", post: "Post", workouts: "workouts", points: "pts", noPosts: "No posts yet. Be the first!" },
-        workout: { restDay: "Rest Day!", noRoutine: "You don't have a routine for today, but you can train freestyle if you feel energetic.", freestyle: "Freestyle Training", preparePlayer: "PREPARE PLAYER ⚡", exercisesConfigured: "{{count}} EXERCISES CONFIGURED", selectExercise: "Select Exercise...", addSet: "ADD SET", saveManual: "SAVE MANUALLY 💾", goal: "Goal" },
-        progress: { title: "My Evolution", subtitle: "Keep track of your physical progress", maxWeight: "Max Weight", maxVolume: "Total Volume", est1rm: "Est. 1RM", totalSessions: "Total Sessions", strengthTrend: "Strength Trend", trainingVolume: "Training Volume", monthlyConsistency: "Monthly Consistency", recentHistory: "Recent History", exercisesLogged: "exercises logged", noData: "No data yet", noDataDesc: "Start logging your workouts to see your progress charts." },
-        nutrition: { title: "AI Nutrition Log", uploadDesc: "Upload meal photo", description: "Meal description", preciseDesc: "Be as precise as possible (e.g. 200g chicken, 1 cup rice...)", analyze: "Analyze with AI", protein: "Protein", carbs: "Carbohydrates", fat: "Fats", aiAnalysis: "AI Analysis", empty: "No logs yet. Upload your first meal!", photoMeal: "Meal analyzed by photo" },
-        aiGenerator: { title: "Smart Workout Builder", promptPlaceholder: "E.g. I have 45 mins, dumbbells only, leg focus.", generate: "Build AI Routine", disclaimer: "AI can make mistakes. Listen to your body.", suggested: "Suggestions", loading: "Designing your perfect session...", addToLog: "Use this routine" }
-      },
-      trainer: {
-        sidebar: { summary: "Summary", management: "Management", communication: "Communication", account: "Account", dashboard: "Dashboard", tasks: "Tasks", clients: "Clients", schedule: "Schedule", templates: "Templates", messages: "Messages", profile: "Profile", notifications: "Notifications", settings: "Settings" }
-      },
-      receptionist: { title: "Reception", nav: { checkIn: "Check-In", users: "Users", pos: "POS", tasks: "Tasks" }, cameraError: "Could not access camera", qrTip: "Align QR code within the frame", success: "Check-in Successful", welcome: "Welcome, {{name}}", scanQR: "Scan QR", noMembersFound: "No members found" },
-      manager: { title: "General Manager", overview: "Overview", staff: "Staff", financials: "Financials", revenue: "Total Revenue", mrr: "MRR", activeMembers: "Active Members", staffCount: "Staff Count", revenueTrend: "Revenue Trend", financialsPlaceholder: "Detailed financial reports and projections." },
-      instructor: { title: "Instructor", myClasses: "My Classes", attendees: "Attendees", noSignups: "No signups yet" },
-      nutritionist: { title: "Nutritionist", nav: { clients: "Clients", logs: "Logs" }, clients: "Clients", goals: "Goals", dietary: "Dietary", viewLogs: "View Logs", allClients: "All Clients", nutritionLogs: "Nutrition Logs", aiAnalysis: "AI Analysis", protein: "Prot", carbs: "Carbs", fat: "Fat", noLogsYet: "No logs yet", selectClient: "Select a client to view logs" },
-      physio: { title: "Physiotherapist", nav: { patients: "Patients", notes: "Notes" }, patients: "Patients", conditions: "Conditions", noneReported: "None reported", medicalInfo: "Medical Info", progressNotes: "Progress Notes", noNotesYet: "No notes yet", addNotePlaceholder: "Add a progress note...", selectPatient: "Select a patient to view details", noteAddedSuccess: "Note added successfully" },
-      roles: { ADMIN: "Administrator", CLIENT: "Client", TRAINER: "Trainer", RECEPTIONIST: "Receptionist", GENERAL_MANAGER: "Manager", GROUP_INSTRUCTOR: "Instructor", NUTRITIONIST: "Nutritionist", PHYSIOTHERAPIST: "Physio" },
-      statuses: { membership: { ACTIVE: "Active", EXPIRED: "Expired", PENDING: "Pending" }, equipment: { OPERATIONAL: "Operational", IN_REPAIR: "In Repair", OUT_OF_SERVICE: "Out of Service" } },
       enums: {
-        Role: { ADMIN: "Administrator", CLIENT: "Client", TRAINER: "Trainer", RECEPTIONIST: "Receptionist", GENERAL_MANAGER: "Manager", GROUP_INSTRUCTOR: "Instructor", NUTRITIONIST: "Nutritionist", PHYSIOTHERAPIST: "Physio" },
+        Role: { 
+            ADMIN: "Administrator", 
+            CLIENT: "Client", 
+            TRAINER: "Trainer", 
+            RECEPTIONIST: "Receptionist", 
+            GENERAL_MANAGER: "Manager", 
+            GROUP_INSTRUCTOR: "Instructor", 
+            NUTRITIONIST: "Nutritionist", 
+            PHYSIOTHERAPIST: "Physio",
+            SALES_AGENT: "Sales Agent",
+            MAINTENANCE: "Maintenance Staff"
+        },
         MembershipStatus: { ACTIVE: "Active", EXPIRED: "Expired", PENDING: "Pending" },
         TaskStatus: { PENDING: "Pending", IN_PROGRESS: "In Progress", COMPLETED: "Completed" },
         TaskPriority: { High: "High", Medium: "Medium", Low: "Low" },
@@ -128,10 +129,6 @@ const resources = {
       player: { previous: "Previous", finish: "Finish Routine", rest: "Rest Time", skip: "Skip", next: "Next Exercise" },
       analysis: { title: "AI Technique Analysis", upload: "Upload Exercise Photo", analyzing: "Analyzing...", feedback: "Coach Feedback" },
       splash: { tagline: "Forging your best version", loading: "Initializing system..." },
-      legal: {
-        privacy: { title: "Privacy Policy", lastUpdate: "Last update: August 2024", intro: "At GymPro Manager, your health and fitness data privacy is our priority. This policy explains how we handle your information.", section1Title: "1. Data Collection", section1Content: "We collect profile information (name, age, weight, height), workout logs, meal photos for nutritional analysis, and biometric data necessary for your physical tracking.", section2Title: "2. Use of Artificial Intelligence", section2Content: "We use the Google Gemini API to process your queries to the AI Coach, analyze meal photos, and exercise technique. Your data is sent securely and is not used to train external public models without your explicit consent.", section3Title: "3. Data Security", section3Content: "We implement end-to-end encryption in your messages and secure storage in local and cloud databases with restricted access.", section4Title: "4. Your Rights", section4Content: "You have the right to access, rectify, or delete your data at any time from your account's Settings section." },
-        terms: { title: "Terms of Use", lastUpdate: "Last update: August 2024", section1Title: "1. Medical Disclaimer", section1Content: "GymPro Manager provides AI-based suggestions. We are not a substitute for professional medical advice. Always consult a physician before starting any intense exercise program.", section2Title: "2. Platform Usage", section2Content: "The user is responsible for maintaining account confidentiality. Any misuse of the community or messaging system will result in immediate suspension.", section3Title: "3. Payments and Subscriptions", section3Content: "Memberships are charged according to the selected tier. Cancellations must be made at least 5 days prior to the next billing cycle.", section4Title: "4. Intellectual Property", section4Content: "All content, algorithms, and designs within GymPro Manager are company property or used under license." }
-      },
       footer: { privacy: "Privacy Policy", terms: "Terms of Use", support: "Technical Support" },
       support: { categories: { technical: "Technical Issue", billing: "Billing", equipment: "Equipment", suggestion: "Suggestion" } },
       components: {
@@ -220,7 +217,8 @@ const resources = {
         system: "Sistema",
         home: "Inicio",
         training: "Entrenamiento",
-        account: "Cuenta"
+        account: "Cuenta",
+        users: "Usuarios"
       },
       admin: {
         dashboard: { notifications: "Notificaciones", settings: "Ajustes", classSchedule: "Agenda de Clases", routineTemplates: "Plantillas de Rutina" },
@@ -232,47 +230,33 @@ const resources = {
         reports: { title: "Reportes y Analíticas", trainerLoad: "Carga de Entrenadores", clients: "Clientes", expirationForecast: "Pronóstico de Vencimientos", expiringMemberships: "Membresías por Vencer", demographicsGender: "Demografía por Género", demographicsLevel: "Demografía por Nivel", notSet: "No definido" },
         appSettings: { title: "Ajustes de la Aplicación", notifications: "Notificaciones", emailTemplate: "Plantilla de Correo", emailTemplateDefault: "Bienvenido a GymPro...", expiryReminder: "Recordatorio de Vencimiento", expiryReminderDefault: "Tu membresía está por vencer...", saveTemplates: "Guardar Plantillas", system: "Sistema", maintenanceMode: "Modo Mantenimiento", maintenanceModeDesc: "Evita que los usuarios no administradores inicien sesión.", successMessage: "{{section}} guardado con éxito." },
         userDetailsModal: { keyInfo: "Información Clave", status: "Estado", tier: "Nivel", clientLoad: "Carga de Clientes", clientsCount: "{{count}} Clientes Activos", memberSince: "Miembro Desde", expiresOn: "Vence El", assignedTrainers: "Entrenadores Asignados", none: "Ninguno", personalInfo: "Información Personal", phone: "Teléfono", gender: "Género", age: "Edad", ageYears: "{{age}} años", healthFitness: "Salud y Fitness", fitnessLevel: "Nivel de Fitness", height: "Altura", heightCm: "{{height}} cm", weight: "Peso", weightKg: "{{weight}} kg", fitnessGoals: "Objetivos", dietaryPreferences: "Preferencias Dietarias", medicalConditions: "Condiciones Médicas", professionalInfo: "Información Profesional", skills: "Habilidades", emergencyContact: "Contacto de Emergencia", name: "Nombre", close: "Cerrar", editUser: "Editar Usuario", notApplicable: "N/A" },
-        finances: { title: "Resumen Financiero", tabs: { overview: "Resumen", transactions: "Transacciones", budgets: "Presupuestos", reports: "Reportes" }, stats: { netProfit: "Ganancia Neta", totalIncome: "Ingresos Totales", totalExpenses: "Gastos Totales", cashFlow: "Flujo de Caja" } }
+        finances: { title: "Resumen Financiero", tabs: { overview: "Resumen", transactions: "Transacciones", budgets: "Presupuestos", reports: "Reportes" }, stats: { netProfit: "Ganancia Neta", totalIncome: "Ingresos Totales", totalExpenses: "Gastos Totales", cashFlow: "Flujo" } }
       },
-      finance: {
-        categories: { Rent: "Arriendo", Salaries: "Nómina", Utilities: "Servicios", Marketing: "Marketing", Equipment: "Equipamiento", Maintenance: "Mantenimiento", Sales: "Ventas", POS_SALE: "Punto de Venta", Other: "Otros" }
+      roles: { 
+        ADMIN: "Administrador", 
+        CLIENT: "Cliente", 
+        TRAINER: "Entrenador", 
+        RECEPTIONIST: "Recepcionista", 
+        GENERAL_MANAGER: "Gerente", 
+        GROUP_INSTRUCTOR: "Instructor", 
+        NUTRITIONIST: "Nutricionista", 
+        PHYSIOTHERAPIST: "Fisio",
+        SALES_AGENT: "Asesor Comercial",
+        MAINTENANCE: "Técnico de Mantenimiento"
       },
-      auth: { login: "Iniciar Sesión", signup: "Registrarse", name: "Nombre Completo", email: "Correo Electrónico", password: "Contraseña", forgotPassword: "¿Olvidaste tu contraseña?", dontHaveAccount: "¿No tienes cuenta?", alreadyHaveAccount: "¿Ya tienes cuenta?", demoAccess: "Acceso Demo", errorMissingFields: "Por favor llena todos los campos", errorUnexpected: "Ocurrió un error inesperado" },
-      client: {
-        dashboard: { welcome: "¡Hola, {{name}}!", daysLeft: "Te quedan {{count}} días de membresía.", startTraining: "Empezar a Entrenar", viewClasses: "Ver Clases", aiQuote: "Motivación Diaria IA", endDate: "Vence" },
-        sidebar: { home: "Inicio", training: "Entrenamiento", community: "Comunidad", account: "Cuenta", routine: "Rutina", classes: "Clases", profile: "Perfil", 'membership-card': "Tarjeta Digital" },
-        social: { feed: "Muro Social", ranking: "Ranking del Mes", placeholder: "Comparte tu progreso, {{name}}...", photoVideo: "Foto/Video", post: "Publicar", workouts: "entrenos", points: "pts", noPosts: "Aún no hay publicaciones. ¡Sé el primero!" },
-        workout: { restDay: "¡Día de Descanso!", noRoutine: "No tienes rutina para hoy, pero puedes entrenar libre si tienes energía.", freestyle: "Entrenamiento Libre", preparePlayer: "PREPARAR PLAYER ⚡", exercisesConfigured: "{{count}} EJERCICIOS CONFIGURADOS", selectExercise: "Seleccionar Ejercicio...", addSet: "AÑADIR SERIE", saveManual: "GUARDAR MANUALMENTE 💾", goal: "Meta" },
-        progress: { title: "Mi Evolución", subtitle: "Lleva el control de tu progreso físico", maxWeight: "Peso Máximo", maxVolume: "Volumen Total", est1rm: "1RM Est.", totalSessions: "Sesiones Totales", strengthTrend: "Tendencia de Fuerza", trainingVolume: "Volumen de Entrenamiento", monthlyConsistency: "Consistencia Mensual", recentHistory: "Historial Reciente", exercisesLogged: "ejercicios reg.", noData: "Sin datos aún", noDataDesc: "Empieza a registrar tus entrenamientos para ver tus gráficas." },
-        nutrition: { title: "Registro Nutrición IA", uploadDesc: "Subir foto de comida", description: "Descripción de la comida", preciseDesc: "Sé lo más preciso posible (ej. 200g pollo, 1 taza arroz...)", analyze: "Analizar con IA", protein: "Proteína", carbs: "Carbohidratos", fat: "Grasas", aiAnalysis: "Análisis IA", empty: "Sin registros. ¡Sube tu primera comida!", photoMeal: "Comida analizada por foto" },
-        aiGenerator: { title: "Smart Workout Builder", promptPlaceholder: "Ej: Tengo 45 min, solo mancuernas, enfoque en pierna.", generate: "Construir Rutina IA", disclaimer: "La IA puede cometer errores. Escucha a tu cuerpo.", suggested: "Sugerencias", loading: "Diseñando tu sesión perfecta...", addToLog: "Usar esta rutina" }
-      },
-      trainer: {
-        sidebar: { 
-          summary: "Resumen", 
-          management: "Gestión", 
-          communication: "Comunicación", 
-          account: "Cuenta", 
-          dashboard: "Inicio", 
-          tasks: "Tareas", 
-          clients: "Clientes", 
-          schedule: "Agenda", 
-          templates: "Plantillas", 
-          messages: "Mensajes", 
-          profile: "Perfil", 
-          notifications: "Notificaciones", 
-          settings: "Ajustes" 
-        }
-      },
-      receptionist: { title: "Recepción", nav: { checkIn: "Check-In", users: "Usuarios", pos: "POS", tasks: "Tareas" }, cameraError: "No se pudo acceder a la cámara", qrTip: "Alinea el código QR en el marco", success: "Ingreso Exitoso", welcome: "Bienvenido, {{name}}", scanQR: "Escanear QR", noMembersFound: "No se encontraron miembros" },
-      manager: { title: "Gerencia General", overview: "Resumen", staff: "Personal", financials: "Finanzas", revenue: "Ingresos Totales", mrr: "MRR", activeMembers: "Miembros Activos", staffCount: "Personal", revenueTrend: "Tendencia de Ingresos", financialsPlaceholder: "Reportes financieros detallados y proyecciones." },
-      instructor: { title: "Instructor", myClasses: "Mis Clases", attendees: "Asistentes", noSignups: "Sin inscritos aún" },
-      nutritionist: { title: "Nutricionista", nav: { clients: "Clientes", logs: "Registros" }, clients: "Clientes", goals: "Objetivos", dietary: "Dieta", viewLogs: "Ver Registros", allClients: "Todos los Clientes", nutritionLogs: "Registros de Nutrición", aiAnalysis: "Análisis IA", protein: "Prot", carbs: "Carbs", fat: "Grasa", noLogsYet: "Sin registros aún", selectClient: "Selecciona un cliente para ver registros" },
-      physio: { title: "Fisioterapeuta", nav: { patients: "Pacientes", notes: "Notas" }, patients: "Pacientes", conditions: "Condiciones", noneReported: "Ninguna reportada", medicalInfo: "Info Médica", progressNotes: "Notas de Progreso", noNotesYet: "Sin notas aún", addNotePlaceholder: "Añadir nota de progreso...", selectPatient: "Selecciona un paciente para ver detalles", noteAddedSuccess: "Nota añadida exitosamente" },
-      roles: { ADMIN: "Administrador", CLIENT: "Cliente", TRAINER: "Entrenador", RECEPTIONIST: "Recepcionista", GENERAL_MANAGER: "Gerente", GROUP_INSTRUCTOR: "Instructor", NUTRITIONIST: "Nutricionista", PHYSIOTHERAPIST: "Fisio" },
-      statuses: { membership: { ACTIVE: "Activo", EXPIRED: "Vencido", PENDING: "Pendiente" }, equipment: { OPERATIONAL: "Operativo", IN_REPAIR: "En Reparación", OUT_OF_SERVICE: "Fuera de Servicio" } },
       enums: {
-        Role: { ADMIN: "Administrador", CLIENT: "Cliente", TRAINER: "Entrenador", RECEPTIONIST: "Recepcionista", GENERAL_MANAGER: "Gerente", GROUP_INSTRUCTOR: "Instructor", NUTRITIONIST: "Nutricionista", PHYSIOTHERAPIST: "Fisio" },
+        Role: { 
+            ADMIN: "Administrador", 
+            CLIENT: "Cliente", 
+            TRAINER: "Entrenador", 
+            RECEPTIONIST: "Recepcionista", 
+            GENERAL_MANAGER: "Gerente", 
+            GROUP_INSTRUCTOR: "Instructor", 
+            NUTRITIONIST: "Nutricionista", 
+            PHYSIOTHERAPIST: "Fisio",
+            SALES_AGENT: "Asesor Comercial",
+            MAINTENANCE: "Técnico de Mantenimiento"
+        },
         MembershipStatus: { ACTIVE: "Activo", EXPIRED: "Vencido", PENDING: "Pendiente" },
         TaskStatus: { PENDING: "Pendiente", IN_PROGRESS: "En Progreso", COMPLETED: "Completada" },
         TaskPriority: { High: "Alta", Medium: "Media", Low: "Baja" },
@@ -286,10 +270,6 @@ const resources = {
       player: { previous: "Anterior", finish: "Terminar Rutina", rest: "Descanso", skip: "Omitir", next: "Siguiente Ejercicio" },
       analysis: { title: "Análisis Técnico IA", upload: "Subir Foto Ejercicio", analyzing: "Analizando...", feedback: "Feedback del Coach" },
       splash: { tagline: "Forjando tu mejor versión", loading: "Inicializando sistema..." },
-      legal: {
-        privacy: { title: "Política de Privacidad", lastUpdate: "Última actualización: Agosto 2024", intro: "En GymPro Manager, la privacidad de tus datos de salud y fitness es nuestra prioridad. Esta política explica cómo manejamos tu información.", section1Title: "1. Datos que Recolectamos", section1Content: "Recolectamos información de perfil (nombre, edad, peso, altura), registros de entrenamiento, fotos de comidas para análisis nutricional y datos biométricos necesarios para tu seguimiento físico.", section2Title: "2. Uso de Inteligencia Artificial", section2Content: "Utilizamos la API de Google Gemini para procesar tus consultas al Coach IA, analizar fotos de comida y técnica de ejercicios. Tus datos se envían de forma segura y no se utilizan para entrenar modelos públicos externos sin tu consentimiento explícito.", section3Title: "3. Seguridad de los Datos", section3Content: "Implementamos cifrado de extremo a extremo en tus mensajes y almacenamiento seguro en bases de datos locales y en la nube con acceso restringido.", section4Title: "4. Tus Derechos", section4Content: "Tienes derecho a acceder, rectificar o eliminar tus datos en cualquier momento desde la sección de Ajustes de tu cuenta." },
-        terms: { title: "Términos de Uso", lastUpdate: "Última actualización: Agosto 2024", section1Title: "1. Advertencia Médica", section1Content: "GymPro Manager proporciona sugerencias basadas en IA. No somos un sustituto de asesoramiento médico profesional. Siempre consulta a un médico antes de iniciar cualquier programa de ejercicio intenso.", section2Title: "2. Uso de la Plataforma", section2Content: "El usuario es responsable de mantener la confidencialidad de su cuenta. Cualquier uso indebido del sistema de comunidad o mensajes resultará en la suspensión inmediata.", section3Title: "3. Pagos y Suscripciones", section3Content: "Las membresías se cobran según el nivel seleccionado. Las cancelaciones deben realizarse con al menos 5 días de antelación al próximo ciclo de facturación.", section4Title: "4. Propiedad Intelectual", section4Content: "Todo el contenido, algoritmos y diseños dentro de GymPro Manager son propiedad de la empresa o se usan bajo licencia." }
-      },
       footer: { privacy: "Política de Privacidad", terms: "Términos de Uso", support: "Soporte Técnico" },
       support: { categories: { technical: "Fallo Técnico", billing: "Facturación", equipment: "Equipo Dañado", suggestion: "Sugerencia" } },
       components: {

@@ -5,156 +5,125 @@ import { Challenge } from '../../types';
 import { PlusIcon } from '../icons/PlusIcon';
 import { PencilIcon } from '../icons/PencilIcon';
 import { TrashIcon } from '../icons/TrashIcon';
+import { TrophyIcon } from '../icons/TrophyIcon';
+import { useTranslation } from 'react-i18next';
+import { XCircleIcon } from '../icons/XCircleIcon';
 
 const ChallengesManagement: React.FC = () => {
+    const { t } = useTranslation();
     const { challenges, addChallenge, updateChallenge, deleteChallenge } = useContext(AuthContext);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingChallenge, setEditingChallenge] = useState<Challenge | null>(null);
 
-    const handleAddNew = () => {
-        setEditingChallenge(null);
-        setIsModalOpen(true);
-    };
-
-    const handleEdit = (challenge: Challenge) => {
-        setEditingChallenge(challenge);
-        setIsModalOpen(true);
-    };
-
-    const handleDelete = (id: string) => {
-        if (window.confirm('¿Estás seguro de que quieres eliminar este desafío?')) {
-            deleteChallenge(id);
-        }
-    };
-
-    const handleSave = (challenge: Omit<Challenge, 'id' | 'participants'> & { id?: string }) => {
-        if (challenge.id) {
-            updateChallenge(challenge as Challenge);
-        } else {
-            addChallenge(challenge);
-        }
-        setIsModalOpen(false);
-    };
-
     return (
-        <div className="w-full max-w-5xl space-y-8">
-            <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Gestionar Desafíos</h2>
-                <button onClick={handleAddNew} className="btn-primary">
+        <div className="w-full space-y-10 animate-fade-in pb-20">
+            <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-black/5 pb-8">
+                <div>
+                    <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter uppercase italic">Game Center</h2>
+                    <p className="text-gray-500 font-medium">Motiva a tus atletas con desafíos épicos y recompensas.</p>
+                </div>
+                <button onClick={() => { setEditingChallenge(null); setIsModalOpen(true); }} className="w-full md:w-auto px-10 py-5 bg-emerald-600 text-white rounded-3xl font-black uppercase text-xs tracking-widest shadow-xl shadow-emerald-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
                     <PlusIcon className="h-5 w-5" />
-                    <span>Nuevo Desafío</span>
+                    <span>NUEVO RETO</span>
                 </button>
             </div>
 
-            <div className="bg-white dark:bg-gray-800/50 rounded-xl ring-1 ring-black/5 dark:ring-white/10 shadow-lg">
-                <div className="divide-y divide-gray-200 dark:divide-gray-700">
-                    {challenges.map(challenge => (
-                        <div key={challenge.id} className="p-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:bg-gray-50 dark:hover:bg-gray-800">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                {challenges.map(challenge => (
+                    <div key={challenge.id} className="bg-white dark:bg-gray-800/50 rounded-4xl p-8 border border-black/5 dark:border-white/10 shadow-sm flex flex-col group hover:shadow-2xl transition-all duration-500 animate-slide-up relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity text-emerald-500">
+                            <TrophyIcon className="w-48 h-48 rotate-12" />
+                        </div>
+                        
+                        <div className="flex justify-between items-start mb-6 relative z-10">
                             <div>
-                                <h3 className="font-semibold text-primary">{challenge.name}</h3>
-                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{challenge.description}</p>
-                                <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
-                                    Meta: {challenge.goal} {challenge.unit} | Participantes: {challenge.participants.length}
-                                </p>
+                                <h3 className="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tighter italic group-hover:text-emerald-500 transition-colors">{challenge.name}</h3>
+                                <p className="text-gray-500 font-medium mt-1 text-sm">{challenge.description}</p>
                             </div>
-                            <div className="flex space-x-2 flex-shrink-0 self-end sm:self-center">
-                                <button onClick={() => handleEdit(challenge)} className="p-2 text-gray-500 hover:text-primary dark:text-gray-400 dark:hover:text-primary"><PencilIcon className="h-5 w-5" /></button>
-                                <button onClick={() => handleDelete(challenge.id)} className="p-2 text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400"><TrashIcon className="h-5 w-5" /></button>
+                            <div className="flex gap-2">
+                                <button onClick={() => { setEditingChallenge(challenge); setIsModalOpen(true); }} className="p-3 bg-gray-50 dark:bg-gray-700 text-gray-500 hover:text-primary rounded-2xl transition-all hover:scale-110 shadow-sm">
+                                    <PencilIcon className="h-4 w-4" />
+                                </button>
+                                <button onClick={() => { if(window.confirm(t('general.confirmDelete'))) deleteChallenge(challenge.id); }} className="p-3 bg-gray-50 dark:bg-gray-700 text-gray-500 hover:text-rose-500 rounded-2xl transition-all hover:scale-110 shadow-sm">
+                                    <TrashIcon className="h-4 w-4" />
+                                </button>
                             </div>
                         </div>
-                    ))}
-                </div>
+
+                        <div className="mt-auto pt-8 flex flex-col sm:flex-row justify-between items-center gap-6 relative z-10 border-t border-black/5 dark:border-white/5">
+                            <div className="flex gap-10">
+                                <div className="text-center sm:text-left">
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Meta</p>
+                                    <p className="text-xl font-black text-emerald-500 italic">{challenge.goal} {challenge.unit}</p>
+                                </div>
+                                <div className="text-center sm:text-left">
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Inscritos</p>
+                                    <p className="text-xl font-black text-gray-900 dark:text-white italic">{challenge.participants.length} ATLETAS</p>
+                                </div>
+                            </div>
+                            <div className="px-6 py-3 bg-gray-50 dark:bg-gray-900 rounded-2xl text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border border-black/5">
+                                Vence: {new Date(challenge.endDate).toLocaleDateString()}
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
-            
+
             {isModalOpen && (
-                <ChallengeModal
-                    challenge={editingChallenge}
-                    onSave={handleSave}
-                    onClose={() => setIsModalOpen(false)}
+                <ChallengeModal 
+                    challenge={editingChallenge} 
+                    onSave={(data: any) => {
+                        if(data.id) updateChallenge(data);
+                        else addChallenge(data);
+                        setIsModalOpen(false);
+                    }} 
+                    onClose={() => setIsModalOpen(false)} 
                 />
             )}
-             {/* FIX: Removed non-standard "jsx" prop from style tag. */}
-             <style>{`
-                .btn-primary { display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.5rem 1rem; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.5rem; font-weight: 600; transition: background-color 0.2s; }
-                .btn-primary:hover { background-color: hsl(var(--primary) / 0.9); }
-            `}</style>
         </div>
     );
 };
 
-const ChallengeModal: React.FC<{
-    challenge: Challenge | null;
-    onSave: (challenge: Omit<Challenge, 'id' | 'participants'> & { id?: string }) => void;
-    onClose: () => void;
-}> = ({ challenge, onSave, onClose }) => {
-    const [formData, setFormData] = useState(challenge || { name: '', description: '', goal: 1, unit: '', startDate: '', endDate: '' });
-
-    useEffect(() => {
-        if (challenge) {
-            setFormData(challenge);
-        } else {
-            setFormData({ name: '', description: '', goal: 1, unit: '', startDate: '', endDate: '' });
-        }
-    }, [challenge]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        onSave(formData);
-    };
-
+const ChallengeModal = ({ challenge, onSave, onClose }: any) => {
+    const [formData, setFormData] = useState(challenge || { name: '', description: '', goal: 100, unit: 'KM', startDate: new Date().toISOString(), endDate: new Date(Date.now() + 30*24*60*60*1000).toISOString() });
     return (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-            <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-lg animate-scale-in">
-                <h2 className="text-2xl font-bold p-6 border-b">{challenge ? 'Editar' : 'Nuevo'} Desafío</h2>
-                <div className="p-6 space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium">Nombre</label>
-                        <input type="text" name="name" value={formData.name} onChange={handleChange} className="mt-1 block w-full input-style" required />
+        <div className="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-4 backdrop-blur-2xl animate-fade-in">
+            <div className="bg-white dark:bg-gray-900 rounded-4xl w-full max-w-xl shadow-2xl overflow-hidden animate-scale-in">
+                <div className="p-10 bg-emerald-600 text-white flex justify-between items-center relative overflow-hidden">
+                    <TrophyIcon className="absolute -right-6 -top-6 w-32 h-32 opacity-10 rotate-12" />
+                    <div className="relative z-10">
+                        <h2 className="text-3xl font-black uppercase tracking-tighter italic">{challenge ? 'Editar Desafío' : 'Nuevo Desafío'}</h2>
+                        <p className="text-white/50 text-[10px] font-black uppercase tracking-widest mt-1">Ingeniería de Motivación Atleta</p>
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium">Descripción</label>
-                        <textarea name="description" value={formData.description} onChange={handleChange} rows={3} className="mt-1 block w-full input-style" required />
+                    <button onClick={onClose} className="relative z-10 p-2 hover:bg-white/10 rounded-full">
+                        <XCircleIcon className="w-8 h-8" />
+                    </button>
+                </div>
+                <div className="p-10 space-y-6">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nombre de la Épica</label>
+                        <input type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full p-5 bg-gray-50 dark:bg-gray-800 border-none rounded-3xl font-black text-xl italic" placeholder="Ej: Rey del Peso Muerto" />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Objetivo del Reto</label>
+                        <textarea rows={3} value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full p-6 bg-gray-50 dark:bg-gray-800 border-none rounded-3xl text-sm font-medium resize-none leading-relaxed" placeholder="Describe lo que deben lograr..." />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium">Meta</label>
-                            <input type="number" name="goal" value={formData.goal} onChange={handleChange} min="1" className="mt-1 block w-full input-style" required />
+                         <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Meta Numérica</label>
+                            <input type="number" value={formData.goal} onChange={e => setFormData({...formData, goal: Number(e.target.value)})} className="w-full p-5 bg-gray-50 dark:bg-gray-800 border-none rounded-3xl font-black" />
                         </div>
-                        <div>
-                            <label className="block text-sm font-medium">Unidad</label>
-                            <input type="text" name="unit" value={formData.unit} onChange={handleChange} placeholder="p. ej., km, entrenamientos, kg" className="mt-1 block w-full input-style" required />
-                        </div>
-                    </div>
-                     <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-sm font-medium">Fecha de Inicio</label>
-                            <input type="date" name="startDate" value={formData.startDate.split('T')[0]} onChange={handleChange} className="mt-1 block w-full input-style" required />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium">Fecha de Fin</label>
-                            <input type="date" name="endDate" value={formData.endDate.split('T')[0]} onChange={handleChange} className="mt-1 block w-full input-style" required />
+                         <div className="space-y-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Unidad</label>
+                            <input type="text" value={formData.unit} onChange={e => setFormData({...formData, unit: e.target.value})} className="w-full p-5 bg-gray-50 dark:bg-gray-800 border-none rounded-3xl font-black" placeholder="KM / KG / PTS" />
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-end space-x-4 p-4 bg-gray-50 dark:bg-gray-800/50 border-t">
-                    <button type="button" onClick={onClose} className="btn-secondary">Cancelar</button>
-                    <button type="submit" className="btn-primary">Guardar Desafío</button>
+                <div className="p-10 flex gap-4 bg-gray-50 dark:bg-gray-800/50">
+                    <button onClick={onClose} className="flex-1 py-5 font-black uppercase text-xs text-gray-400 tracking-widest">Cancelar</button>
+                    <button onClick={() => onSave(formData)} className="flex-[2] py-5 bg-emerald-600 text-white rounded-3xl font-black shadow-2xl hover:scale-105 transition-all uppercase text-xs tracking-widest">Activar Desafío</button>
                 </div>
-                {/* FIX: Removed non-standard "jsx" prop from style tag. */}
-                <style>{`
-                    .input-style { background-color: #f3f4f6; border: 1px solid #d1d5db; border-radius: 0.375rem; color: #111827; padding: 0.5rem 0.75rem; }
-                    .dark .input-style { background-color: #374151; border-color: #4b5563; color: #f9fafb; }
-                    .input-style:focus { --tw-ring-color: hsl(var(--primary)); border-color: hsl(var(--primary)); }
-                    .btn-primary { padding: 0.5rem 1rem; background-color: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-radius: 0.5rem; font-weight: 600; transition: background-color 0.2s; }
-                    .btn-primary:hover { background-color: hsl(var(--primary) / 0.9); }
-                    .btn-secondary { padding: 0.5rem 1rem; background-color: #e5e7eb; color: #1f2937; border-radius: 0.5rem; font-weight: 600; transition: background-color 0.2s; }
-                    .dark .btn-secondary { background-color: #4b5563; color: #f9fafb; }
-                `}</style>
-            </form>
+            </div>
         </div>
     );
 };
