@@ -16,6 +16,8 @@ import NutritionLog from './client/NutritionLog';
 import PostureAnalysis from './client/PostureAnalysis';
 import ChallengesView from './client/ChallengesView';
 import AchievementsView from './client/AchievementsView';
+import AIWorkoutGenerator from './client/AIWorkoutGenerator';
+import LegalView from './shared/LegalView';
 import Footer from './Footer';
 import { useTranslation } from 'react-i18next';
 import { UserProfileMenu } from './shared/UserProfileMenu';
@@ -25,12 +27,13 @@ import { GoogleGenAI } from '@google/genai';
 import { SparklesAiIcon } from './icons/SparklesAiIcon';
 import ProfileEditor from './shared/ProfileEditor';
 import { CameraIcon } from './icons/CameraIcon';
+import { ClipboardDocumentCheckIcon } from './icons/ClipboardDocumentCheckIcon';
 
-type View = 'dashboard' | 'social' | 'routine' | 'workout-log' | 'progress' | 'classes' | 'messages' | 'membership-card' | 'profile' | 'notifications' | 'settings' | 'ai-coach' | 'nutrition-log' | 'challenges' | 'achievements' | 'profile-edit' | 'posture-analysis';
+type View = 'dashboard' | 'social' | 'routine' | 'workout-log' | 'progress' | 'classes' | 'messages' | 'membership-card' | 'profile' | 'notifications' | 'settings' | 'ai-coach' | 'nutrition-log' | 'challenges' | 'achievements' | 'profile-edit' | 'posture-analysis' | 'ai-generator' | 'privacy' | 'terms';
 
 const ClientDashboard: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const { currentUser, logout } = useContext(AuthContext);
+  const { currentUser, logout, logWorkout } = useContext(AuthContext);
   const [activeView, setActiveView] = useState<View>('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -60,6 +63,21 @@ const ClientDashboard: React.FC = () => {
 
   if (!currentUser) return null;
 
+  const handleUseAiRoutine = (routine: any) => {
+    logWorkout(currentUser.id, {
+        id: `ai-${Date.now()}`,
+        date: new Date().toISOString(),
+        day: 'Monday', // Placeholder
+        loggedExercises: routine.exercises.map((ex: any) => ({
+            name: ex.name,
+            plannedSets: ex.sets,
+            plannedReps: ex.reps,
+            completedSets: Array(ex.sets).fill({ weight: 0, reps: 0 })
+        }))
+    });
+    setActiveView('progress');
+  };
+
   const daysLeft = Math.ceil((new Date(currentUser.membership.endDate).getTime() - new Date().getTime())/(1000*60*60*24));
 
   const renderContent = () => {
@@ -72,7 +90,9 @@ const ClientDashboard: React.FC = () => {
                         <p className="text-gray-500 mb-8 font-medium">{t('client.dashboard.daysLeft', { count: daysLeft })}</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <button onClick={() => setActiveView('workout-log')} className="p-4 bg-primary text-white rounded-3xl font-black text-lg shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">{t('client.dashboard.startTraining')}</button>
-                            <button onClick={() => setActiveView('classes')} className="p-4 bg-gray-100 dark:bg-gray-700 rounded-3xl font-black text-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all">{t('client.dashboard.viewClasses')}</button>
+                            <button onClick={() => setActiveView('ai-generator')} className="p-4 bg-violet-600 text-white rounded-3xl font-black text-lg shadow-lg shadow-violet-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                                <SparklesAiIcon className="w-6 h-6" /> {t('nav.aiGenerator')}
+                            </button>
                         </div>
                     </div>
                     
@@ -92,7 +112,7 @@ const ClientDashboard: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4">
                     {[
                         { id: 'nutrition-log', label: t('nav.nutritionLog'), color: 'bg-emerald-500' },
                         { id: 'posture-analysis', label: t('nav.analysis'), color: 'bg-rose-500', icon: <CameraIcon className="w-6 h-6"/> },
@@ -117,6 +137,7 @@ const ClientDashboard: React.FC = () => {
           case 'social': return <SocialFeed />;
           case 'workout-log': return <WorkoutLog onNavigate={setActiveView} />;
           case 'progress': return <ProgressView />;
+          case 'ai-generator': return <AIWorkoutGenerator onUseRoutine={handleUseAiRoutine} />;
           case 'classes': return <ClassBooking />;
           case 'messages': return <MessagingView />;
           case 'ai-coach': return <AICoachView />;
@@ -128,6 +149,8 @@ const ClientDashboard: React.FC = () => {
           case 'notifications': return <NotificationsView />;
           case 'settings': return <SettingsView />;
           case 'profile-edit': return <ProfileEditor onCancel={() => setActiveView('dashboard')} />;
+          case 'privacy': return <LegalView type="privacy" onBack={() => setActiveView('dashboard')} />;
+          case 'terms': return <LegalView type="terms" onBack={() => setActiveView('dashboard')} />;
           case 'profile': return (
               <div className="w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-4xl shadow-xl text-center border border-black/5 animate-fade-in">
                   <img src={currentUser.avatarUrl} className="w-32 h-32 rounded-full mx-auto border-4 border-primary/20 mb-4 shadow-lg" />
@@ -159,7 +182,7 @@ const ClientDashboard: React.FC = () => {
                 </div>
 
                 <nav className="hidden md:flex items-center gap-1 bg-gray-100/50 dark:bg-gray-800/50 p-1 rounded-2xl border border-black/[0.02] dark:border-white/[0.02]">
-                    {['dashboard', 'social', 'ai-coach', 'nutrition-log', 'posture-analysis'].map(v => (
+                    {['dashboard', 'social', 'ai-generator', 'nutrition-log', 'posture-analysis'].map(v => (
                         <button 
                             key={v} 
                             onClick={() => setActiveView(v as any)} 
@@ -169,7 +192,7 @@ const ClientDashboard: React.FC = () => {
                                     : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
                                 }`}
                         >
-                            {t(`nav.${v === 'nutrition-log' ? 'nutritionLog' : v === 'ai-coach' ? 'aiCoach' : v === 'posture-analysis' ? 'analysis' : v}`)}
+                            {t(`nav.${v === 'nutrition-log' ? 'nutritionLog' : v === 'ai-generator' ? 'aiGenerator' : v === 'posture-analysis' ? 'analysis' : v}`)}
                             {activeView === v && (
                                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-primary rounded-full"></span>
                             )}
@@ -190,6 +213,8 @@ const ClientDashboard: React.FC = () => {
                     {renderContent()}
                 </div>
             </main>
+
+            <Footer onNavigate={setActiveView} />
         </div>
         <BottomNavigation activeView={activeView} onNavigate={setActiveView} />
     </div>

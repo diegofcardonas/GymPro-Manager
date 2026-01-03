@@ -20,7 +20,7 @@
     "kg": "kg",
     "cm": "cm",
     "messages": "Mensajes",
-    "user": "Usuario",
+    "user": "Usuario-Cliente",
     "warning": "Atención",
     "unassigned": "Sin asignar",
     "add": "Añadir",
@@ -30,7 +30,7 @@
   },
   "nav": {
     "dashboard": "Inicio",
-    "users": "Usuarios",
+    "users": "Usuarios-Clientes",
     "reports": "Reportes",
     "payments": "Finanzas",
     "pos": "Punto de Venta",
@@ -53,235 +53,78 @@
     "aiCoach": "Coach IA",
     "profile": "Perfil",
     "logout": "Cerrar Sesión",
-    "analysis": "Análisis Postura"
+    "analysis": "Análisis Postura",
+    "aiGenerator": "Constructor IA"
   },
   "admin": {
-    "finances": {
-      "title": "Centro Financiero",
+    "userEditor": {
       "tabs": {
-        "overview": "Resumen",
-        "transactions": "Movimientos",
-        "budgets": "Presupuestos",
-        "reports": "Análisis Pro"
+        "personal": "Personal",
+        "membership": "Membresía y Rol",
+        "fitness": "Perfil Fitness"
       },
-      "stats": {
-        "netProfit": "Utilidad Neta",
-        "totalIncome": "Ingresos Totales",
-        "totalExpenses": "Gastos Totales",
-        "cashFlow": "Flujo de Caja"
-      },
-      "modal": {
-        "addIncome": "Registrar Ingreso",
-        "addExpense": "Registrar Gasto",
-        "amount": "Monto",
-        "category": "Categoría",
-        "date": "Fecha",
-        "description": "Descripción / Concepto",
-        "method": "Método de Pago"
-      },
-      "budget": {
-        "category": "Rubro",
-        "planned": "Planeado",
-        "actual": "Ejecutado",
-        "difference": "Diferencia",
-        "status": "Estado"
+      "fields": {
+        "tier": "Nivel de Membresía",
+        "expiration": "Vencimiento",
+        "goals": "Objetivos de Fitness",
+        "medical": "Condiciones Médicas"
       }
     }
   },
-  "finance": {
-    "categories": {
-      "Rent": "Arriendo",
-      "Salaries": "Nómina",
-      "Utilities": "Servicios Públicos",
-      "Marketing": "Publicidad",
-      "Equipment": "Equipamiento",
-      "Maintenance": "Mantenimiento",
-      "Sales": "Ventas Membresía",
-      "POS_SALE": "Venta Tienda",
-      "Other": "Otros"
+  "legal": {
+    "privacy": {
+      "title": "Política de Privacidad",
+      "lastUpdate": "Última actualización: Agosto 2024",
+      "intro": "En GymPro Manager, la privacidad de tus datos de salud y fitness es nuestra prioridad. Esta política explica cómo manejamos tu información.",
+      "section1Title": "1. Datos que Recolectamos",
+      "section1Content": "Recolectamos información de perfil (nombre, edad, peso, altura), registros de entrenamiento, fotos de comidas para análisis nutricional y datos biométricos necesarios para tu seguimiento físico.",
+      "section2Title": "2. Uso de Inteligencia Artificial",
+      "section2Content": "Utilizamos la API de Google Gemini para procesar tus consultas al Coach IA, analizar fotos de comida y técnica de ejercicios. Tus datos se envían de forma segura y no se utilizan para entrenar modelos públicos externos sin tu consentimiento explícito.",
+      "section3Title": "3. Seguridad de los Datos",
+      "section3Content": "Implementamos cifrado de extremo a extremo en tus mensajes y almacenamiento seguro en bases de datos locales y en la nube con acceso restringido.",
+      "section4Title": "4. Tus Derechos",
+      "section4Content": "Tienes derecho a acceder, rectificar o eliminar tus datos en cualquier momento desde la sección de Ajustes de tu cuenta."
+    },
+    "terms": {
+      "title": "Términos de Uso",
+      "lastUpdate": "Última actualización: Agosto 2024",
+      "section1Title": "1. Advertencia Médica",
+      "section1Content": "GymPro Manager proporciona sugerencias basadas en IA. No somos un sustituto de asesoramiento médico profesional. Siempre consulta a un médico antes de iniciar cualquier programa de ejercicio intenso.",
+      "section2Title": "2. Uso de la Plataforma",
+      "section2Content": "El usuario es responsable de mantener la confidencialidad de su cuenta. Cualquier uso indebido del sistema de comunidad o mensajes resultará en la suspensión inmediata.",
+      "section3Title": "3. Pagos y Suscripciones",
+      "section3Content": "Las membresías se cobran según el nivel seleccionado. Las cancelaciones deben realizarse con al menos 5 días de antelación al próximo ciclo de facturación.",
+      "section4Title": "4. Propiedad Intelectual",
+      "section4Content": "Todo el contenido, algoritmos y diseños dentro de GymPro Manager son propiedad de la empresa o se usan bajo licencia."
     }
   },
+  "footer": {
+    "privacy": "Política de Privacidad",
+    "terms": "Términos de Uso",
+    "support": "Soporte Técnico"
+  },
   "client": {
+    "aiGenerator": {
+      "title": "Smart Workout Builder",
+      "promptPlaceholder": "Ej: Tengo 45 min, solo mancuernas, enfoque en pierna.",
+      "generate": "Construir Rutina IA",
+      "disclaimer": "La IA puede cometer errores. Escucha a tu cuerpo.",
+      "suggested": "Sugerencias",
+      "loading": "Diseñando tu sesión perfecta...",
+      "addToLog": "Usar esta rutina"
+    },
+    "social": {
+      "ranking": "Ranking del Mes",
+      "feed": "Muro Social",
+      "points": "pts",
+      "workouts": "entrenos"
+    },
     "dashboard": {
       "welcome": "¡Hola, {{name}}!",
       "daysLeft": "Te quedan {{count}} días de membresía.",
       "startTraining": "Empezar a Entrenar",
       "viewClasses": "Ver Clases",
       "aiQuote": "Motivación Diaria IA"
-    },
-    "workout": {
-      "restDay": "¡Día de Descanso!",
-      "noRoutine": "No tienes una rutina para hoy, pero puedes entrenar libre si te sientes con energía.",
-      "freestyle": "Entrenamiento Libre",
-      "preparePlayer": "PREPARAR PLAYER ⚡",
-      "addSet": "AÑADIR SERIE",
-      "saveManual": "GUARDAR MANUALMENTE 💾",
-      "exercisesConfigured": "{{count}} EJERCICIOS CONFIGURADOS",
-      "selectExercise": "Selecciona Ejercicio...",
-      "goal": "Objetivo"
-    },
-    "progress": {
-      "title": "Mi Evolución",
-      "subtitle": "Sigue de cerca tu progreso físico",
-      "maxWeight": "Peso Máximo",
-      "maxVolume": "Volumen Total",
-      "est1rm": "Est. 1RM",
-      "totalSessions": "Sesiones Totales",
-      "strengthTrend": "Tendencia de Fuerza",
-      "trainingVolume": "Volumen de Carga",
-      "monthlyConsistency": "Consistencia Mensual",
-      "recentHistory": "Historial Reciente",
-      "exercisesLogged": "ejercicios registrados",
-      "noData": "Sin datos aún",
-      "noDataDesc": "Empieza a registrar tus entrenos para ver tus gráficas."
-    },
-    "nutrition": {
-      "title": "Diario de Nutrición IA",
-      "uploadDesc": "Subir foto de comida",
-      "description": "Descripción del plato",
-      "preciseDesc": "Sé lo más preciso posible (ej: 200g de pollo, 1 taza de arroz...)",
-      "analyze": "Analizar con IA",
-      "protein": "Proteína",
-      "carbs": "Carbohidratos",
-      "fat": "Grasas",
-      "aiAnalysis": "Análisis de la IA",
-      "empty": "No hay registros aún. ¡Sube tu primera comida!",
-      "photoMeal": "Plato analizado por foto"
     }
-  },
-  "player": {
-    "start": "Comenzar Entrenamiento",
-    "next": "Siguiente Ejercicio",
-    "previous": "Anterior",
-    "finish": "Terminar Rutina",
-    "rest": "Tiempo de Descanso",
-    "skip": "Saltar",
-    "wellDone": "¡Excelente trabajo!"
-  },
-  "analysis": {
-    "title": "Análisis de Técnica IA",
-    "upload": "Subir Foto de Ejercicio",
-    "analyzing": "Analizando...",
-    "feedback": "Feedback del Coach"
-  },
-  "splash": {
-    "tagline": "Forjando tu mejor versión",
-    "loading": "Iniciando sistema..."
-  },
-  "sidebar": {
-    "overview": "Resumen",
-    "management": "Gestión",
-    "gymOperations": "Operaciones",
-    "community": "Comunidad",
-    "system": "Sistema",
-    "home": "Inicio",
-    "training": "Entrenamiento",
-    "account": "Cuenta",
-    "summary": "Sumario",
-    "communication": "Comunicación"
-  },
-  "auth": {
-    "login": "Iniciar Sesión",
-    "signup": "Registrarse",
-    "email": "Correo Electrónico",
-    "password": "Contraseña",
-    "name": "Nombre Completo",
-    "forgotPassword": "¿Olvidaste tu contraseña?",
-    "dontHaveAccount": "¿No tienes cuenta?",
-    "alreadyHaveAccount": "¿Ya tienes cuenta?",
-    "demoAccess": "Acceso de Demostración",
-    "errorMissingFields": "Por favor completa todos los campos",
-    "errorUnexpected": "Ocurrió un error inesperado"
-  },
-  "enums": {
-    "Role": {
-      "ADMIN": "Administrador",
-      "CLIENT": "Cliente",
-      "TRAINER": "Entrenador",
-      "RECEPTIONIST": "Recepcionista",
-      "GENERAL_MANAGER": "Gerente",
-      "GROUP_INSTRUCTOR": "Instructor",
-      "NUTRITIONIST": "Nutricionista",
-      "PHYSIOTHERAPIST": "Fisioterapeuta"
-    },
-    "MembershipStatus": {
-      "ACTIVE": "Activo",
-      "EXPIRED": "Vencido",
-      "PENDING": "Pendiente"
-    },
-    "TaskStatus": {
-      "PENDING": "Pendiente",
-      "IN_PROGRESS": "En Progreso",
-      "COMPLETED": "Completado"
-    },
-    "TaskPriority": {
-      "Low": "Baja",
-      "Medium": "Media",
-      "High": "Alta"
-    },
-    "FitnessLevel": {
-      "BEGINNER": "Principiante",
-      "INTERMEDIATE": "Intermedio",
-      "ADVANCED": "Avanzado",
-      "title": "Nivel de Condición"
-    },
-    "Gender": {
-      "Masculino": "Masculino",
-      "Femenino": "Femenino",
-      "Otro": "Otro",
-      "Prefiero no decirlo": "Prefiero no decirlo"
-    }
-  },
-  "toast": {
-    "welcome": "¡Bienvenido de nuevo, {{name}}!",
-    "loggedOut": "Sesión cerrada correctamente",
-    "passwordError": "Email o contraseña incorrectos",
-    "emailExists": "El email ya está registrado",
-    "accountCreated": "¡Cuenta creada!",
-    "aiCoachError": "El Coach IA está fuera de línea",
-    "workoutLogged": "¡Entrenamiento registrado!",
-    "challengeJoined": "¡Te has unido al desafío!"
-  },
-  "profile": {
-    "editTitle": "Editar Perfil",
-    "personal": "Info Personal",
-    "fitness": "Salud y Metas",
-    "career": "Profesional",
-    "emergency": "Emergencia",
-    "fullName": "Nombre Completo",
-    "mobile": "Móvil",
-    "height": "Altura",
-    "weight": "Peso",
-    "imc": "IMC",
-    "prs": "Récords Personales",
-    "success": "Perfil actualizado con éxito",
-    "birthDate": "Fecha Nacimiento",
-    "gender": "Género",
-    "saving": "Guardando..."
-  },
-  "tasks": {
-    "title": "Gestión de Tareas",
-    "newTask": "Nueva Tarea",
-    "editTask": "Editar Tarea",
-    "taskName": "Nombre de Tarea",
-    "description": "Descripción",
-    "assignTo": "Asignar a",
-    "dueDate": "Fecha Límite",
-    "priority": "Prioridad",
-    "status": "Estado",
-    "myTasks": "Mis Tareas Asignadas",
-    "noTasks": "Sin tareas",
-    "noTasksDesc": "Tu lista está limpia.",
-    "statusUpdateSuccess": "¡Tarea actualizada!",
-    "assignedBy": "Asignado por"
-  },
-  "days": {
-    "Monday": "Lunes",
-    "Tuesday": "Martes",
-    "Wednesday": "Miércoles",
-    "Thursday": "Jueves",
-    "Friday": "Viernes",
-    "Saturday": "Sábado",
-    "Sunday": "Domingo"
   }
 }

@@ -31,6 +31,7 @@ import { ToastContainer } from './components/shared/Toast';
 import { CommandPalette } from './components/shared/CommandPalette';
 import { GoogleGenAI } from "@google/genai";
 import SplashScreen from './components/SplashScreen';
+import SupportModal from './components/shared/SupportModal';
 
 function usePersistentState<T>(key: string, defaultValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
   const [state, setState] = useState<T>(() => {
@@ -263,7 +264,7 @@ const App: React.FC = () => {
     addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, toggleReportModal: () => setIsReportModalOpen(prev => !prev),
     addNutritionLog, addPayment, addExpense, deleteExpense, addBudget, updateBudget, deleteBudget, addTask, updateTask, deleteTask, addPost, likePost, addToast, removeToast,
     requestPushPermission, sendTestPush
-  }), [currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, tasks, myClients, myTrainers, login, logout, register, updateUser, addUser, deleteUser, resetUsers, toggleBlockUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification, addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate, logWorkout, addGymClass, updateGymClass, deleteGymClass, bookClass, sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement, sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement, addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, addNutritionLog, addPayment, addExpense, deleteExpense, addBudget, updateBudget, deleteBudget, addTask, updateTask, deleteTask, addPost, likePost, addToast, removeToast, requestPushPermission, sendTestPush]);
+  }), [currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, tasks, myClients, myTrainers, login, logout, register, updateUser, addUser, deleteUser, resetUsers, toggleBlockUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification, addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate, logWorkout, addGymClass, updateGymClass, deleteGymClass, bookClass, sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement, sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement, addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, addNutritionLog, addPayment, addExpense, deleteExpense, addBudget, updateBudget, deleteBudget, addTask, updateTask, deleteTask, addPost, likePost, addToast, removeToast, requestPushPermission, sendTestPush, isReportModalOpen]);
 
   return (
     <ThemeProvider>
@@ -271,6 +272,7 @@ const App: React.FC = () => {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 flex flex-col">
           <ToastContainer toasts={toasts} removeToast={removeToast} />
           <CommandPalette />
+          {isReportModalOpen && <SupportModal />}
           {isLoading ? <SplashScreen /> : (currentUser ? 
             <div className="flex flex-col min-h-screen">
                 { {

@@ -21,12 +21,13 @@ import ChallengesManagement from './admin/ChallengesManagement';
 import EquipmentManagement from './admin/EquipmentManagement';
 import TaskManagement from './admin/TaskManagement';
 import LanguageSwitcher from './LanguageSwitcher';
+import LegalView from './shared/LegalView';
 import Footer from './Footer';
 import { UserProfileMenu } from './shared/UserProfileMenu';
 import { PointOfSale } from './admin/PointOfSale';
 import ProfileEditor from './shared/ProfileEditor';
 
-type View = 'dashboard' | 'users' | 'reports' | 'membership-tiers' | 'routine-templates' | 'app-settings' | 'settings' | 'notifications' | 'payments' | 'class-schedule' | 'announcements' | 'challenges' | 'equipment' | 'pos' | 'tasks' | 'profile-edit';
+type View = 'dashboard' | 'users' | 'reports' | 'membership-tiers' | 'routine-templates' | 'app-settings' | 'settings' | 'notifications' | 'payments' | 'class-schedule' | 'announcements' | 'challenges' | 'equipment' | 'pos' | 'tasks' | 'profile-edit' | 'privacy' | 'terms';
 export type DashboardFilter = { type: 'status', value: MembershipStatus } | { type: 'role', value: Role.CLIENT | Role.TRAINER } | { type: 'unassigned' } | null;
 
 const AdminDashboard: React.FC = () => {
@@ -66,6 +67,8 @@ const AdminDashboard: React.FC = () => {
             case 'notifications': return <NotificationsView />;
             case 'settings': return <SettingsView />;
             case 'profile-edit': return <ProfileEditor onCancel={() => setActiveView('dashboard')} />;
+            case 'privacy': return <LegalView type="privacy" onBack={() => setActiveView('dashboard')} />;
+            case 'terms': return <LegalView type="terms" onBack={() => setActiveView('dashboard')} />;
             default: return <DashboardOverview onNavigate={handleNavigation} onUserClick={handleUserClick} />;
         }
     }
@@ -86,7 +89,9 @@ const AdminDashboard: React.FC = () => {
         'app-settings': t('nav.appSettings'),
         notifications: t('nav.notifications'),
         settings: t('nav.mySettings'),
-        'profile-edit': t('profile.editTitle')
+        'profile-edit': t('profile.editTitle'),
+        privacy: t('footer.privacy'),
+        terms: t('footer.terms')
     }
 
     return (
@@ -129,7 +134,7 @@ const AdminDashboard: React.FC = () => {
                         {renderContent()}
                     </div>
                 </main>
-                <Footer />
+                <Footer onNavigate={handleNavigation} />
             </div>
         </div>
     );

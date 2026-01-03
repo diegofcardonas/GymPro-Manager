@@ -48,6 +48,16 @@ export interface Task {
     priority: TaskPriority;
 }
 
+export interface SupportTicket {
+    id: string;
+    userId: string;
+    category: 'technical' | 'billing' | 'equipment' | 'suggestion' | 'other';
+    subject: string;
+    message: string;
+    timestamp: string;
+    status: 'open' | 'closed';
+}
+
 export interface Notification {
     id: string;
     userId: string;

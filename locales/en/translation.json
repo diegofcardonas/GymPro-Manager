@@ -20,7 +20,7 @@
     "kg": "kg",
     "cm": "cm",
     "messages": "Messages",
-    "user": "User",
+    "user": "Client-User",
     "warning": "Warning",
     "unassigned": "Unassigned",
     "add": "Add",
@@ -29,7 +29,7 @@
   },
   "nav": {
     "dashboard": "Home",
-    "users": "Users",
+    "users": "Client-Users",
     "reports": "Reports",
     "payments": "Finances",
     "pos": "Point of Sale",
@@ -54,187 +54,51 @@
     "logout": "Log Out",
     "analysis": "Posture Analysis"
   },
-  "client": {
-    "dashboard": {
-      "welcome": "Hello, {{name}}!",
-      "daysLeft": "You have {{count}} membership days left.",
-      "startTraining": "Start Training",
-      "viewClasses": "View Classes",
-      "aiQuote": "Daily AI Motivation"
-    },
-    "workout": {
-      "restDay": "Rest Day!",
-      "noRoutine": "You don't have a routine for today, but you can train freestyle if you feel energetic.",
-      "freestyle": "Freestyle Training",
-      "preparePlayer": "PREPARE PLAYER ⚡",
-      "addSet": "ADD SET",
-      "saveManual": "SAVE MANUALLY 💾",
-      "exercisesConfigured": "{{count}} EXERCISES CONFIGURED",
-      "selectExercise": "Select Exercise...",
-      "goal": "Goal"
-    },
-    "progress": {
-      "title": "My Evolution",
-      "subtitle": "Keep track of your physical progress",
-      "maxWeight": "Max Weight",
-      "maxVolume": "Total Volume",
-      "est1rm": "Est. 1RM",
-      "totalSessions": "Total Sessions",
-      "strengthTrend": "Strength Trend",
-      "trainingVolume": "Training Volume",
-      "monthlyConsistency": "Monthly Consistency",
-      "recentHistory": "Recent History",
-      "exercisesLogged": "exercises logged",
-      "noData": "No data yet",
-      "noDataDesc": "Start logging your workouts to see your progress charts."
-    },
-    "nutrition": {
-      "title": "AI Nutrition Log",
-      "uploadDesc": "Upload meal photo",
-      "description": "Meal description",
-      "preciseDesc": "Be as precise as possible (e.g. 200g chicken, 1 cup rice...)",
-      "analyze": "Analyze with AI",
-      "protein": "Protein",
-      "carbs": "Carbohydrates",
-      "fat": "Fats",
-      "aiAnalysis": "AI Analysis",
-      "empty": "No logs yet. Upload your first meal!",
-      "photoMeal": "Meal analyzed by photo"
+  "admin": {
+    "userEditor": {
+      "tabs": {
+        "personal": "Personal",
+        "membership": "Membership & Role",
+        "fitness": "Fitness Profile"
+      },
+      "fields": {
+        "tier": "Membership Tier",
+        "expiration": "Expiration Date",
+        "goals": "Fitness Goals",
+        "medical": "Medical Conditions"
+      }
     }
   },
-  "player": {
-    "start": "Start Workout",
-    "next": "Next Exercise",
-    "previous": "Previous",
-    "finish": "Finish Routine",
-    "rest": "Rest Time",
-    "skip": "Skip",
-    "wellDone": "Great job!"
-  },
-  "analysis": {
-    "title": "AI Technique Analysis",
-    "upload": "Upload Exercise Photo",
-    "analyzing": "Analyzing...",
-    "feedback": "Coach Feedback"
-  },
-  "splash": {
-    "tagline": "Forging your best version",
-    "loading": "Initializing system..."
-  },
-  "sidebar": {
-    "overview": "Overview",
-    "management": "Management",
-    "gymOperations": "Gym Operations",
-    "community": "Community",
-    "system": "System",
-    "home": "Home",
-    "training": "Training",
-    "account": "Account",
-    "summary": "Summary",
-    "communication": "Communication"
-  },
-  "auth": {
-    "login": "Log In",
-    "signup": "Sign Up",
-    "email": "Email Address",
-    "password": "Password",
-    "name": "Full Name",
-    "forgotPassword": "Forgot password?",
-    "dontHaveAccount": "Don't have an account?",
-    "alreadyHaveAccount": "Already have an account?",
-    "demoAccess": "Demo Access",
-    "errorMissingFields": "Please fill all fields",
-    "errorUnexpected": "An unexpected error occurred"
-  },
-  "enums": {
-    "Role": {
-      "ADMIN": "Administrator",
-      "CLIENT": "Client",
-      "TRAINER": "Trainer",
-      "RECEPTIONIST": "Receptionist",
-      "GENERAL_MANAGER": "Manager",
-      "GROUP_INSTRUCTOR": "Instructor",
-      "NUTRITIONIST": "Nutritionist",
-      "PHYSIOTHERAPIST": "Physio"
+  "legal": {
+    "privacy": {
+      "title": "Privacy Policy",
+      "lastUpdate": "Last update: August 2024",
+      "intro": "At GymPro Manager, your health and fitness data privacy is our priority. This policy explains how we handle your information.",
+      "section1Title": "1. Data Collection",
+      "section1Content": "We collect profile information (name, age, weight, height), workout logs, meal photos for nutritional analysis, and biometric data necessary for your physical tracking.",
+      "section2Title": "2. Use of Artificial Intelligence",
+      "section2Content": "We use the Google Gemini API to process your queries to the AI Coach, analyze meal photos, and exercise technique. Your data is sent securely and is not used to train external public models without your explicit consent.",
+      "section3Title": "3. Data Security",
+      "section3Content": "We implement end-to-end encryption in your messages and secure storage in local and cloud databases with restricted access.",
+      "section4Title": "4. Your Rights",
+      "section4Content": "You have the right to access, rectify, or delete your data at any time from your account's Settings section."
     },
-    "MembershipStatus": {
-      "ACTIVE": "Active",
-      "EXPIRED": "Expired",
-      "PENDING": "Pending"
-    },
-    "TaskStatus": {
-      "PENDING": "Pending",
-      "IN_PROGRESS": "In Progress",
-      "COMPLETED": "Completed"
-    },
-    "TaskPriority": {
-      "Low": "Low",
-      "Medium": "Medium",
-      "High": "High"
-    },
-    "FitnessLevel": {
-      "BEGINNER": "Beginner",
-      "INTERMEDIATE": "Intermediate",
-      "ADVANCED": "Advanced",
-      "title": "Fitness Level"
-    },
-    "Gender": {
-      "Masculino": "Male",
-      "Femenino": "Female",
-      "Otro": "Other",
-      "Prefiero no decirlo": "Prefer not to say"
+    "terms": {
+      "title": "Terms of Use",
+      "lastUpdate": "Last update: August 2024",
+      "section1Title": "1. Medical Disclaimer",
+      "section1Content": "GymPro Manager provides AI-based suggestions. We are not a substitute for professional medical advice. Always consult a physician before starting any intense exercise program.",
+      "section2Title": "2. Platform Usage",
+      "section2Content": "The user is responsible for maintaining account confidentiality. Any misuse of the community or messaging system will result in immediate suspension.",
+      "section3Title": "3. Payments and Subscriptions",
+      "section3Content": "Memberships are charged according to the selected tier. Cancellations must be made at least 5 days prior to the next billing cycle.",
+      "section4Title": "4. Intellectual Property",
+      "section4Content": "All content, algorithms, and designs within GymPro Manager are company property or used under license."
     }
   },
-  "toast": {
-    "welcome": "Welcome back, {{name}}!",
-    "loggedOut": "Logged out successfully",
-    "passwordError": "Invalid email or password",
-    "emailExists": "Email already registered",
-    "accountCreated": "Account created!",
-    "aiCoachError": "Coach is temporarily offline",
-    "workoutLogged": "Workout logged!",
-    "challengeJoined": "You joined the challenge!"
-  },
-  "profile": {
-    "editTitle": "Edit Profile",
-    "personal": "Personal Info",
-    "fitness": "Health & Goals",
-    "career": "Professional",
-    "emergency": "Emergency",
-    "fullName": "Full Name",
-    "mobile": "Mobile",
-    "height": "Height",
-    "weight": "Weight",
-    "imc": "BMI",
-    "prs": "Personal Records",
-    "success": "Profile updated successfully",
-    "birthDate": "Birth Date",
-    "gender": "Gender",
-    "saving": "Saving..."
-  },
-  "tasks": {
-    "title": "Task Management",
-    "newTask": "New Task",
-    "editTask": "Edit Task",
-    "taskName": "Task Name",
-    "description": "Description",
-    "assignTo": "Assign to",
-    "dueDate": "Due Date",
-    "priority": "Priority",
-    "status": "Status",
-    "myTasks": "My Assigned Tasks",
-    "noTasks": "No tasks assigned",
-    "noTasksDesc": "Your list is currently empty.",
-    "statusUpdateSuccess": "Task updated!",
-    "assignedBy": "Assigned by"
-  },
-  "days": {
-    "Monday": "Monday",
-    "Tuesday": "Tuesday",
-    "Wednesday": "Wednesday",
-    "Thursday": "Thursday",
-    "Friday": "Friday",
-    "Saturday": "Saturday",
-    "Sunday": "Sunday"
+  "footer": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "support": "Technical Support"
   }
 }

@@ -11,6 +11,7 @@ import TrainerRoutineTemplates from './trainer/TrainerRoutineTemplates';
 import TrainerOverview from './trainer/TrainerOverview';
 import TrainerSchedule from './trainer/TrainerSchedule';
 import MessagingView from './MessagingView';
+import LegalView from './shared/LegalView';
 import { XCircleIcon } from './icons/XCircleIcon';
 import { PencilIcon } from './icons/PencilIcon';
 import { ChatBubbleLeftRightIcon } from './icons/ChatBubbleLeftRightIcon';
@@ -20,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import TaskBoard from './shared/TaskBoard';
 import ProfileEditor from './shared/ProfileEditor';
 
-type View = 'dashboard' | 'clients' | 'schedule' | 'messages' | 'profile' | 'routine-templates' | 'notifications' | 'settings' | 'tasks' | 'profile-edit';
+type View = 'dashboard' | 'clients' | 'schedule' | 'messages' | 'profile' | 'routine-templates' | 'notifications' | 'settings' | 'tasks' | 'profile-edit' | 'privacy' | 'terms';
 
 const TrainerDashboard: React.FC = () => {
     const { t } = useTranslation();
@@ -50,6 +51,8 @@ const TrainerDashboard: React.FC = () => {
             case 'notifications': return <NotificationsView />;
             case 'settings': return <SettingsView />;
             case 'profile-edit': return <ProfileEditor onCancel={() => setActiveView('dashboard')} />;
+            case 'privacy': return <LegalView type="privacy" onBack={() => setActiveView('dashboard')} />;
+            case 'terms': return <LegalView type="terms" onBack={() => setActiveView('dashboard')} />;
             default: return <TrainerOverview onNavigate={(view) => setActiveView(view as any)} onClientClick={handleOpenModal} />;
         }
     };
@@ -64,7 +67,9 @@ const TrainerDashboard: React.FC = () => {
         'routine-templates': t('trainer.sidebar.templates'),
         notifications: t('trainer.sidebar.notifications'),
         settings: t('trainer.sidebar.settings'),
-        'profile-edit': t('profile.editTitle')
+        'profile-edit': t('profile.editTitle'),
+        privacy: t('footer.privacy'),
+        terms: t('footer.terms')
     }
 
     return (
@@ -109,7 +114,7 @@ const TrainerDashboard: React.FC = () => {
                         {renderContent()}
                     </div>
                 </main>
-                <Footer />
+                <Footer onNavigate={setActiveView} />
             </div>
         </div>
     );
