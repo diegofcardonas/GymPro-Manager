@@ -73,7 +73,7 @@ const LoginScreen: React.FC = () => {
         <div className="text-center">
           <LogoIcon className="w-16 h-16 mx-auto mb-4" />
           <h1 className="text-3xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500 dark:from-blue-400 dark:to-teal-300">
-            {isLoginView ? t('common.appName') : t('auth.signup')}
+            {t('general.appName')}
           </h1>
           <p className="mt-2 text-gray-600 dark:text-gray-400 text-sm">
             {isLoginView ? t('auth.login') : t('auth.signup')}

@@ -40,40 +40,40 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, on
         {
             title: t('sidebar.overview'),
             items: [
-                { id: 'dashboard', label: t('admin.sidebar.dashboard'), icon: ChartBarIcon },
-                { id: 'reports', label: t('admin.sidebar.reports'), icon: DocumentChartBarIcon },
+                { id: 'dashboard', label: t('nav.dashboard'), icon: ChartBarIcon },
+                { id: 'reports', label: t('nav.reports'), icon: DocumentChartBarIcon },
             ]
         },
         {
             title: t('sidebar.management'),
             items: [
-                { id: 'users', label: t('admin.sidebar.userManagement'), icon: UserGroupIcon },
-                { id: 'payments', label: t('admin.sidebar.finances'), icon: CurrencyDollarIcon },
-                { id: 'tasks', label: t('admin.sidebar.tasks'), icon: ClipboardDocumentCheckIcon },
-                { id: 'membership-tiers', label: t('admin.sidebar.membershipTiers'), icon: CreditCardIcon },
+                { id: 'users', label: t('nav.users'), icon: UserGroupIcon },
+                { id: 'payments', label: t('nav.payments'), icon: CurrencyDollarIcon },
+                { id: 'tasks', label: t('nav.tasks'), icon: ClipboardDocumentCheckIcon },
+                { id: 'membership-tiers', label: t('nav.tiers'), icon: CreditCardIcon },
             ]
         },
         {
             title: t('sidebar.gymOperations'),
             items: [
-                { id: 'class-schedule', label: t('admin.sidebar.classSchedule'), icon: CalendarDaysIcon },
-                { id: 'routine-templates', label: t('admin.sidebar.routineTemplates'), icon: ClipboardDocumentListIcon },
-                { id: 'equipment', label: t('admin.sidebar.equipment'), icon: WrenchIcon },
+                { id: 'class-schedule', label: t('nav.classes'), icon: CalendarDaysIcon },
+                { id: 'routine-templates', label: t('nav.templates'), icon: ClipboardDocumentListIcon },
+                { id: 'equipment', label: t('nav.equipment'), icon: WrenchIcon },
             ]
         },
         {
             title: t('sidebar.community'),
             items: [
-                { id: 'announcements', label: t('admin.sidebar.announcements'), icon: MegaphoneIcon },
-                { id: 'challenges', label: t('admin.sidebar.challenges'), icon: TrophyIcon },
+                { id: 'announcements', label: t('nav.announcements'), icon: MegaphoneIcon },
+                { id: 'challenges', label: t('nav.challenges'), icon: TrophyIcon },
             ]
         },
         {
             title: t('sidebar.system'),
             items: [
-                { id: 'notifications', label: t('admin.sidebar.notifications'), icon: BellIcon },
-                { id: 'app-settings', label: t('admin.sidebar.appSettings'), icon: WrenchScrewdriverIcon },
-                { id: 'settings', label: t('admin.sidebar.mySettings'), icon: CogIcon },
+                { id: 'notifications', label: t('nav.notifications'), icon: BellIcon },
+                { id: 'app-settings', label: t('nav.appSettings'), icon: WrenchScrewdriverIcon },
+                { id: 'settings', label: t('nav.mySettings'), icon: CogIcon },
             ]
         }
     ], [t]);
@@ -125,7 +125,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, on
                                         title={isCollapsed ? item.label : ''}
                                     >
                                         <item.icon className={`w-6 h-6 flex-shrink-0 ${activeView === item.id ? 'text-primary' : ''}`} />
-                                        {!isCollapsed && <span className="truncate font-medium">{item.label}</span>}
+                                        {!isCollapsed && <span className="truncate font-medium text-sm">{item.label}</span>}
                                         
                                         {isCollapsed && (
                                             <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-md">
@@ -149,13 +149,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, on
                     title={isCollapsed ? t('app.reportProblem') : ''}
                 >
                     <ExclamationTriangleIcon className="w-6 h-6 flex-shrink-0" />
-                    {!isCollapsed && <span className="truncate font-medium">{t('app.reportProblem')}</span>}
-                    
-                     {isCollapsed && (
-                        <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-md">
-                            {t('app.reportProblem')}
-                        </div>
-                    )}
+                    {!isCollapsed && <span className="truncate font-medium text-sm">{t('app.reportProblem')}</span>}
                 </button>
             </div>
             

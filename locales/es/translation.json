@@ -3,6 +3,7 @@
   "general": {
     "appName": "GymPro Manager",
     "save": "Guardar",
+    "saveChanges": "Guardar Cambios",
     "cancel": "Cancelar",
     "delete": "Eliminar",
     "edit": "Editar",
@@ -19,73 +20,65 @@
     "kg": "kg",
     "cm": "cm",
     "messages": "Mensajes",
-    "settings": "Ajustes",
-    "logout": "Cerrar Sesión",
     "user": "Usuario",
-    "warning": "Atención"
+    "warning": "Atención",
+    "unassigned": "Sin asignar",
+    "add": "Añadir"
+  },
+  "nav": {
+    "dashboard": "Panel Inicio",
+    "users": "Usuarios",
+    "reports": "Reportes",
+    "payments": "Finanzas",
+    "pos": "Punto de Venta",
+    "tasks": "Tareas de Equipo",
+    "classes": "Clases",
+    "announcements": "Anuncios",
+    "challenges": "Desafíos",
+    "equipment": "Equipamiento",
+    "tiers": "Membresías",
+    "templates": "Plantillas",
+    "appSettings": "Ajustes App",
+    "notifications": "Notificaciones",
+    "settings": "Ajustes",
+    "mySettings": "Mis Ajustes",
+    "social": "Comunidad",
+    "routine": "Mi Rutina",
+    "workoutLog": "Registrar Entreno",
+    "nutritionLog": "Nutrición IA",
+    "progress": "Mi Progreso",
+    "aiCoach": "Coach IA",
+    "profile": "Perfil",
+    "logout": "Cerrar Sesión"
+  },
+  "splash": {
+    "tagline": "Forjando tu mejor versión",
+    "loading": "Iniciando sistema..."
   },
   "sidebar": {
     "overview": "Resumen",
-    "summary": "Sumario",
-    "home": "Inicio",
     "management": "Gestión",
     "gymOperations": "Operaciones",
     "community": "Comunidad",
     "system": "Sistema",
+    "home": "Inicio",
     "training": "Entrenamiento",
     "account": "Cuenta",
+    "summary": "Sumario",
     "communication": "Comunicación"
   },
-  "admin": {
-    "sidebar": {
-      "dashboard": "Panel Principal",
-      "reports": "Reportes",
-      "userManagement": "Usuarios",
-      "finances": "Finanzas",
-      "tasks": "Tareas de Equipo",
-      "membershipTiers": "Membresías",
-      "classSchedule": "Calendario Clases",
-      "routineTemplates": "Rutinas Base",
-      "equipment": "Inventario Equipos",
-      "announcements": "Anuncios App",
-      "challenges": "Desafíos",
-      "notifications": "Notificaciones",
-      "appSettings": "Ajustes App",
-      "mySettings": "Mis Ajustes"
-    }
-  },
-  "client": {
-    "sidebar": {
-      "dashboard": "Panel Inicio",
-      "social": "Muro Social",
-      "ai-coach": "Coach IA",
-      "routine": "Mi Rutina",
-      "workout-log": "Registrar Entreno",
-      "nutrition-log": "Nutrición IA",
-      "progress": "Mi Progreso",
-      "classes": "Reservar Clase",
-      "challenges": "Desafíos",
-      "messages": "Mensajes",
-      "membership-card": "Carnet Digital",
-      "profile": "Mi Perfil",
-      "settings": "Preferencias"
-    }
-  },
-  "trainer": {
-    "sidebar": {
-      "dashboard": "Resumen",
-      "tasks": "Mis Tareas",
-      "clients": "Mis Clientes",
-      "schedule": "Mi Horario",
-      "templates": "Biblioteca Rutinas",
-      "messages": "Mensajes",
-      "profile": "Perfil",
-      "notifications": "Alertas",
-      "settings": "Ajustes"
-    }
-  },
-  "app": {
-    "reportProblem": "Informar Problema"
+  "auth": {
+    "login": "Iniciar Sesión",
+    "signup": "Registrarse",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "name": "Nombre Completo",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "dontHaveAccount": "¿No tienes cuenta?",
+    "alreadyHaveAccount": "¿Ya tienes cuenta?",
+    "demoAccess": "Acceso de Demostración",
+    "errorMissingFields": "Por favor completa todos los campos",
+    "errorUnexpected": "Ocurrió un error inesperado"
   },
   "enums": {
     "Role": {
@@ -112,22 +105,71 @@
       "Low": "Baja",
       "Medium": "Media",
       "High": "Alta"
+    },
+    "FitnessLevel": {
+      "BEGINNER": "Principiante",
+      "INTERMEDIATE": "Intermedio",
+      "ADVANCED": "Avanzado",
+      "title": "Nivel de Condición"
+    },
+    "Gender": {
+      "Masculino": "Masculino",
+      "Femenino": "Femenino",
+      "Otro": "Otro",
+      "Prefiero no decirlo": "Prefiero no decirlo"
     }
   },
   "toast": {
-    "welcome": "¡Bienvenido, {{name}}!",
-    "loggedOut": "Sesión cerrada",
-    "passwordError": "Credenciales inválidas",
-    "emailExists": "El usuario ya existe",
-    "accountCreated": "Cuenta registrada"
+    "welcome": "¡Bienvenido de nuevo, {{name}}!",
+    "loggedOut": "Sesión cerrada correctamente",
+    "passwordError": "Email o contraseña incorrectos",
+    "emailExists": "El email ya está registrado",
+    "accountCreated": "¡Cuenta creada!",
+    "aiCoachError": "El Coach IA está fuera de línea",
+    "workoutLogged": "¡Entrenamiento registrado!",
+    "challengeJoined": "¡Te has unido al desafío!"
+  },
+  "client": {
+    "dashboard": {
+      "welcome": "¡Hola, {{name}}!",
+      "daysLeft": "Te quedan {{count}} días de membresía.",
+      "startTraining": "Empezar a Entrenar",
+      "viewClasses": "Ver Clases",
+      "aiQuote": "Motivación Diaria IA"
+    }
   },
   "profile": {
-    "personal": "Datos Personales",
+    "editTitle": "Editar Perfil",
+    "personal": "Info Personal",
     "fitness": "Salud y Metas",
     "career": "Profesional",
-    "emergency": "Contacto Emergencia",
-    "editTitle": "Editar Mi Perfil",
-    "success": "Perfil actualizado!"
+    "emergency": "Emergencia",
+    "fullName": "Nombre Completo",
+    "mobile": "Móvil",
+    "height": "Altura",
+    "weight": "Peso",
+    "imc": "IMC",
+    "prs": "Récords Personales",
+    "success": "Perfil actualizado con éxito",
+    "birthDate": "Fecha Nacimiento",
+    "gender": "Género",
+    "saving": "Guardando..."
+  },
+  "tasks": {
+    "title": "Gestión de Tareas",
+    "newTask": "Nueva Tarea",
+    "editTask": "Editar Tarea",
+    "taskName": "Nombre de Tarea",
+    "description": "Descripción",
+    "assignTo": "Asignar a",
+    "dueDate": "Fecha Límite",
+    "priority": "Prioridad",
+    "status": "Estado",
+    "myTasks": "Mis Tareas Asignadas",
+    "noTasks": "Sin tareas",
+    "noTasksDesc": "Tu lista está limpia.",
+    "statusUpdateSuccess": "¡Tarea actualizada!",
+    "assignedBy": "Asignado por"
   },
   "days": {
     "Monday": "Lunes",

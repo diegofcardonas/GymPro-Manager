@@ -3,6 +3,7 @@
   "general": {
     "appName": "GymPro Manager",
     "save": "Save",
+    "saveChanges": "Save Changes",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
@@ -19,73 +20,65 @@
     "kg": "kg",
     "cm": "cm",
     "messages": "Messages",
-    "settings": "Settings",
-    "logout": "Log Out",
     "user": "User",
-    "warning": "Warning"
+    "warning": "Warning",
+    "unassigned": "Unassigned",
+    "add": "Add"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "users": "Users",
+    "reports": "Reports",
+    "payments": "Finances",
+    "pos": "Point of Sale",
+    "tasks": "Team Tasks",
+    "classes": "Classes",
+    "announcements": "Bulletins",
+    "challenges": "Challenges",
+    "equipment": "Equipment",
+    "tiers": "Memberships",
+    "templates": "Routine Templates",
+    "appSettings": "App Settings",
+    "notifications": "Notifications",
+    "settings": "Settings",
+    "mySettings": "My Settings",
+    "social": "Community",
+    "routine": "My Routine",
+    "workoutLog": "Log Workout",
+    "nutritionLog": "AI Nutrition",
+    "progress": "My Progress",
+    "aiCoach": "AI Coach",
+    "profile": "Profile",
+    "logout": "Log Out"
+  },
+  "splash": {
+    "tagline": "Forging your best version",
+    "loading": "Initializing system..."
   },
   "sidebar": {
     "overview": "Overview",
-    "summary": "Summary",
-    "home": "Home",
     "management": "Management",
     "gymOperations": "Gym Operations",
     "community": "Community",
     "system": "System",
+    "home": "Home",
     "training": "Training",
     "account": "Account",
+    "summary": "Summary",
     "communication": "Communication"
   },
-  "admin": {
-    "sidebar": {
-      "dashboard": "Main Panel",
-      "reports": "Data Reports",
-      "userManagement": "User Control",
-      "finances": "Accounting",
-      "tasks": "Team Tasks",
-      "membershipTiers": "Memberships",
-      "classSchedule": "Class Calendar",
-      "routineTemplates": "Workouts",
-      "equipment": "Inventory",
-      "announcements": "Bulletins",
-      "challenges": "Challenges",
-      "notifications": "Notifications",
-      "appSettings": "System Config",
-      "mySettings": "Personal Prefs"
-    }
-  },
-  "client": {
-    "sidebar": {
-      "dashboard": "Dashboard",
-      "social": "Community Feed",
-      "ai-coach": "AI Personal Coach",
-      "routine": "Current Routine",
-      "workout-log": "Record Workout",
-      "nutrition-log": "Meal Analysis",
-      "progress": "My Statistics",
-      "classes": "Book Class",
-      "challenges": "Challenges",
-      "messages": "Support Chat",
-      "membership-card": "Digital ID",
-      "profile": "My Profile",
-      "settings": "Preferences"
-    }
-  },
-  "trainer": {
-    "sidebar": {
-      "dashboard": "Overview",
-      "tasks": "My To-Do List",
-      "clients": "My Clients",
-      "schedule": "My Schedule",
-      "templates": "Routine Library",
-      "messages": "Messages",
-      "profile": "Profile",
-      "notifications": "Alerts",
-      "settings": "Settings"
-    }
-  },
-  "app": {
-    "reportProblem": "Report Issue"
+  "auth": {
+    "login": "Log In",
+    "signup": "Sign Up",
+    "email": "Email Address",
+    "password": "Password",
+    "name": "Full Name",
+    "forgotPassword": "Forgot password?",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "demoAccess": "Demo Access",
+    "errorMissingFields": "Please fill all fields",
+    "errorUnexpected": "An unexpected error occurred"
   },
   "enums": {
     "Role": {
@@ -112,22 +105,71 @@
       "Low": "Low",
       "Medium": "Medium",
       "High": "High"
+    },
+    "FitnessLevel": {
+      "BEGINNER": "Beginner",
+      "INTERMEDIATE": "Intermediate",
+      "ADVANCED": "Advanced",
+      "title": "Fitness Level"
+    },
+    "Gender": {
+      "Masculino": "Male",
+      "Femenino": "Female",
+      "Otro": "Other",
+      "Prefiero no decirlo": "Prefer not to say"
     }
   },
   "toast": {
-    "welcome": "Welcome, {{name}}!",
+    "welcome": "Welcome back, {{name}}!",
     "loggedOut": "Logged out successfully",
-    "passwordError": "Invalid credentials",
-    "emailExists": "User already exists",
-    "accountCreated": "Account registered"
+    "passwordError": "Invalid email or password",
+    "emailExists": "Email already registered",
+    "accountCreated": "Account created!",
+    "aiCoachError": "Coach is temporarily offline",
+    "workoutLogged": "Workout logged!",
+    "challengeJoined": "You joined the challenge!"
+  },
+  "client": {
+    "dashboard": {
+      "welcome": "Hello, {{name}}!",
+      "daysLeft": "You have {{count}} membership days left.",
+      "startTraining": "Start Training",
+      "viewClasses": "View Classes",
+      "aiQuote": "Daily AI Motivation"
+    }
   },
   "profile": {
+    "editTitle": "Edit Profile",
     "personal": "Personal Info",
-    "fitness": "Fitness Goals",
-    "career": "Professional Info",
-    "emergency": "Emergency Contact",
-    "editTitle": "Edit My Profile",
-    "success": "Profile saved!"
+    "fitness": "Health & Goals",
+    "career": "Professional",
+    "emergency": "Emergency",
+    "fullName": "Full Name",
+    "mobile": "Mobile",
+    "height": "Height",
+    "weight": "Weight",
+    "imc": "BMI",
+    "prs": "Personal Records",
+    "success": "Profile updated successfully",
+    "birthDate": "Birth Date",
+    "gender": "Gender",
+    "saving": "Saving..."
+  },
+  "tasks": {
+    "title": "Task Management",
+    "newTask": "New Task",
+    "editTask": "Edit Task",
+    "taskName": "Task Name",
+    "description": "Description",
+    "assignTo": "Assign to",
+    "dueDate": "Due Date",
+    "priority": "Priority",
+    "status": "Status",
+    "myTasks": "My Assigned Tasks",
+    "noTasks": "No tasks assigned",
+    "noTasksDesc": "Your list is currently empty.",
+    "statusUpdateSuccess": "Task updated!",
+    "assignedBy": "Assigned by"
   },
   "days": {
     "Monday": "Monday",

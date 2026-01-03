@@ -47,7 +47,7 @@ function usePersistentState<T>(key: string, defaultValue: T): [T, React.Dispatch
 }
 
 const App: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [currentUser, setCurrentUser] = usePersistentState<User | null>('gympro_current_user', null);
   const [users, setUsers] = usePersistentState<User[]>('gympro_users', MOCK_USERS);
@@ -80,12 +80,33 @@ const App: React.FC = () => {
 
   const removeToast = useCallback((id: string) => { setToasts(prev => prev.filter(t => t.id !== id)); }, []);
 
-  // User Management
-  const addUser = useCallback((user: User) => setUsers(prev => [...prev, user]), [setUsers]);
+  // Auth
+  const login = useCallback(async (email: string, password: string) => {
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+    if (user) { setCurrentUser(user); addToast(t('toast.welcome', { name: user.name }), 'success'); }
+    else return t('toast.passwordError');
+  }, [users, t, addToast, setCurrentUser]);
+  
+  const logout = useCallback(() => { 
+    setCurrentUser(null); 
+    addToast(t('toast.loggedOut'), 'info'); 
+  }, [addToast, t, setCurrentUser]);
+
+  const register = useCallback(async (userData: any) => {
+    const exists = users.some(u => u.email.toLowerCase() === userData.email.toLowerCase());
+    if (exists) return t('toast.emailExists');
+    const newUser = { ...userData, id: `u-${Date.now()}`, joinDate: new Date().toISOString(), membership: { status: MembershipStatus.PENDING, startDate: new Date().toISOString(), endDate: new Date().toISOString() } };
+    setUsers(prev => [...prev, newUser]);
+    setCurrentUser(newUser);
+    addToast(t('toast.accountCreated'), 'success');
+  }, [users, setUsers, setCurrentUser, addToast, t]);
+
   const updateUser = useCallback((updatedUser: User) => {
     setUsers(prev => prev.map(u => u.id === updatedUser.id ? updatedUser : u));
     if(currentUser?.id === updatedUser.id) setCurrentUser(updatedUser);
   }, [currentUser, setUsers, setCurrentUser]);
+
+  const addUser = useCallback((user: User) => setUsers(prev => [...prev, user]), [setUsers]);
   const deleteUser = useCallback((userId: string) => setUsers(prev => prev.filter(u => u.id !== userId)), [setUsers]);
   const resetUsers = useCallback(() => setUsers(MOCK_USERS), [setUsers]);
   const toggleBlockUser = useCallback((userIdToBlock: string) => {
@@ -95,22 +116,6 @@ const App: React.FC = () => {
     updateUser({ ...currentUser, blockedUserIds: newBlocked });
   }, [currentUser, updateUser]);
 
-  // Auth
-  const login = useCallback(async (email: string, password: string) => {
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
-    if (user) { setCurrentUser(user); addToast(t('toast.welcome', { name: user.name }), 'success'); }
-    else return t('toast.passwordError');
-  }, [users, t, addToast, setCurrentUser]);
-  const logout = useCallback(() => { setCurrentUser(null); addToast(t('toast.loggedOut'), 'info'); }, [addToast, t, setCurrentUser]);
-  const register = useCallback(async (userData: any) => {
-    const exists = users.some(u => u.email.toLowerCase() === userData.email.toLowerCase());
-    if (exists) return t('toast.emailExists');
-    const newUser = { ...userData, id: `u-${Date.now()}`, joinDate: new Date().toISOString(), membership: { status: MembershipStatus.PENDING, startDate: new Date().toISOString(), endDate: new Date().toISOString() } };
-    addUser(newUser);
-    setCurrentUser(newUser);
-    addToast(t('toast.accountCreated'), 'success');
-  }, [users, addUser, setCurrentUser, addToast, t]);
-
   // Notifications
   const addNotification = useCallback((n: Omit<Notification, 'id' | 'timestamp' | 'isRead'>) => {
     setNotifications(prev => [{ ...n, id: `n${Date.now()}`, timestamp: new Date().toISOString(), isRead: false }, ...prev]);
@@ -119,7 +124,6 @@ const App: React.FC = () => {
   const markAllNotificationsAsRead = useCallback((userId: string) => setNotifications(prev => prev.map(n => n.userId === userId ? { ...n, isRead: true } : n)), [setNotifications]);
   const deleteNotification = useCallback((id: string) => setNotifications(prev => prev.filter(n => n.id !== id)), [setNotifications]);
 
-  // Push Notifications Simulation
   const requestPushPermission = useCallback(async () => {
     if (!('Notification' in window)) return false;
     const permission = await Notification.requestPermission();
@@ -128,21 +132,20 @@ const App: React.FC = () => {
 
   const sendTestPush = useCallback(() => {
     if (!('Notification' in window) || Notification.permission !== 'granted') {
-      addToast('Permisos push no concedidos', 'warning');
+      addToast('Push permissions not granted', 'warning');
       return;
     }
     new Notification('GymPro Manager', {
-      body: '¡Esto es una prueba de notificación push en tiempo real!',
+      body: 'Real-time push system online!',
       icon: 'https://ui-avatars.com/api/?name=Gym+Pro&background=0D8ABC&color=fff'
     });
   }, [addToast]);
 
-  // Routines
+  // Routines & Classes
   const addRoutineTemplate = useCallback((r: PreEstablishedRoutine) => setPreEstablishedRoutines(prev => [...prev, r]), [setPreEstablishedRoutines]);
   const updateRoutineTemplate = useCallback((r: PreEstablishedRoutine) => setPreEstablishedRoutines(prev => prev.map(item => item.id === r.id ? r : item)), [setPreEstablishedRoutines]);
   const deleteRoutineTemplate = useCallback((id: string) => setPreEstablishedRoutines(prev => prev.filter(item => item.id !== id)), [setPreEstablishedRoutines]);
 
-  // Classes
   const addGymClass = useCallback((c: Omit<GymClass, 'id'>) => setGymClasses(prev => [{ ...c, id: `c-${Date.now()}` }, ...prev]), [setGymClasses]);
   const updateGymClass = useCallback((c: GymClass) => setGymClasses(prev => prev.map(item => item.id === c.id ? c : item)), [setGymClasses]);
   const deleteGymClass = useCallback((id: string) => setGymClasses(prev => prev.filter(item => item.id !== id)), [setGymClasses]);
@@ -156,7 +159,7 @@ const App: React.FC = () => {
     }));
   }, [setGymClasses, addToast, t]);
 
-  // Social
+  // Social & Messages
   const addPost = useCallback((post: Omit<SocialPost, 'id' | 'likes' | 'comments' | 'timestamp'>) => {
     setPosts(prev => [{ ...post, id: `p-${Date.now()}`, likes: [], comments: [], timestamp: new Date().toISOString() }, ...prev]);
   }, [setPosts]);
@@ -164,7 +167,6 @@ const App: React.FC = () => {
     setPosts(prev => prev.map(p => p.id === postId ? { ...p, likes: p.likes.includes(userId) ? p.likes.filter(id => id !== userId) : [...p.likes, userId] } : p));
   }, [setPosts]);
 
-  // Messaging
   const sendMessage = useCallback((msg: Omit<Message, 'id' | 'timestamp' | 'isRead'>) => {
     setMessages(prev => [...prev, { ...msg, id: `m-${Date.now()}`, timestamp: new Date().toISOString(), isRead: false }]);
   }, [setMessages]);
@@ -172,12 +174,11 @@ const App: React.FC = () => {
     setMessages(prev => prev.map(m => m.conversationId === convId && m.receiverId === userId ? { ...m, isRead: true } : m));
   }, [setMessages]);
 
-  // Announcements
+  // Announcements & Challenges
   const addAnnouncement = useCallback((a: Omit<Announcement, 'id' | 'timestamp'>) => setAnnouncements(prev => [{ ...a, id: `a-${Date.now()}`, timestamp: new Date().toISOString() }, ...prev]), [setAnnouncements]);
   const updateAnnouncement = useCallback((a: Announcement) => setAnnouncements(prev => prev.map(item => item.id === a.id ? a : item)), [setAnnouncements]);
   const deleteAnnouncement = useCallback((id: string) => setAnnouncements(prev => prev.filter(item => item.id !== id)), [setAnnouncements]);
 
-  // Challenges & Achievements
   const addChallenge = useCallback((c: Omit<Challenge, 'id' | 'participants'>) => setChallenges(prev => [{ ...c, id: `ch-${Date.now()}`, participants: [] }, ...prev]), [setChallenges]);
   const updateChallenge = useCallback((c: Challenge) => setChallenges(prev => prev.map(item => item.id === c.id ? c : item)), [setChallenges]);
   const deleteChallenge = useCallback((id: string) => setChallenges(prev => prev.filter(item => item.id !== id)), [setChallenges]);
@@ -193,7 +194,7 @@ const App: React.FC = () => {
     }
   }, [users, updateUser, addToast, t]);
 
-  // Equipment
+  // Equipment & Finance
   const addEquipment = useCallback((e: Omit<EquipmentItem, 'id'>) => setEquipment(prev => [{ ...e, id: `eq-${Date.now()}` }, ...prev]), [setEquipment]);
   const updateEquipment = useCallback((e: EquipmentItem) => setEquipment(prev => prev.map(item => item.id === e.id ? e : item)), [setEquipment]);
   const deleteEquipment = useCallback((id: string) => setEquipment(prev => prev.filter(item => item.id !== id)), [setEquipment]);
@@ -204,7 +205,6 @@ const App: React.FC = () => {
   }, [setIncidents, addToast, t]);
   const resolveIncident = useCallback((id: string) => setIncidents(prev => prev.map(i => i.id === id ? { ...i, isResolved: true } : i)), [setIncidents]);
 
-  // Finance
   const addPayment = useCallback((p: Omit<Payment, 'id'>) => setPayments(prev => [{ ...p, id: `pay-${Date.now()}` }, ...prev]), [setPayments]);
   const addExpense = useCallback((e: Omit<Expense, 'id'>) => setExpenses(prev => [{ ...e, id: `exp-${Date.now()}` }, ...prev]), [setExpenses]);
   const deleteExpense = useCallback((id: string) => setExpenses(prev => prev.filter(e => e.id !== id)), [setExpenses]);
@@ -228,13 +228,13 @@ const App: React.FC = () => {
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
         contents: message.text,
-        config: { systemInstruction: t('client.aiCoach.systemInstruction') }
+        config: { systemInstruction: "You are a friendly gym coach. Reply in the same language as the user: " + (i18n.language.startsWith('es') ? 'Spanish' : 'English') }
       });
       const modelMessage: AICoachMessage = { role: 'model', text: response.text || '', timestamp: new Date().toISOString() };
       updateUser({ ...updatedUserWithUserMsg, aiCoachHistory: [...updatedUserWithUserMsg.aiCoachHistory, modelMessage] });
       return modelMessage;
-    } catch (error) { addToast(t('app.aiCoachError'), 'error'); return null; }
-  }, [users, updateUser, addToast, t]);
+    } catch (error) { addToast(t('toast.aiCoachError'), 'error'); return null; }
+  }, [users, updateUser, addToast, t, i18n.language]);
 
   const logWorkout = useCallback((userId: string, session: WorkoutSession) => {
     const user = users.find(u => u.id === userId);

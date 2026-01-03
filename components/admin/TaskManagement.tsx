@@ -63,7 +63,7 @@ const TaskManagement: React.FC = () => {
                                     task={task} 
                                     users={users} 
                                     onEdit={() => { setEditingTask(task); setIsModalOpen(true); }}
-                                    onDelete={() => { if(window.confirm(t('common.confirmDelete'))) deleteTask(task.id); }}
+                                    onDelete={() => { if(window.confirm(t('general.confirmDelete'))) deleteTask(task.id); }}
                                 />
                             ))}
                         </div>
@@ -213,10 +213,10 @@ const TaskModal: React.FC<{ task: Task | null; staff: User[]; onSave: (data: any
 
                 <div className="p-8 bg-gray-50 dark:bg-gray-900/50 border-t border-black/5 dark:border-white/5 flex flex-col sm:flex-row gap-4">
                     <button onClick={onClose} className="flex-1 px-8 py-4 bg-white dark:bg-gray-800 text-gray-400 hover:text-gray-600 rounded-2xl font-black transition-all border border-black/5 dark:border-white/5 shadow-sm uppercase text-xs tracking-widest">
-                        {t('common.cancel')}
+                        {t('general.cancel')}
                     </button>
                     <button onClick={() => onSave(formData)} className="flex-1 px-8 py-4 bg-primary text-white rounded-2xl font-black shadow-lg shadow-primary/25 hover:scale-[1.02] active:scale-95 transition-all uppercase text-xs tracking-widest">
-                        {t('common.save')}
+                        {t('general.save')}
                     </button>
                 </div>
             </div>

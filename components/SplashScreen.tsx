@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { LogoIcon } from './icons/LogoIcon';
@@ -11,11 +12,12 @@ const SplashScreen: React.FC = () => {
         <h1 className="text-5xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-teal-500 dark:from-blue-400 dark:to-teal-300">
           {t('general.appName')}
         </h1>
-        <p className="mt-3 text-lg text-gray-600 dark:text-gray-400">
+        <p className="mt-3 text-lg text-gray-600 dark:text-gray-400 font-medium">
           {t('splash.tagline')}
         </p>
-        <div className="mt-12 flex justify-center items-center">
-          <div className="w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+        <div className="mt-12 flex flex-col items-center gap-4">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">{t('splash.loading')}</span>
         </div>
       </div>
       <style>{`

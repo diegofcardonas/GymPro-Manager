@@ -36,34 +36,34 @@ const ClientSidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOp
         {
             title: t('sidebar.home'),
             items: [
-                { id: 'dashboard', label: t('client.sidebar.dashboard'), icon: HomeIcon },
-                { id: 'social', label: t('client.sidebar.social'), icon: TrophyIcon },
-                { id: 'ai-coach', label: t('client.sidebar.ai-coach'), icon: SparklesAiIcon },
+                { id: 'dashboard', label: t('nav.dashboard'), icon: HomeIcon },
+                { id: 'social', label: t('nav.social'), icon: TrophyIcon },
+                { id: 'ai-coach', label: t('nav.aiCoach'), icon: SparklesAiIcon },
             ]
         },
         {
             title: t('sidebar.training'),
             items: [
-                { id: 'routine', label: t('client.sidebar.routine'), icon: ClipboardListIcon },
-                { id: 'workout-log', label: t('client.sidebar.workout-log'), icon: PencilIcon },
-                { id: 'nutrition-log', label: t('client.sidebar.nutrition-log'), icon: AppleIcon },
-                { id: 'progress', label: t('client.sidebar.progress'), icon: ChartBarIcon },
+                { id: 'routine', label: t('nav.routine'), icon: ClipboardListIcon },
+                { id: 'workout-log', label: t('nav.workoutLog'), icon: PencilIcon },
+                { id: 'nutrition-log', label: t('nav.nutritionLog'), icon: AppleIcon },
+                { id: 'progress', label: t('nav.progress'), icon: ChartBarIcon },
             ]
         },
         {
             title: t('sidebar.community'),
             items: [
-                { id: 'classes', label: t('client.sidebar.classes'), icon: CalendarDaysIcon },
-                { id: 'challenges', label: t('client.sidebar.challenges'), icon: TrophyIcon },
-                { id: 'messages', label: t('client.sidebar.messages'), icon: ChatBubbleLeftRightIcon },
+                { id: 'classes', label: t('nav.classes'), icon: CalendarDaysIcon },
+                { id: 'challenges', label: t('nav.challenges'), icon: TrophyIcon },
+                { id: 'messages', label: t('general.messages'), icon: ChatBubbleLeftRightIcon },
             ]
         },
         {
             title: t('sidebar.account'),
             items: [
                 { id: 'membership-card', label: t('client.sidebar.membership-card'), icon: IdentificationIcon },
-                { id: 'profile', label: t('client.sidebar.profile'), icon: UserCircleIcon },
-                { id: 'settings', label: t('client.sidebar.settings'), icon: CogIcon },
+                { id: 'profile', label: t('nav.profile'), icon: UserCircleIcon },
+                { id: 'settings', label: t('nav.settings'), icon: CogIcon },
             ]
         }
     ], [t]);
