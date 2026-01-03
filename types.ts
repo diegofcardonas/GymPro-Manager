@@ -50,6 +50,17 @@ export interface Task {
     priority: TaskPriority;
 }
 
+export interface Product {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    category: string;
+    stock: number;
+    sku: string;
+    imageUrl?: string;
+}
+
 export interface User {
   id: string;
   name: string;

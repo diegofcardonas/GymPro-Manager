@@ -20,6 +20,7 @@ import Announcements from './admin/Announcements';
 import ChallengesManagement from './admin/ChallengesManagement';
 import EquipmentManagement from './admin/EquipmentManagement';
 import TaskManagement from './admin/TaskManagement';
+import ProductManagement from './admin/ProductManagement';
 import LanguageSwitcher from './LanguageSwitcher';
 import LegalView from './shared/LegalView';
 import Footer from './Footer';
@@ -27,7 +28,7 @@ import { UserProfileMenu } from './shared/UserProfileMenu';
 import { PointOfSale } from './admin/PointOfSale';
 import ProfileEditor from './shared/ProfileEditor';
 
-type View = 'dashboard' | 'users' | 'reports' | 'membership-tiers' | 'routine-templates' | 'app-settings' | 'settings' | 'notifications' | 'payments' | 'class-schedule' | 'announcements' | 'challenges' | 'equipment' | 'pos' | 'tasks' | 'profile-edit' | 'privacy' | 'terms';
+type View = 'dashboard' | 'users' | 'products' | 'reports' | 'membership-tiers' | 'routine-templates' | 'app-settings' | 'settings' | 'notifications' | 'payments' | 'class-schedule' | 'announcements' | 'challenges' | 'equipment' | 'pos' | 'tasks' | 'profile-edit' | 'privacy' | 'terms';
 export type DashboardFilter = { type: 'status', value: MembershipStatus } | { type: 'role', value: Role.CLIENT | Role.TRAINER } | { type: 'unassigned' } | null;
 
 const AdminDashboard: React.FC = () => {
@@ -53,6 +54,7 @@ const AdminDashboard: React.FC = () => {
         switch(activeView) {
             case 'dashboard': return <DashboardOverview onNavigate={handleNavigation} onUserClick={handleUserClick} />;
             case 'users': return <UserManagement initialFilter={filter} onFilterClear={() => setFilter(null)} initialUser={selectedUserForManagement} />;
+            case 'products': return <ProductManagement />;
             case 'reports': return <Reports />;
             case 'payments': return <Payments />;
             case 'pos': return <PointOfSale />;
@@ -76,6 +78,7 @@ const AdminDashboard: React.FC = () => {
     const viewTitles: Record<View, string> = {
         dashboard: t('nav.dashboard'),
         users: t('nav.users'),
+        products: 'Inventario de Productos',
         reports: t('nav.reports'),
         payments: t('nav.payments'),
         pos: t('nav.pos'),

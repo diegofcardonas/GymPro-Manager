@@ -1,30 +1,14 @@
 
 import React, { useState, useContext, useMemo } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { Role, PaymentStatus } from '../../types';
+import { Role, PaymentStatus, Product } from '../../types';
 import { useTranslation } from 'react-i18next';
 import { PlusIcon } from '../icons/PlusIcon';
 import { MinusIcon } from '../icons/MinusIcon';
 import { TrashIcon } from '../icons/TrashIcon';
 import { CheckCircleIcon } from '../icons/CheckCircleIcon';
 import { UserGroupIcon } from '../icons/UserGroupIcon';
-
-interface Product {
-    id: string;
-    name: string;
-    price: number;
-    category: 'Drink' | 'Snack' | 'Gear' | 'Supplement';
-    image?: string;
-}
-
-const MOCK_PRODUCTS: Product[] = [
-    { id: 'p1', name: 'Water Bottle (500ml)', price: 3000, category: 'Drink' },
-    { id: 'p2', name: 'Protein Shake (Choco)', price: 12000, category: 'Drink' },
-    { id: 'p3', name: 'Energy Bar', price: 5000, category: 'Snack' },
-    { id: 'p4', name: 'Pre-Workout Shot', price: 8000, category: 'Supplement' },
-    { id: 'p5', name: 'Gym Towel', price: 25000, category: 'Gear' },
-    { id: 'p6', name: 'Gatorade', price: 6000, category: 'Drink' },
-];
+import { IdentificationIcon } from '../icons/IdentificationIcon';
 
 const formatCOP = (value: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -37,7 +21,7 @@ const formatCOP = (value: number) => {
 
 export const PointOfSale: React.FC = () => {
     const { t } = useTranslation();
-    const { users, addPayment } = useContext(AuthContext);
+    const { users, addPayment, products, updateProduct } = useContext(AuthContext);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedUser, setSelectedUser] = useState<string | null>(null);
     const [cart, setCart] = useState<{ product: Product; quantity: number }[]>([]);
@@ -51,9 +35,17 @@ export const PointOfSale: React.FC = () => {
     }, [clients, searchTerm]);
 
     const addToCart = (product: Product) => {
+        if (product.stock <= 0) {
+            alert("No hay stock disponible de este producto.");
+            return;
+        }
         setCart(prev => {
             const existing = prev.find(item => item.product.id === product.id);
             if (existing) {
+                if (existing.quantity >= product.stock) {
+                    alert("Has alcanzado el límite de stock disponible.");
+                    return prev;
+                }
                 return prev.map(item => item.product.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
             }
             return [...prev, { product, quantity: 1 }];
@@ -68,6 +60,10 @@ export const PointOfSale: React.FC = () => {
         setCart(prev => prev.map(item => {
             if (item.product.id === productId) {
                 const newQty = Math.max(1, item.quantity + delta);
+                if (newQty > item.product.stock) {
+                    alert("Stock insuficiente.");
+                    return item;
+                }
                 return { ...item, quantity: newQty };
             }
             return item;
@@ -88,8 +84,17 @@ export const PointOfSale: React.FC = () => {
             amount: total,
             date: new Date().toISOString(),
             status: PaymentStatus.COMPLETED,
-            tierId: 'POS_SALE' // Special marker for POS sales
+            tierId: 'POS_SALE',
+            description: `Compra POS: ${cart.map(i => `${i.quantity}x ${i.product.name}`).join(', ')}`
         };
+
+        // Reducir stock
+        cart.forEach(item => {
+            updateProduct({
+                ...item.product,
+                stock: item.product.stock - item.quantity
+            });
+        });
 
         addPayment(payment);
         setIsSuccess(true);
@@ -103,44 +108,46 @@ export const PointOfSale: React.FC = () => {
 
     if (isSuccess) {
         return (
-            <div className="flex flex-col items-center justify-center h-full min-h-[400px] bg-green-50 dark:bg-green-900/20 rounded-2xl animate-scale-in">
+            <div className="flex flex-col items-center justify-center h-full min-h-[400px] bg-green-50 dark:bg-green-900/20 rounded-4xl animate-scale-in">
                 <CheckCircleIcon className="w-24 h-24 text-green-500 mb-4" />
-                <h2 className="text-3xl font-bold text-green-800 dark:text-green-200">{t('pos.saleSuccess')}</h2>
-                <p className="text-green-600 dark:text-green-300 mt-2">{t('pos.totalCharged')}: {formatCOP(total)}</p>
+                <h2 className="text-3xl font-black text-green-800 dark:text-green-200 uppercase tracking-tighter italic">{t('pos.saleSuccess')}</h2>
+                <p className="text-green-600 dark:text-green-300 mt-2 font-bold">{t('pos.totalCharged')}: {formatCOP(total)}</p>
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-140px)]">
+        <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-140px)] animate-fade-in">
             {/* Product Grid */}
-            <div className="flex-1 bg-white dark:bg-gray-800/50 rounded-2xl shadow-lg p-6 overflow-y-auto">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">{t('pos.products')}</h2>
+            <div className="flex-1 bg-white dark:bg-gray-800/50 rounded-4xl shadow-sm border border-black/5 p-6 overflow-y-auto custom-scrollbar">
+                <h2 className="text-xl font-black text-gray-900 dark:text-white mb-6 uppercase tracking-tighter italic">Catálogo de Tienda</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {MOCK_PRODUCTS.map(product => (
+                    {products.map(product => (
                         <button 
                             key={product.id} 
                             onClick={() => addToCart(product)}
-                            className="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-transparent hover:border-primary hover:shadow-md transition-all text-center group"
+                            disabled={product.stock <= 0}
+                            className={`flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-900/50 rounded-3xl border border-transparent hover:border-primary hover:shadow-xl transition-all text-center group relative overflow-hidden ${product.stock <= 0 ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
                         >
-                            <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-3 group-hover:bg-primary group-hover:text-white transition-colors text-primary">
-                                <span className="font-bold text-lg">{product.name.charAt(0)}</span>
+                            <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center mb-3 group-hover:bg-primary group-hover:text-white transition-colors text-primary shadow-sm">
+                                <IdentificationIcon className="w-6 h-6" />
                             </div>
-                            <h3 className="font-semibold text-gray-800 dark:text-gray-200 text-sm mb-1 line-clamp-2">{product.name}</h3>
-                            <span className="text-primary font-bold">{formatCOP(product.price)}</span>
+                            <h3 className="font-bold text-gray-800 dark:text-gray-200 text-xs mb-1 line-clamp-2 uppercase tracking-tight">{product.name}</h3>
+                            <span className="text-primary font-black italic">{formatCOP(product.price)}</span>
+                            <div className="mt-2 text-[8px] font-black text-gray-400 uppercase tracking-widest">STOCK: {product.stock}</div>
+                            {product.stock <= 0 && <div className="absolute inset-0 flex items-center justify-center bg-black/10 backdrop-blur-[1px] font-black text-[10px] text-rose-500 uppercase tracking-widest rotate-12">AGOTADO</div>}
                         </button>
                     ))}
                 </div>
             </div>
 
             {/* Cart Sidebar */}
-            <div className="w-full lg:w-96 bg-white dark:bg-gray-800 rounded-2xl shadow-xl flex flex-col border border-gray-200 dark:border-gray-700">
-                <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 rounded-t-2xl">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{t('pos.currentSale')}</h3>
+            <div className="w-full lg:w-96 bg-white dark:bg-gray-800 rounded-4xl shadow-2xl flex flex-col border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50">
+                    <h3 className="text-lg font-black text-gray-900 dark:text-white mb-4 uppercase tracking-tighter italic">{t('pos.currentSale')}</h3>
                     
-                    {/* User Selector */}
                     <div className="relative">
-                        <div className="flex items-center bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg p-2 focus-within:ring-2 focus-within:ring-primary">
+                        <div className="flex items-center bg-white dark:bg-gray-900 border-none rounded-2xl p-3 shadow-inner focus-within:ring-2 focus-within:ring-primary">
                             <UserGroupIcon className="w-5 h-5 text-gray-400 mr-2" />
                             <input 
                                 type="text" 
@@ -148,74 +155,64 @@ export const PointOfSale: React.FC = () => {
                                 value={selectedUser ? clients.find(c => c.id === selectedUser)?.name : searchTerm}
                                 onChange={(e) => {
                                     setSearchTerm(e.target.value);
-                                    setSelectedUser(null); // Reset selection on type
+                                    setSelectedUser(null);
                                 }}
-                                className="w-full bg-transparent border-none focus:ring-0 text-sm"
+                                className="w-full bg-transparent border-none focus:ring-0 text-xs font-bold"
                             />
-                            {selectedUser && (
-                                <button onClick={() => { setSelectedUser(null); setSearchTerm(''); }} className="text-gray-400 hover:text-red-500">
-                                    <TrashIcon className="w-4 h-4" />
-                                </button>
-                            )}
                         </div>
                         
                         {searchTerm && !selectedUser && (
-                            <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-700 shadow-lg rounded-b-lg mt-1 z-10 max-h-40 overflow-y-auto border border-gray-200 dark:border-gray-600">
+                            <div className="absolute top-full left-0 w-full bg-white dark:bg-gray-800 shadow-2xl rounded-2xl mt-2 z-50 max-h-60 overflow-y-auto border border-black/5 custom-scrollbar">
                                 {filteredClients.length > 0 ? filteredClients.map(client => (
                                     <button 
                                         key={client.id}
                                         onClick={() => { setSelectedUser(client.id); setSearchTerm(''); }}
-                                        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-600"
+                                        className="w-full text-left p-4 hover:bg-primary hover:text-white transition-colors border-b border-black/[0.03] last:border-none"
                                     >
-                                        <p className="font-bold">{client.name}</p>
-                                        <p className="text-xs text-gray-500">{client.email}</p>
+                                        <p className="font-bold text-sm">{client.name}</p>
+                                        <p className="text-[10px] font-medium opacity-70">{client.email}</p>
                                     </button>
-                                )) : <p className="p-2 text-sm text-gray-500 text-center">{t('receptionist.noMembersFound')}</p>}
+                                )) : <p className="p-4 text-xs text-gray-500 text-center font-bold uppercase tracking-widest">Sin resultados</p>}
                             </div>
                         )}
                     </div>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
                     {cart.length === 0 ? (
-                        <div className="text-center text-gray-400 py-8">
-                            <p>{t('pos.emptyCart')}</p>
+                        <div className="h-full flex flex-col items-center justify-center text-gray-400 opacity-30">
+                            <IdentificationIcon className="w-16 h-16 mb-4" />
+                            <p className="font-black text-xs uppercase tracking-[0.2em]">{t('pos.emptyCart')}</p>
                         </div>
                     ) : (
                         cart.map(item => (
-                            <div key={item.product.id} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg">
-                                <div className="flex-1">
-                                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200">{item.product.name}</p>
-                                    <p className="text-xs text-primary font-bold">{formatCOP(item.product.price)}</p>
+                            <div key={item.product.id} className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-black/[0.03] animate-slide-up">
+                                <div className="flex-1 mr-4">
+                                    <p className="text-xs font-black text-gray-800 dark:text-gray-200 uppercase tracking-tight line-clamp-1">{item.product.name}</p>
+                                    <p className="text-[10px] text-primary font-black italic">{formatCOP(item.product.price)}</p>
                                 </div>
-                                <div className="flex items-center gap-3">
-                                    <button onClick={() => updateQuantity(item.product.id, -1)} className="p-1 bg-gray-200 dark:bg-gray-600 rounded hover:bg-gray-300">
-                                        <MinusIcon className="w-3 h-3" />
-                                    </button>
-                                    <span className="text-sm font-bold w-4 text-center">{item.quantity}</span>
-                                    <button onClick={() => updateQuantity(item.product.id, 1)} className="p-1 bg-gray-200 dark:bg-gray-600 rounded hover:bg-gray-300">
-                                        <PlusIcon className="w-3 h-3" />
-                                    </button>
-                                    <button onClick={() => removeFromCart(item.product.id)} className="text-red-400 hover:text-red-600 ml-2">
-                                        <TrashIcon className="w-4 h-4" />
-                                    </button>
+                                <div className="flex items-center gap-2">
+                                    <button onClick={() => updateQuantity(item.product.id, -1)} className="p-1.5 bg-white dark:bg-gray-700 rounded-lg shadow-sm hover:bg-gray-100"><MinusIcon className="w-3 h-3" /></button>
+                                    <span className="text-xs font-black w-6 text-center">{item.quantity}</span>
+                                    <button onClick={() => updateQuantity(item.product.id, 1)} className="p-1.5 bg-white dark:bg-gray-700 rounded-lg shadow-sm hover:bg-gray-100"><PlusIcon className="w-3 h-3" /></button>
+                                    <button onClick={() => removeFromCart(item.product.id)} className="p-1.5 text-gray-400 hover:text-rose-500 ml-1"><TrashIcon className="w-4 h-4" /></button>
                                 </div>
                             </div>
                         ))
                     )}
                 </div>
 
-                <div className="p-6 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700 rounded-b-2xl">
-                    <div className="flex justify-between items-center mb-4">
-                        <span className="text-lg font-medium text-gray-600 dark:text-gray-400">{t('pos.total')}</span>
-                        <span className="text-3xl font-bold text-gray-900 dark:text-white">{formatCOP(total)}</span>
+                <div className="p-6 bg-gray-50 dark:bg-gray-900 border-t border-black/5">
+                    <div className="flex justify-between items-center mb-6">
+                        <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">SUBTOTAL VENTA</span>
+                        <span className="text-3xl font-black text-gray-900 dark:text-white italic tracking-tighter">{formatCOP(total)}</span>
                     </div>
                     <button 
                         onClick={handleCheckout}
                         disabled={cart.length === 0 || !selectedUser}
-                        className="w-full py-4 bg-primary text-white font-bold rounded-xl shadow-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex justify-center items-center"
+                        className="w-full py-5 bg-primary text-white font-black rounded-2xl shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:grayscale disabled:scale-100 transition-all uppercase text-xs tracking-widest"
                     >
-                        {t('pos.checkout')}
+                        PROCESAR COBRO
                     </button>
                 </div>
             </div>

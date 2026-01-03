@@ -1,6 +1,6 @@
 
 import { createContext } from 'react';
-import { User, Notification, PreEstablishedRoutine, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, Role, MembershipStatus, ToastMessage, Expense, Budget, Task, SocialPost } from '../types';
+import { User, Notification, PreEstablishedRoutine, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, Role, MembershipStatus, ToastMessage, Expense, Budget, Task, SocialPost, Product } from '../types';
 
 interface AuthContextType {
   currentUser: User | null;
@@ -21,6 +21,7 @@ interface AuthContextType {
   budgets: Budget[];
   posts: SocialPost[];
   tasks: Task[];
+  products: Product[];
   
   toasts: ToastMessage[];
   addToast: (message: string, type?: 'success' | 'error' | 'info' | 'warning', duration?: number) => void;
@@ -88,6 +89,10 @@ interface AuthContextType {
   updateTask: (task: Task) => void;
   deleteTask: (id: string) => void;
 
+  addProduct: (product: Product) => void;
+  updateProduct: (product: Product) => void;
+  deleteProduct: (productId: string) => void;
+
   addPost: (post: Omit<SocialPost, 'id' | 'likes' | 'comments' | 'timestamp'>) => void;
   likePost: (postId: string, userId: string) => void;
   
@@ -117,6 +122,7 @@ export const AuthContext = createContext<AuthContextType>({
   budgets: [],
   posts: [],
   tasks: [],
+  products: [],
   toasts: [],
   addToast: () => {},
   removeToast: () => {},
@@ -166,6 +172,9 @@ export const AuthContext = createContext<AuthContextType>({
   addTask: () => {},
   updateTask: () => {},
   deleteTask: () => {},
+  addProduct: () => {},
+  updateProduct: () => {},
+  deleteProduct: () => {},
   addPost: () => {},
   likePost: () => {},
   login: async () => {},

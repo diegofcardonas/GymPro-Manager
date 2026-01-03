@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { User, Role, Notification, PreEstablishedRoutine, NotificationType, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, MembershipStatus, ToastMessage, Expense, Budget, SocialPost, Task } from './types';
+import { User, Role, Notification, PreEstablishedRoutine, NotificationType, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, MembershipStatus, ToastMessage, Expense, Budget, SocialPost, Task, Product } from './types';
 import { AuthContext } from './context/AuthContext';
 import { MOCK_USERS } from './data/mockUsers';
 import { MOCK_NOTIFICATIONS } from './data/mockNotifications';
@@ -32,6 +32,14 @@ import { CommandPalette } from './components/shared/CommandPalette';
 import { GoogleGenAI } from "@google/genai";
 import SplashScreen from './components/SplashScreen';
 import SupportModal from './components/shared/SupportModal';
+
+const INITIAL_PRODUCTS: Product[] = [
+    { id: 'p1', name: 'Proteína Whey ISO', description: '2lb de proteína aislada de alta calidad.', price: 185000, category: 'Supplement', stock: 15, sku: 'WHEY-001' },
+    { id: 'p2', name: 'Creatina Monohidratada', description: '300g de creatina pura.', price: 95000, category: 'Supplement', stock: 8, sku: 'CREA-002' },
+    { id: 'p3', name: 'Agua Cristal 500ml', description: 'Agua mineral.', price: 3500, category: 'Drink', stock: 45, sku: 'AGUA-003' },
+    { id: 'p4', name: 'Gatorade Manzana', description: 'Bebida hidratante 600ml.', price: 5500, category: 'Drink', stock: 4, sku: 'GATO-004' },
+    { id: 'p5', name: 'Barra de Proteína', description: 'Snack saludable.', price: 7500, category: 'Snack', stock: 22, sku: 'BAR-005' },
+];
 
 function usePersistentState<T>(key: string, defaultValue: T): [T, React.Dispatch<React.SetStateAction<T>>] {
   const [state, setState] = useState<T>(() => {
@@ -66,6 +74,7 @@ const App: React.FC = () => {
   const [budgets, setBudgets] = usePersistentState<Budget[]>('gympro_budgets', MOCK_BUDGETS);
   const [posts, setPosts] = usePersistentState<SocialPost[]>('gympro_posts', []);
   const [tasks, setTasks] = usePersistentState<Task[]>('gympro_tasks', MOCK_TASKS);
+  const [products, setProducts] = usePersistentState<Product[]>('gympro_products', INITIAL_PRODUCTS);
   
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -213,6 +222,11 @@ const App: React.FC = () => {
   const updateBudget = useCallback((b: Budget) => setBudgets(prev => prev.map(item => item.id === b.id ? b : item)), [setBudgets]);
   const deleteBudget = useCallback((id: string) => setBudgets(prev => prev.filter(b => b.id !== id)), [setBudgets]);
 
+  // Products CRUD
+  const addProduct = useCallback((p: Product) => setProducts(prev => [...prev, p]), [setProducts]);
+  const updateProduct = useCallback((p: Product) => setProducts(prev => prev.map(prod => prod.id === p.id ? p : prod)), [setProducts]);
+  const deleteProduct = useCallback((id: string) => setProducts(prev => prev.filter(p => p.id !== id)), [setProducts]);
+
   // Tasks
   const addTask = useCallback((task: Omit<Task, 'id'>) => setTasks(prev => [{ ...task, id: `task-${Date.now()}` }, ...prev]), [setTasks]);
   const updateTask = useCallback((task: Task) => setTasks(prev => prev.map(t => t.id === task.id ? task : t)), [setTasks]);
@@ -254,7 +268,7 @@ const App: React.FC = () => {
   const myTrainers = useMemo(() => currentUser?.role === Role.CLIENT ? users.filter(u => currentUser.trainerIds?.includes(u.id)) : [], [currentUser, users]);
 
   const contextValue = useMemo(() => ({
-    currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, tasks, myClients, myTrainers,
+    currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, tasks, products, myClients, myTrainers,
     login, logout, register, updateUser, updateCurrentUser: updateUser, addUser, deleteUser, resetUsers, toggleBlockUser,
     addNotification, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification,
     addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate,
@@ -262,9 +276,9 @@ const App: React.FC = () => {
     sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement,
     sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement,
     addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, toggleReportModal: () => setIsReportModalOpen(prev => !prev),
-    addNutritionLog, addPayment, addExpense, deleteExpense, addBudget, updateBudget, deleteBudget, addTask, updateTask, deleteTask, addPost, likePost, addToast, removeToast,
+    addNutritionLog, addPayment, addExpense, deleteExpense, addBudget, updateBudget, deleteBudget, addTask, updateTask, deleteTask, addProduct, updateProduct, deleteProduct, addPost, likePost, addToast, removeToast,
     requestPushPermission, sendTestPush
-  }), [currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, tasks, myClients, myTrainers, login, logout, register, updateUser, addUser, deleteUser, resetUsers, toggleBlockUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification, addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate, logWorkout, addGymClass, updateGymClass, deleteGymClass, bookClass, sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement, sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement, addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, addNutritionLog, addPayment, addExpense, deleteExpense, addBudget, updateBudget, deleteBudget, addTask, updateTask, deleteTask, addPost, likePost, addToast, removeToast, requestPushPermission, sendTestPush, isReportModalOpen]);
+  }), [currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, tasks, products, myClients, myTrainers, login, logout, register, updateUser, addUser, deleteUser, resetUsers, toggleBlockUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification, addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate, logWorkout, addGymClass, updateGymClass, deleteGymClass, bookClass, sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement, sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement, addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, addNutritionLog, addPayment, addExpense, deleteExpense, addBudget, updateBudget, deleteBudget, addTask, updateTask, deleteTask, addProduct, updateProduct, deleteProduct, addPost, likePost, addToast, removeToast, requestPushPermission, sendTestPush, isReportModalOpen]);
 
   return (
     <ThemeProvider>

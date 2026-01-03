@@ -19,9 +19,10 @@ import { ChevronLeftIcon } from './icons/ChevronLeftIcon';
 import { ChevronRightIcon } from './icons/ChevronRightIcon';
 import { ExclamationTriangleIcon } from './icons/ExclamationTriangleIcon';
 import { ClipboardDocumentCheckIcon } from './icons/ClipboardDocumentCheckIcon';
+import { IdentificationIcon } from './icons/IdentificationIcon';
 import { AuthContext } from '../context/AuthContext';
 
-type View = 'dashboard' | 'users' | 'reports' | 'membership-tiers' | 'routine-templates' | 'app-settings' | 'notifications' | 'settings' | 'payments' | 'class-schedule' | 'announcements' | 'challenges' | 'equipment' | 'tasks';
+type View = 'dashboard' | 'users' | 'products' | 'reports' | 'membership-tiers' | 'routine-templates' | 'app-settings' | 'notifications' | 'settings' | 'payments' | 'class-schedule' | 'announcements' | 'challenges' | 'equipment' | 'tasks';
 
 interface SidebarProps {
     activeView: View;
@@ -49,6 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOpen, on
             items: [
                 { id: 'users', label: t('sidebar.users'), icon: UserGroupIcon },
                 { id: 'payments', label: t('nav.payments'), icon: CurrencyDollarIcon },
+                { id: 'products', label: 'Productos', icon: IdentificationIcon },
                 { id: 'tasks', label: t('nav.tasks'), icon: ClipboardDocumentCheckIcon },
                 { id: 'membership-tiers', label: t('nav.tiers'), icon: CreditCardIcon },
             ]
