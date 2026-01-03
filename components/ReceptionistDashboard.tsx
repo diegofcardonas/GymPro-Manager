@@ -1,276 +1,175 @@
 
-import React, { useState, useContext, useMemo } from 'react';
+import React, { useState, useContext, useMemo, useRef, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { User, Role, MembershipStatus } from '../types';
+// FIX: Added NotificationType to imports to fix the error on line 90.
+import { User, Role, MembershipStatus, NotificationType } from '../types';
 import { useTranslation } from 'react-i18next';
 import { LogoIcon } from './icons/LogoIcon';
-import { LogoutIcon } from './icons/LogoutIcon';
-import { MenuIcon } from './icons/MenuIcon';
-import NotificationBell from './NotificationBell';
-import NotificationsView from './NotificationsView';
-import LanguageSwitcher from './LanguageSwitcher';
-import { CheckIcon } from './icons/CheckIcon';
-import { UserGroupIcon } from './icons/UserGroupIcon';
-import { CalendarDaysIcon } from './icons/CalendarDaysIcon';
 import { IdentificationIcon } from './icons/IdentificationIcon';
 import { CheckCircleIcon } from './icons/CheckCircleIcon';
 import { XCircleIcon } from './icons/XCircleIcon';
-import { ExclamationTriangleIcon } from './icons/ExclamationTriangleIcon';
-import { CurrencyDollarIcon } from './icons/CurrencyDollarIcon';
+import { CameraIcon } from './icons/CameraIcon';
 import Footer from './Footer';
 import { UserProfileMenu } from './shared/UserProfileMenu';
-import SettingsView from './SettingsView';
 import { PointOfSale } from './admin/PointOfSale';
 
-type View = 'check-in' | 'users' | 'classes' | 'pos' | 'notifications' | 'settings';
+const QRScanner: React.FC<{ onScan: (userId: string) => void, onClose: () => void }> = ({ onScan, onClose }) => {
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        let stream: MediaStream | null = null;
+        const startCamera = async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+                if (videoRef.current) videoRef.current.srcObject = stream;
+            } catch (err) {
+                setError("No se pudo acceder a la cámara. Por favor verifica los permisos.");
+            }
+        };
+        startCamera();
+        
+        // Simulación de escaneo cada 2 segundos
+        const interval = setInterval(() => {
+            // En una app real, aquí usaríamos una librería de decodificación de QR sobre el canvas/video
+            // Simulamos detectar a la usuaria Samantha Williams ('2')
+            if(Math.random() > 0.8) {
+                onScan('2');
+            }
+        }, 2000);
+
+        return () => {
+            if(stream) stream.getTracks().forEach(track => track.stop());
+            clearInterval(interval);
+        };
+    }, [onScan]);
+
+    return (
+        <div className="fixed inset-0 z-[60] bg-black/90 flex flex-col items-center justify-center p-4">
+            <div className="relative w-full max-w-md aspect-square bg-gray-800 rounded-3xl overflow-hidden border-4 border-primary/50 shadow-2xl">
+                {error ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center p-6">
+                        <XCircleIcon className="w-16 h-16 text-red-500 mb-4" />
+                        <p className="text-white font-medium">{error}</p>
+                    </div>
+                ) : (
+                    <>
+                        <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 border-[40px] border-black/40 pointer-events-none">
+                            <div className="w-full h-full border-2 border-white/50 rounded-xl relative">
+                                <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-primary"></div>
+                                <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-primary"></div>
+                                <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-primary"></div>
+                                <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-primary"></div>
+                                <div className="absolute top-1/2 left-0 w-full h-0.5 bg-primary/50 animate-pulse"></div>
+                            </div>
+                        </div>
+                    </>
+                )}
+            </div>
+            <p className="text-white/70 mt-6 text-sm font-medium animate-pulse">Apunte al código QR del cliente</p>
+            <button onClick={onClose} className="mt-10 px-8 py-3 bg-white/10 hover:bg-white/20 text-white rounded-full font-bold transition-all">Cancelar</button>
+        </div>
+    );
+};
 
 const ReceptionistDashboard: React.FC = () => {
     const { t } = useTranslation();
-    const { currentUser, logout, users, gymClasses, addNotification, toggleReportModal } = useContext(AuthContext);
-    const [activeView, setActiveView] = useState<View>('check-in');
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const { currentUser, logout, users, addNotification } = useContext(AuthContext);
+    const [activeView, setActiveView] = useState<'check-in' | 'users' | 'pos'>('check-in');
     const [searchTerm, setSearchTerm] = useState('');
-    const [checkedInUsers, setCheckedInUsers] = useState<string[]>([]);
+    const [showScanner, setShowScanner] = useState(false);
+    const [lastCheckIn, setLastCheckIn] = useState<User | null>(null);
 
     const handleCheckIn = (user: User) => {
         if (user.membership.status !== MembershipStatus.ACTIVE) {
-            alert(`${user.name} has an ${user.membership.status} membership!`);
+            alert(`¡Alerta! La membresía de ${user.name} está ${user.membership.status}`);
             return;
         }
-        if (!checkedInUsers.includes(user.id)) {
-            setCheckedInUsers(prev => [user.id, ...prev]);
-            addNotification({
-                userId: user.id,
-                title: 'Check-In Successful',
-                message: `Welcome to the gym, ${user.name}!`,
-                type: 'success' as any
-            });
-            alert(t('receptionist.checkInSuccess', { name: user.name }));
-        }
+        setLastCheckIn(user);
+        setShowScanner(false);
+        addNotification({ userId: user.id, title: 'Check-In Exitoso', message: `¡Bienvenido al gym, ${user.name}!`, type: NotificationType.SUCCESS });
+        setTimeout(() => setLastCheckIn(null), 5000);
     };
 
-    const filteredUsers = useMemo(() => {
-        return users.filter(u => 
-            u.role === Role.CLIENT && 
-            (u.name.toLowerCase().includes(searchTerm.toLowerCase()) || u.email.toLowerCase().includes(searchTerm.toLowerCase()))
-        );
-    }, [users, searchTerm]);
-
-    const todayClasses = useMemo(() => {
-        const today = new Date();
-        return gymClasses.filter(c => {
-            const classDate = new Date(c.startTime);
-            return classDate.getDate() === today.getDate() && 
-                   classDate.getMonth() === today.getMonth() && 
-                   classDate.getFullYear() === today.getFullYear();
-        }).sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
-    }, [gymClasses]);
-
-    const renderContent = () => {
-        switch (activeView) {
-            case 'check-in':
-                return (
-                    <div className="space-y-6 animate-fade-in">
-                        <div className="bg-white dark:bg-gray-800/50 p-6 rounded-xl shadow-lg">
-                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t('receptionist.checkIn')}</h2>
-                            <div className="relative">
-                                <input 
-                                    type="text" 
-                                    placeholder={t('receptionist.searchMember')}
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full p-4 pl-12 rounded-lg bg-gray-100 dark:bg-gray-700 border-transparent focus:ring-2 focus:ring-primary text-lg"
-                                />
-                                <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
-                                    <IdentificationIcon className="w-6 h-6" />
-                                </div>
-                            </div>
-                            
-                            <div className="mt-6 space-y-2">
-                                {searchTerm && filteredUsers.map(user => (
-                                    <div key={user.id} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                                        <div className="flex items-center space-x-4">
-                                            <img src={user.avatarUrl} alt={user.name} className="w-12 h-12 rounded-full object-cover" />
-                                            <div>
-                                                <p className="font-bold text-gray-900 dark:text-white">{user.name}</p>
-                                                <p className="text-sm text-gray-500 dark:text-gray-400">{user.email}</p>
-                                                <span className={`text-xs px-2 py-1 rounded-full ${user.membership.status === MembershipStatus.ACTIVE ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                                    {user.membership.status}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <button 
-                                            onClick={() => handleCheckIn(user)}
-                                            disabled={checkedInUsers.includes(user.id)}
-                                            className={`px-6 py-2 rounded-lg font-bold transition-colors ${checkedInUsers.includes(user.id) ? 'bg-green-500 text-white cursor-default' : 'bg-primary hover:bg-primary/90 text-primary-foreground'}`}
-                                        >
-                                            {checkedInUsers.includes(user.id) ? t('receptionist.checkedIn') : t('receptionist.checkInButton')}
-                                        </button>
-                                    </div>
-                                ))}
-                                {searchTerm && filteredUsers.length === 0 && (
-                                    <p className="text-center text-gray-500 dark:text-gray-400 py-4">{t('receptionist.noMembersFound')}</p>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="bg-white dark:bg-gray-800/50 p-6 rounded-xl shadow-lg">
-                                <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                                    <CalendarDaysIcon className="w-5 h-5 text-primary" />
-                                    {t('receptionist.upcomingClasses')} ({t('messagingView.today')})
-                                </h3>
-                                <div className="space-y-3">
-                                    {todayClasses.length > 0 ? todayClasses.map(cls => (
-                                        <div key={cls.id} className="flex justify-between items-center p-3 bg-gray-100 dark:bg-gray-700/50 rounded-lg">
-                                            <div>
-                                                <p className="font-semibold text-gray-800 dark:text-gray-200">{cls.name}</p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                                    {new Date(cls.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - 
-                                                    {new Date(cls.endTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                                </p>
-                                            </div>
-                                            <span className="text-sm font-bold text-primary">{cls.bookedClientIds.length}/{cls.capacity}</span>
-                                        </div>
-                                    )) : <p className="text-gray-500 text-sm">{t('receptionist.noClassesToday')}</p>}
-                                </div>
-                            </div>
-                            
-                            <div className="bg-white dark:bg-gray-800/50 p-6 rounded-xl shadow-lg">
-                                <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                                    <CheckCircleIcon className="w-5 h-5 text-green-500" />
-                                    {t('receptionist.recentCheckIns')}
-                                </h3>
-                                <div className="space-y-3">
-                                    {checkedInUsers.slice(0, 5).map(id => {
-                                        const u = users.find(user => user.id === id);
-                                        return u ? (
-                                            <div key={id} className="flex items-center gap-3 p-2">
-                                                <img src={u.avatarUrl} className="w-8 h-8 rounded-full" />
-                                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{u.name}</span>
-                                                <span className="ml-auto text-xs text-gray-400">{t('general.justNow')}</span>
-                                            </div>
-                                        ) : null;
-                                    })}
-                                    {checkedInUsers.length === 0 && <p className="text-gray-500 text-sm">{t('receptionist.noCheckInsYet')}</p>}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                );
-            case 'users':
-                return (
-                    <div className="bg-white dark:bg-gray-800/50 p-6 rounded-xl shadow-lg animate-fade-in">
-                        <h2 className="text-2xl font-bold mb-4">{t('general.actions')} - {t('admin.userManagement.clients')}</h2>
-                         <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
-                                    <tr>
-                                        <th className="p-3 rounded-tl-lg">{t('general.name')}</th>
-                                        <th className="p-3">{t('general.status')}</th>
-                                        <th className="p-3">{t('general.phone')}</th>
-                                        <th className="p-3 rounded-tr-lg">{t('general.actions')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
-                                    {users.filter(u => u.role === Role.CLIENT).map(user => (
-                                        <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                                            <td className="p-3">{user.name}</td>
-                                            <td className="p-3">
-                                                 <span className={`text-xs px-2 py-1 rounded-full ${user.membership.status === MembershipStatus.ACTIVE ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                                    {user.membership.status}
-                                                </span>
-                                            </td>
-                                            <td className="p-3 text-sm text-gray-500">{user.phone}</td>
-                                            <td className="p-3">
-                                                <button onClick={() => handleCheckIn(user)} className="text-primary hover:underline text-sm font-semibold">{t('receptionist.checkInButton')}</button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                );
-            case 'pos':
-                return <PointOfSale />;
-             case 'notifications':
-                return <NotificationsView />;
-             case 'settings':
-                return <SettingsView />;
-            default:
-                return null;
-        }
-    };
+    const filteredUsers = useMemo(() => users.filter(u => u.role === Role.CLIENT && u.name.toLowerCase().includes(searchTerm.toLowerCase())), [users, searchTerm]);
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex text-gray-800 dark:text-gray-200">
-            {/* Sidebar */}
-             <div className={`w-64 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm border-r border-black/10 dark:border-white/10 p-4 flex flex-col fixed h-full z-30 transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 md:static`}>
-                <div className="flex items-center gap-2 mb-10 px-2 pt-2">
-                    <LogoIcon className="w-10 h-10" />
-                    <span className="text-xl font-bold text-primary">{t('receptionist.title')}</span>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col">
+            <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 sticky top-0 z-40">
+                <div className="container mx-auto flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                        <LogoIcon className="w-10 h-10" />
+                        <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">Recepción GymPro</h1>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <nav className="hidden md:flex bg-gray-100 dark:bg-gray-700 p-1 rounded-xl">
+                            {['check-in', 'users', 'pos'].map(v => (
+                                <button key={v} onClick={() => setActiveView(v as any)} className={`px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${activeView === v ? 'bg-white dark:bg-gray-900 text-primary shadow-sm' : 'text-gray-500'}`}>
+                                    {t(`receptionist.nav.${v}`)}
+                                </button>
+                            ))}
+                        </nav>
+                        {currentUser && <UserProfileMenu user={currentUser} onSettings={() => {}} onLogout={logout} />}
+                    </div>
                 </div>
-                <nav className="flex-1 space-y-2">
-                    <button onClick={() => setActiveView('check-in')} className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeView === 'check-in' ? 'bg-primary/10 text-primary' : 'hover:bg-gray-200 dark:hover:bg-gray-800'}`}>
-                        <IdentificationIcon className="w-6 h-6" />
-                        <span>{t('receptionist.nav.checkIn')}</span>
-                    </button>
-                    <button onClick={() => setActiveView('users')} className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeView === 'users' ? 'bg-primary/10 text-primary' : 'hover:bg-gray-200 dark:hover:bg-gray-800'}`}>
-                        <UserGroupIcon className="w-6 h-6" />
-                        <span>{t('receptionist.nav.members')}</span>
-                    </button>
-                    <button onClick={() => setActiveView('classes')} className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeView === 'classes' ? 'bg-primary/10 text-primary' : 'hover:bg-gray-200 dark:hover:bg-gray-800'}`}>
-                        <CalendarDaysIcon className="w-6 h-6" />
-                        <span>{t('receptionist.nav.classes')}</span>
-                    </button>
-                    <button onClick={() => setActiveView('pos')} className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors ${activeView === 'pos' ? 'bg-primary/10 text-primary' : 'hover:bg-gray-200 dark:hover:bg-gray-800'}`}>
-                        <CurrencyDollarIcon className="w-6 h-6" />
-                        <span>{t('receptionist.nav.pos')}</span>
-                    </button>
-                </nav>
-                 <div className="mt-auto pt-4 border-t border-black/5 dark:border-white/5">
-                     <button onClick={toggleReportModal} className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-colors text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20`}>
-                        <ExclamationTriangleIcon className="w-6 h-6" />
-                        <span>{t('app.reportProblem')}</span>
-                    </button>
-                </div>
-            </div>
+            </header>
 
-            {/* Main Content */}
-            <div className="flex-1 flex flex-col transition-all duration-300 ease-in-out ml-0">
-                 <header className="bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm sticky top-0 z-20 p-4 border-b border-black/10 dark:border-white/10 flex justify-between items-center">
-                    <div className="flex items-center">
-                        <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="md:hidden p-2 mr-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
-                            <MenuIcon className="w-6 h-6" />
-                        </button>
-                        <h2 className="text-xl font-semibold capitalize">
-                            {activeView === 'check-in' ? t('receptionist.nav.checkIn') : 
-                             activeView === 'users' ? t('receptionist.nav.members') : 
-                             activeView === 'classes' ? t('receptionist.nav.classes') : 
-                             activeView === 'pos' ? t('receptionist.nav.pos') :
-                             activeView === 'settings' ? t('admin.dashboard.settings') :
-                             t('admin.dashboard.notifications')}
-                        </h2>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                        <LanguageSwitcher />
-                        <NotificationBell onViewAll={() => setActiveView('notifications')} onNotificationClick={() => {}} />
-                        {currentUser && (
-                             <UserProfileMenu 
-                                user={currentUser}
-                                onSettings={() => setActiveView('settings')}
-                                onLogout={logout}
-                            />
+            <main className="flex-1 container mx-auto p-4 md:p-8 max-w-4xl">
+                {activeView === 'check-in' && (
+                    <div className="space-y-6">
+                        {lastCheckIn && (
+                            <div className="bg-green-500 text-white p-6 rounded-3xl shadow-xl animate-scale-in flex items-center gap-6">
+                                <img src={lastCheckIn.avatarUrl} className="w-20 h-20 rounded-full border-4 border-white/30" />
+                                <div>
+                                    <h2 className="text-2xl font-black">¡Check-In Exitoso!</h2>
+                                    <p className="text-lg opacity-90">Bienvenido, {lastCheckIn.name}</p>
+                                </div>
+                                <CheckCircleIcon className="w-16 h-16 ml-auto opacity-50" />
+                            </div>
                         )}
+
+                        <div className="bg-white dark:bg-gray-800 p-8 rounded-3xl shadow-lg border border-black/5 dark:border-white/5 relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-8 opacity-5">
+                                <IdentificationIcon className="w-32 h-32" />
+                            </div>
+                            <h2 className="text-2xl font-bold mb-6">Acceso de Miembros</h2>
+                            <div className="flex flex-col sm:flex-row gap-4">
+                                <div className="relative flex-1">
+                                    <input type="text" placeholder="Buscar por nombre o email..." value={searchTerm} onChange={e => setSearchTerm(e.target.value)} className="w-full p-4 pl-12 bg-gray-100 dark:bg-gray-700 border-none rounded-2xl focus:ring-2 focus:ring-primary text-lg" />
+                                    <IdentificationIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" />
+                                </div>
+                                <button onClick={() => setShowScanner(true)} className="px-6 py-4 bg-primary text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+                                    <CameraIcon className="w-6 h-6" />
+                                    <span>Escanear QR</span>
+                                </button>
+                            </div>
+
+                            {searchTerm && (
+                                <div className="mt-6 divide-y divide-gray-100 dark:divide-gray-700 max-h-[400px] overflow-y-auto">
+                                    {filteredUsers.map(user => (
+                                        <div key={user.id} className="py-4 flex items-center justify-between group">
+                                            <div className="flex items-center gap-4">
+                                                <img src={user.avatarUrl} className="w-12 h-12 rounded-full object-cover" />
+                                                <div>
+                                                    <p className="font-bold">{user.name}</p>
+                                                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${user.membership.status === MembershipStatus.ACTIVE ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                                                        {user.membership.status}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <button onClick={() => handleCheckIn(user)} className="px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-primary hover:text-white rounded-xl text-sm font-bold transition-all">Check-In</button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </header>
-                <main className="p-6 flex-1 overflow-y-auto">
-                    {renderContent()}
-                </main>
-                <Footer />
-            </div>
-             {isSidebarOpen && <div onClick={() => setIsSidebarOpen(false)} className="fixed inset-0 bg-black/60 z-20 md:hidden" />}
+                )}
+                {activeView === 'pos' && <PointOfSale />}
+            </main>
+            <Footer />
+            {showScanner && <QRScanner onScan={(id) => { const u = users.find(u => u.id === id); if(u) handleCheckIn(u); }} onClose={() => setShowScanner(false)} />}
         </div>
     );
 };

@@ -1,3 +1,4 @@
+
 export enum Role {
   ADMIN = 'ADMIN',
   CLIENT = 'CLIENT',
@@ -39,26 +40,12 @@ export interface Notification {
     linkTo?: string;
 }
 
-// Toast Notification Types
 export interface ToastMessage {
     id: string;
     message: string;
     type: 'success' | 'error' | 'info' | 'warning';
     duration?: number;
 }
-
-export interface ThemePalette {
-  primary: string; // HSL value string 'H S% L%'
-  'primary-foreground': string; // HSL value string 'H S% L%'
-}
-
-export interface Theme {
-  name: string;
-  displayName: string;
-  light: ThemePalette;
-  dark: ThemePalette;
-}
-
 
 export interface Exercise {
   name: string;
@@ -84,18 +71,13 @@ export interface PreEstablishedRoutine {
   trainerId?: string;
 }
 
-export interface ProgressNote {
-    date: string;
-    note: string;
-}
-
 export interface MembershipTier {
     id: string;
     name: string;
     price: number;
-    duration: number; // in months
+    duration: number;
     features: string[];
-    color: string; // hex color string
+    color: string;
 }
 
 export enum PaymentStatus {
@@ -126,23 +108,25 @@ export interface Expense {
     id: string;
     category: string; 
     amount: number;
-    date: string; // ISO string
+    date: string;
     description?: string;
-    registeredBy: string; // Admin User ID
+    registeredBy: string;
 }
 
-// New Interface for Budgets
 export interface Budget {
     id: string;
     category: string;
-    amount: number; // The limit
+    amount: number;
     period: 'monthly' | 'yearly';
     year: number;
 }
 
-export interface LoggedSet {
-  weight: number;
-  reps: number;
+export interface WorkoutSession {
+  id: string;
+  date: string;
+  day: DailyRoutine['day'];
+  loggedExercises: LoggedExercise[];
+  trainerNotes?: string;
 }
 
 export interface LoggedExercise {
@@ -152,12 +136,9 @@ export interface LoggedExercise {
   completedSets: LoggedSet[];
 }
 
-export interface WorkoutSession {
-  id: string;
-  date: string; // ISO string for the date of the workout
-  day: DailyRoutine['day'];
-  loggedExercises: LoggedExercise[];
-  trainerNotes?: string;
+export interface LoggedSet {
+  weight: number;
+  reps: number;
 }
 
 export interface GymClass {
@@ -165,15 +146,15 @@ export interface GymClass {
   name: string;
   description: string;
   trainerId: string;
-  startTime: string; // ISO String
-  endTime: string; // ISO String
+  startTime: string;
+  endTime: string;
   capacity: number;
   bookedClientIds: string[];
 }
 
 export interface Message {
   id: string;
-  conversationId: string; // e.g., 'user1-user2' sorted alphabetically
+  conversationId: string;
   senderId: string;
   receiverId: string;
   text: string;
@@ -185,37 +166,34 @@ export interface Announcement {
   id: string;
   title: string;
   content: string;
-  authorId: string; // Admin's ID
+  authorId: string;
   timestamp: string;
 }
 
-// --- New Types for AI Coach ---
 export interface AICoachMessage {
     role: 'user' | 'model';
     text: string;
     timestamp: string;
 }
 
-// --- New Types for Gamification ---
 export interface Achievement {
     id: string;
     name: string;
     description: string;
-    icon: string; // e.g., 'trophy', 'star', 'fire'
+    icon: string;
 }
 
 export interface Challenge {
     id: string;
     name: string;
     description: string;
-    goal: number; // e.g., 20 workouts, 50km
-    unit: string; // e.g., 'workouts', 'km'
-    startDate: string; // ISO string
-    endDate: string; // ISO string
+    goal: number;
+    unit: string;
+    startDate: string;
+    endDate: string;
     participants: { userId: string; progress: number }[];
 }
 
-// --- New Types for Equipment Management ---
 export enum EquipmentStatus {
     OPERATIONAL = 'Operativo',
     IN_REPAIR = 'En Reparación',
@@ -225,7 +203,7 @@ export enum EquipmentStatus {
 export interface EquipmentItem {
     id: string;
     name: string;
-    type: string; // e.g., 'Cardio', 'Strength', 'Free Weights'
+    type: string;
     location: string;
     status: EquipmentStatus;
 }
@@ -239,11 +217,11 @@ export interface IncidentReport {
     isResolved: boolean;
 }
 
-// --- New Types for Nutrition Log ---
 export interface NutritionLog {
     id: string;
-    date: string; // ISO string
+    date: string;
     mealDescription: string;
+    imageUrl?: string;
     aiAnalysis?: {
         estimatedCalories: string;
         estimatedMacros: {
@@ -255,7 +233,44 @@ export interface NutritionLog {
     };
 }
 
+export interface SocialPost {
+    id: string;
+    userId: string;
+    userName: string;
+    userAvatar: string;
+    content: string;
+    imageUrl?: string;
+    type: 'achievement' | 'workout' | 'general';
+    likes: string[]; // User IDs
+    comments: { id: string; userId: string; text: string; timestamp: string }[];
+    timestamp: string;
+}
+
 export type Visibility = 'everyone' | 'connections' | 'me';
+
+/**
+ * FIX: Added SortConfig to resolve the module resolution error in UserManagement.tsx.
+ */
+export interface SortConfig {
+    key: string;
+    direction: 'ascending' | 'descending';
+}
+
+/**
+ * FIX: Added Theme interface to resolve missing exported member error in themes.ts and ThemeContext.tsx.
+ */
+export interface Theme {
+  name: string;
+  displayName: string;
+  light: {
+    primary: string;
+    'primary-foreground': string;
+  };
+  dark: {
+    primary: string;
+    'primary-foreground': string;
+  };
+}
 
 export interface User {
   id: string;
@@ -276,10 +291,10 @@ export interface User {
   assignedRoutines?: AssignedRoutine[];
   fitnessGoals?: string;
   dietaryPreferences?: string;
-  height?: number; // in cm
-  weight?: number; // in kg
-  birthDate?: string; // ISO string YYYY-MM-DD
-  age?: number; // derived or manually set if birthDate missing
+  height?: number;
+  weight?: number;
+  birthDate?: string;
+  age?: number;
   gender?: 'Masculino' | 'Femenino' | 'Otro' | 'Prefiero no decirlo';
   fitnessLevel?: FitnessLevel;
   medicalConditions?: string;
@@ -287,17 +302,16 @@ export interface User {
       name: string;
       phone: string;
   };
-  skills?: string; // For trainers, e.g., "Yoga, CrossFit, Nutrition"
-  progressNotes?: ProgressNote[]; // For clients, general notes from trainer
-  workoutHistory?: WorkoutSession[]; // For clients, logged workouts
-  
-  // New fields for advanced features
-  achievements?: string[]; // Array of Achievement IDs
+  skills?: string;
+  progressNotes?: { date: string; note: string }[];
+  workoutHistory?: WorkoutSession[];
+  achievements?: string[];
   aiCoachHistory?: AICoachMessage[];
   nutritionLogs?: NutritionLog[];
-  blockedUserIds?: string[]; // Array of User IDs
-
-  // User-configurable settings
+  blockedUserIds?: string[];
+  /**
+   * FIX: Added notificationPreferences and privacySettings to User interface to match mock data usage.
+   */
   notificationPreferences?: {
     newMessages: boolean;
     routineUpdates: boolean;
@@ -308,9 +322,4 @@ export interface User {
     activityVisibility: Visibility;
     showInSearch: boolean;
   };
-}
-
-export interface SortConfig {
-  key: keyof User | `membership.${keyof User['membership']}`;
-  direction: 'ascending' | 'descending';
 }

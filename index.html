@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -16,12 +17,15 @@
                 foreground: 'hsl(var(--primary-foreground))',
               },
             },
+            borderRadius: {
+              '3xl': '1.5rem',
+              '4xl': '2rem',
+            }
           },
         },
       };
     </script>
     <script>
-      // On page load or when changing themes, best to add inline in `head` to avoid FOUC
       if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
         document.documentElement.classList.add('dark')
       } else {
@@ -29,194 +33,82 @@
       }
     </script>
     <style>
-      /* Custom scrollbar for better aesthetics */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      /* Light mode scrollbar */
-      ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #cbd5e1; /* slate-300 */
-        border-radius: 4px;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8; /* slate-400 */
-      }
-      /* Dark mode scrollbar */
-      html.dark ::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      html.dark ::-webkit-scrollbar-thumb {
-        background: #4b5563; /* gray-600 */
-      }
-      html.dark ::-webkit-scrollbar-thumb:hover {
-        background: #6b7280; /* gray-500 */
-      }
+      /* Smooth scrolling global */
+      html { scroll-behavior: smooth; }
 
-      /* Chat background pattern */
-      .chat-bg {
-        background-color: #e5ddd5;
-        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      /* Custom scrollbar global */
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { 
+        background: rgba(156, 163, 175, 0.3); 
+        border-radius: 20px; 
+        transition: background 0.2s;
       }
-      html.dark .chat-bg {
-        background-color: #0d1418;
-        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-      }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.5); }
+      
+      .dark ::-webkit-scrollbar-thumb { background: rgba(75, 85, 99, 0.4); }
+      .dark ::-webkit-scrollbar-thumb:hover { background: rgba(75, 85, 99, 0.6); }
 
-      /* Chat bubble tails */
-      .bubble-sent::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        right: -8px;
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 10px 0 0 15px;
-        border-color: transparent transparent transparent hsl(var(--primary));
+      /* Glassmorphism utility */
+      .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
       }
-      .bubble-received::after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: -8px;
-        width: 0;
-        height: 0;
-        border-style: solid;
-        border-width: 10px 15px 0 0;
-        border-color: transparent #e5e7eb transparent transparent;
-      }
-      html.dark .bubble-received::after {
-        border-color: transparent #374151 transparent transparent;
+      .dark .glass {
+        background: rgba(17, 24, 39, 0.7);
       }
 
       /* Responsive table styles: Mobile Card Layout */
       @media (max-width: 768px) {
-        .responsive-table thead {
-          display: none;
-        }
-        
+        .responsive-table thead { display: none; }
         .responsive-table tbody tr {
           display: flex;
           flex-direction: column;
           background-color: white;
-          border-radius: 1rem;
-          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+          border-radius: 1.5rem;
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05);
           margin-bottom: 1.5rem;
-          border: 1px solid #e2e8f0; /* border-slate-200 */
+          border: 1px solid rgba(0,0,0,0.05);
           overflow: hidden;
+          padding: 0.5rem;
         }
-        
         html.dark .responsive-table tbody tr {
-           background-color: #1f2937; /* bg-gray-800 */
-           border-color: #374151; /* border-gray-700 */
+           background-color: #1f2937;
+           border-color: rgba(255,255,255,0.05);
         }
-        
         .responsive-table td {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 0.875rem 1.25rem;
-          border-bottom: 1px solid #f1f5f9; /* border-slate-100 */
+          padding: 0.75rem 1rem;
+          border-bottom: 1px solid rgba(0,0,0,0.03);
           text-align: right;
         }
-        
-        html.dark .responsive-table td {
-            border-bottom-color: #374151;
-        }
-        
-        .responsive-table td:last-child {
-            border-bottom: none;
-        }
-        
         .responsive-table td::before {
           content: attr(data-label);
-          font-weight: 600;
-          font-size: 0.75rem;
+          font-weight: 700;
+          font-size: 0.7rem;
           text-transform: uppercase;
           letter-spacing: 0.05em;
-          color: #64748b; /* text-slate-500 */
+          color: #9ca3af;
           text-align: left;
-          margin-right: 1rem;
         }
-        
-        html.dark .responsive-table td::before {
-          color: #9ca3af; /* text-gray-400 */
-        }
-        
-        /* Special handling for the User cell (Header of the card) */
-        .responsive-table td.user-cell {
-          background-color: #f8fafc; /* bg-slate-50 */
-          border-bottom: 1px solid #e2e8f0;
-          justify-content: flex-start;
-          padding-top: 1rem;
-          padding-bottom: 1rem;
-        }
-        
-        html.dark .responsive-table td.user-cell {
-           background-color: #111827; /* bg-gray-900 */
-           border-bottom-color: #374151;
-        }
-        
-        .responsive-table td.user-cell::before {
-          display: none;
-        }
-        
-        /* Special handling for actions cell (Footer of the card) */
-        .responsive-table td.actions-cell {
-            justify-content: flex-end;
-            background-color: #f8fafc; /* bg-slate-50 */
-            padding-top: 0.75rem;
-            padding-bottom: 0.75rem;
-        }
-        
-        html.dark .responsive-table td.actions-cell {
-            background-color: rgba(255,255,255,0.02);
-        }
-        
-        .responsive-table td.actions-cell::before {
-            display: none;
-        }
-        
-        /* Ensure inner content of cells behaves nicely */
-        .responsive-table td > * {
-            text-align: right;
-        }
-        .responsive-table td.user-cell > * {
-            text-align: left;
-        }
+        .responsive-table td:last-child { border-bottom: none; }
       }
 
-      /* Animations */
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      .animate-fade-in {
-        animation: fadeIn 0.3s ease-out forwards;
-      }
-
-      @keyframes slideUp {
-        from { opacity: 0; transform: translateY(20px); }
+      /* Base Animations */
+      @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
       }
-      .animate-slide-up {
-        animation: slideUp 0.4s ease-out forwards;
+      .animate-fade-in { animation: fadeInUp 0.4s ease-out forwards; }
+      
+      /* Input active state correction */
+      input:focus, select:focus, textarea:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px hsl(var(--primary) / 0.15);
       }
-
-      @keyframes scaleIn {
-        from { opacity: 0; transform: scale(0.95); }
-        to { opacity: 1; transform: scale(1); }
-      }
-      .animate-scale-in {
-        animation: scaleIn 0.2s ease-out forwards;
-      }
-
-      .delay-100 { animation-delay: 100ms; }
-      .delay-200 { animation-delay: 200ms; }
     </style>
   <script type="importmap">
 {
@@ -235,7 +127,7 @@
 }
 </script>
 </head>
-  <body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white transition-colors duration-300">
+  <body class="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>
