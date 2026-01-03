@@ -1,14 +1,16 @@
 
 import React, { useContext, useMemo, useState, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { TaskStatus, Task } from '../../types';
+import { TaskStatus, Task, TaskPriority } from '../../types';
 import { CheckCircleIcon } from '../icons/CheckCircleIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import { ClipboardDocumentCheckIcon } from '../icons/ClipboardDocumentCheckIcon';
 import { Skeleton } from './Skeleton';
+import { useTranslation } from 'react-i18next';
 
 const TaskBoard: React.FC = () => {
-    const { tasks, currentUser, updateTask } = useContext(AuthContext);
+    const { t } = useTranslation();
+    const { tasks, currentUser, users, updateTask } = useContext(AuthContext);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -66,7 +68,7 @@ const TaskBoard: React.FC = () => {
     }
 
     return (
-        <div className="space-y-4 animate-fade-in w-full max-w-2xl mx-auto">
+        <div className="space-y-4 animate-fade-in w-full max-w-2xl mx-auto pb-20">
             <div className="flex items-center justify-between mb-2 px-2">
                 <h3 className="font-black text-xl text-gray-900 dark:text-white">Mis Tareas</h3>
                 <span className="text-[10px] font-black text-gray-400 uppercase bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-lg">
@@ -75,48 +77,55 @@ const TaskBoard: React.FC = () => {
             </div>
             
             <div className="space-y-4">
-                {myTasks.map(task => (
-                    <div 
-                        key={task.id} 
-                        className={`bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-black/5 group flex items-start gap-4 transition-all duration-300 hover:shadow-md ${task.status === TaskStatus.COMPLETED ? 'bg-gray-50/50 dark:bg-gray-900/30' : ''}`}
-                    >
-                        <button 
-                            onClick={() => handleToggleStatus(task)}
-                            className={`mt-1 p-1 rounded-xl transition-all transform active:scale-75 duration-300 shadow-sm
-                                ${task.status === TaskStatus.COMPLETED 
-                                    ? 'bg-green-500 text-white shadow-green-500/20 scale-100 rotate-0 animate-spring-pop' 
-                                    : 'bg-gray-50 dark:bg-gray-700 text-gray-300 hover:text-primary hover:scale-110'
-                                }`}
+                {myTasks.map(task => {
+                    const assigner = users.find(u => u.id === task.assignedById);
+                    return (
+                        <div 
+                            key={task.id} 
+                            className={`bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-black/5 group flex items-start gap-4 transition-all duration-300 hover:shadow-md ${task.status === TaskStatus.COMPLETED ? 'bg-gray-50/50 dark:bg-gray-900/30' : ''}`}
                         >
-                            <CheckCircleIcon className={`w-6 h-6 transition-all duration-500 ${task.status === TaskStatus.COMPLETED ? 'scale-100 rotate-0' : 'scale-75 -rotate-12 opacity-50'}`} />
-                        </button>
-                        
-                        <div className="flex-1 min-w-0">
-                            <div className="flex justify-between items-start mb-1 gap-2">
-                                <h4 className={`font-bold text-base truncate transition-all duration-500 ${task.status === TaskStatus.COMPLETED ? 'line-through text-gray-400 translate-x-1' : 'text-gray-900 dark:text-white'}`}>
-                                    {task.title}
-                                </h4>
-                                <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase flex-shrink-0 transition-opacity duration-500
-                                    ${task.status === TaskStatus.COMPLETED ? 'opacity-30' : 'opacity-100'}
-                                    ${task.priority === 'Alta' ? 'bg-red-50 text-red-500 border border-red-100' : 'bg-gray-50 text-gray-400 border border-gray-100'}
-                                `}>
-                                    {task.priority}
-                                </span>
-                            </div>
-                            <p className={`text-xs transition-all duration-500 line-clamp-2 leading-relaxed ${task.status === TaskStatus.COMPLETED ? 'text-gray-400 opacity-50' : 'text-gray-500'}`}>{task.description}</p>
-                            <div className="flex items-center gap-2 mt-3 text-[10px] font-black text-gray-300 uppercase tracking-tighter">
-                                <div className={`p-1 rounded-md transition-colors ${new Date(task.dueDate) < new Date() && task.status !== TaskStatus.COMPLETED ? 'text-red-400' : ''}`}>
-                                    <ClockIcon className="w-3.5 h-3.5 inline mr-1" />
-                                    Vence: {new Date(task.dueDate).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
+                            <button 
+                                onClick={() => handleToggleStatus(task)}
+                                className={`mt-1 p-1 rounded-xl transition-all transform active:scale-75 duration-300 shadow-sm
+                                    ${task.status === TaskStatus.COMPLETED 
+                                        ? 'bg-green-500 text-white shadow-green-500/20 scale-100 rotate-0 animate-spring-pop' 
+                                        : 'bg-gray-50 dark:bg-gray-700 text-gray-300 hover:text-primary hover:scale-110'
+                                    }`}
+                            >
+                                <CheckCircleIcon className={`w-6 h-6 transition-all duration-500 ${task.status === TaskStatus.COMPLETED ? 'scale-100 rotate-0' : 'scale-75 -rotate-12 opacity-50'}`} />
+                            </button>
+                            
+                            <div className="flex-1 min-w-0">
+                                <div className="flex justify-between items-start mb-1 gap-2">
+                                    <h4 className={`font-bold text-base truncate transition-all duration-500 ${task.status === TaskStatus.COMPLETED ? 'line-through text-gray-400 translate-x-1' : 'text-gray-900 dark:text-white'}`}>
+                                        {task.title}
+                                    </h4>
+                                    <span className={`px-2 py-0.5 rounded-md text-[8px] font-black uppercase flex-shrink-0 transition-opacity duration-500
+                                        ${task.status === TaskStatus.COMPLETED ? 'opacity-30' : 'opacity-100'}
+                                        ${task.priority === 'High' ? 'bg-red-50 text-red-500 border border-red-100' : task.priority === 'Medium' ? 'bg-orange-50 text-orange-500 border border-orange-100' : 'bg-blue-50 text-blue-500 border border-blue-100'}
+                                    `}>
+                                        {t(`tasks.priority.${task.priority}`)}
+                                    </span>
                                 </div>
-                                <span className="text-gray-200 dark:text-gray-700">•</span>
-                                <span className={`transition-colors ${task.status === TaskStatus.IN_PROGRESS ? 'text-primary' : task.status === TaskStatus.COMPLETED ? 'text-green-500/50' : ''}`}>
-                                    {task.status}
-                                </span>
+                                <p className={`text-xs transition-all duration-500 line-clamp-2 leading-relaxed ${task.status === TaskStatus.COMPLETED ? 'text-gray-400 opacity-50' : 'text-gray-500'}`}>{task.description}</p>
+                                
+                                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-[10px] font-black text-gray-300 uppercase tracking-tighter">
+                                    <div className={`p-1 rounded-md transition-colors ${new Date(task.dueDate) < new Date() && task.status !== TaskStatus.COMPLETED ? 'text-red-400' : ''}`}>
+                                        <ClockIcon className="w-3.5 h-3.5 inline mr-1" />
+                                        Límite: {new Date(task.dueDate).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })}
+                                    </div>
+                                    <div className="flex items-center gap-1 text-gray-400/60">
+                                        <span>Asignado por:</span>
+                                        <span className="text-gray-500 dark:text-gray-400 font-black">{assigner?.name || 'Sistema'}</span>
+                                    </div>
+                                    <span className={`ml-auto transition-colors px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 ${task.status === TaskStatus.IN_PROGRESS ? 'text-primary' : task.status === TaskStatus.COMPLETED ? 'text-green-500/50' : ''}`}>
+                                        {task.status}
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );

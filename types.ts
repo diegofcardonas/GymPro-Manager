@@ -35,6 +35,8 @@ export enum TaskStatus {
     COMPLETED = 'Completado',
 }
 
+export type TaskPriority = 'Low' | 'Medium' | 'High';
+
 export interface Task {
     id: string;
     title: string;
@@ -43,7 +45,7 @@ export interface Task {
     assignedById: string;
     dueDate: string;
     status: TaskStatus;
-    priority: 'Baja' | 'Media' | 'Alta';
+    priority: TaskPriority;
 }
 
 export interface Notification {

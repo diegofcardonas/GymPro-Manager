@@ -40,6 +40,13 @@
         "apply": "Apply",
         "clear": "Clear"
     },
+    "tasks": {
+        "priority": {
+            "Low": "Low",
+            "Medium": "Medium",
+            "High": "High"
+        }
+    },
     "toast": {
         "welcome": "Welcome, {{name}}",
         "passwordError": "Invalid credentials.",

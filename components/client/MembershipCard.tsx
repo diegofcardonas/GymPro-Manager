@@ -166,10 +166,18 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, tier }) => {
         const loadImage = (url: string): Promise<HTMLImageElement> => {
             return new Promise((resolve, reject) => {
                 const img = new Image();
-                img.crossOrigin = 'anonymous'; // CRITICAL: Fix for CORS issue in canvas
+                // Add unique query param to bypass standard browser cache that may lack CORS headers
+                const cacheBuster = url.includes('?') ? '&' : '?';
+                const finalUrl = `${url}${cacheBuster}cors_fix=${Date.now()}`;
+                
+                img.crossOrigin = 'anonymous'; 
                 img.onload = () => resolve(img);
-                img.onerror = (e) => reject(e);
-                img.src = url;
+                img.onerror = () => {
+                    const errMessage = `Failed to fetch avatar image from ${url}. Drawing fallback.`;
+                    console.error(errMessage);
+                    reject(new Error(errMessage));
+                };
+                img.src = finalUrl;
             });
         };
 
@@ -178,7 +186,6 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, tier }) => {
                 const avatar = await loadImage(user.avatarUrl);
                 drawCard(avatar);
             } catch (error) {
-                console.warn(`Could not load avatar for card via CORS. Drawing fallback.`, error);
                 drawCard(null);
             }
         };

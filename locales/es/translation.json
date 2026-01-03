@@ -40,6 +40,13 @@
         "apply": "Aplicar",
         "clear": "Limpiar"
     },
+    "tasks": {
+        "priority": {
+            "Low": "Baja",
+            "Medium": "Media",
+            "High": "Alta"
+        }
+    },
     "toast": {
         "welcome": "Bienvenido, {{name}}",
         "passwordError": "Credenciales inválidas.",
@@ -321,7 +328,7 @@
             "weight": "Peso",
             "weightKg": "{{height}} kg",
             "fitnessGoals": "Metas de Fitness",
-            "dietaryPreferences": "Preferencias Dietéticas",
+            "dietaryPreferences": "Preferencias alimentarias",
             "medicalConditions": "Condiciones Médicas",
             "professionalInfo": "Información Profesional",
             "skills": "Habilidades",
@@ -500,7 +507,7 @@
                 "snack": "¿Cuáles son buenos snacks post-entreno?",
                 "progressive": "Explícame la sobrecarga progresiva",
                 "motivate": "Motívame para entrenar hoy",
-                "sets": "Diferencia entre series y repeticiones"
+                "sets": "Difference between sets and reps"
             }
         },
         "membershipCard": {
@@ -875,8 +882,8 @@
         "addNotePlaceholder": "Añadir nueva nota de progreso...",
         "manageRecovery": "Gestionar Recuperación",
         "nav": {
-            "patients": "Pacientes",
-            "notes": "Notas"
+            "patients": "Patients",
+            "notes": "Notes"
         }
     },
     "pos": {

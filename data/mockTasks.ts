@@ -10,7 +10,7 @@ export const MOCK_TASKS: Task[] = [
         assignedById: '1', // Admin
         dueDate: new Date(Date.now() + 86400000).toISOString(), // Tomorrow
         status: TaskStatus.PENDING,
-        priority: 'Alta'
+        priority: 'High'
     },
     {
         id: 'task2',
@@ -20,7 +20,7 @@ export const MOCK_TASKS: Task[] = [
         assignedById: '1',
         dueDate: new Date(Date.now() + 172800000).toISOString(), // In 2 days
         status: TaskStatus.IN_PROGRESS,
-        priority: 'Media'
+        priority: 'Medium'
     },
     {
         id: 'task3',
@@ -30,7 +30,7 @@ export const MOCK_TASKS: Task[] = [
         assignedById: '1',
         dueDate: new Date(Date.now() + 43200000).toISOString(), // Tomorrow morning
         status: TaskStatus.PENDING,
-        priority: 'Alta'
+        priority: 'High'
     },
     {
         id: 'task4',
@@ -40,6 +40,6 @@ export const MOCK_TASKS: Task[] = [
         assignedById: 'm1',
         dueDate: new Date(Date.now() + 345600000).toISOString(), // In 4 days
         status: TaskStatus.PENDING,
-        priority: 'Baja'
+        priority: 'Low'
     }
 ];
