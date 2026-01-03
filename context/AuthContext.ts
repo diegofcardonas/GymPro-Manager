@@ -93,6 +93,9 @@ interface AuthContextType {
   
   login: (email: string, password: string) => Promise<string | void>;
   register: (user: any) => Promise<string | void>;
+
+  requestPushPermission: () => Promise<boolean>;
+  sendTestPush: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType>({
@@ -167,4 +170,6 @@ export const AuthContext = createContext<AuthContextType>({
   likePost: () => {},
   login: async () => {},
   register: async () => {},
+  requestPushPermission: async () => false,
+  sendTestPush: () => {},
 });

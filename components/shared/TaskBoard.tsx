@@ -84,7 +84,7 @@ const TaskBoard: React.FC = () => {
                             onClick={() => handleToggleStatus(task)}
                             className={`mt-1 p-1 rounded-xl transition-all transform active:scale-75 duration-300 shadow-sm
                                 ${task.status === TaskStatus.COMPLETED 
-                                    ? 'bg-green-500 text-white shadow-green-500/20 scale-100 rotate-0' 
+                                    ? 'bg-green-500 text-white shadow-green-500/20 scale-100 rotate-0 animate-spring-pop' 
                                     : 'bg-gray-50 dark:bg-gray-700 text-gray-300 hover:text-primary hover:scale-110'
                                 }`}
                         >

@@ -1,8 +1,6 @@
 
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { MembershipStatus, User, MembershipTier, Announcement } from '../types';
-import { MenuIcon } from './icons/MenuIcon';
 import ClientSidebar from './client/ClientSidebar';
 import SettingsView from './SettingsView';
 import MembershipCard from './client/MembershipCard';
@@ -24,8 +22,9 @@ import { BottomNavigation } from './shared/BottomNavigation';
 import { LogoIcon } from './icons/LogoIcon';
 import { GoogleGenAI } from '@google/genai';
 import { SparklesAiIcon } from './icons/SparklesAiIcon';
+import ProfileEditor from './shared/ProfileEditor';
 
-type View = 'dashboard' | 'social' | 'routine' | 'workout-log' | 'progress' | 'classes' | 'messages' | 'membership-card' | 'profile' | 'notifications' | 'settings' | 'ai-coach' | 'nutrition-log' | 'challenges' | 'achievements';
+type View = 'dashboard' | 'social' | 'routine' | 'workout-log' | 'progress' | 'classes' | 'messages' | 'membership-card' | 'profile' | 'notifications' | 'settings' | 'ai-coach' | 'nutrition-log' | 'challenges' | 'achievements' | 'profile-edit';
 
 const ClientDashboard: React.FC = () => {
   const { t, i18n } = useTranslation();
@@ -73,7 +72,6 @@ const ClientDashboard: React.FC = () => {
                         </div>
                     </div>
                     
-                    {/* IA Motivational Card */}
                     <div className="w-full md:w-72 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-6 text-white relative overflow-hidden shadow-2xl group">
                         <SparklesAiIcon className="absolute -right-4 -top-4 w-24 h-24 opacity-10 group-hover:scale-125 transition-transform duration-1000" />
                         <div className="relative z-10 flex flex-col h-full">
@@ -90,7 +88,6 @@ const ClientDashboard: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Accesos rápidos secundarios */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     {[
                         { id: 'nutrition-log', label: 'Comida', color: 'bg-emerald-500' },
@@ -124,19 +121,15 @@ const ClientDashboard: React.FC = () => {
           case 'membership-card': return <MembershipCard user={currentUser} />;
           case 'notifications': return <NotificationsView />;
           case 'settings': return <SettingsView />;
+          case 'profile-edit': return <ProfileEditor onCancel={() => setActiveView('dashboard')} />;
           case 'profile': return (
-              <div className="w-full max-w-2xl bg-white dark:bg-gray-800 p-8 rounded-4xl shadow-xl text-center">
-                  <img src={currentUser.avatarUrl} className="w-32 h-32 rounded-full mx-auto border-4 border-primary/20 mb-4" />
+              <div className="w-full max-w-2xl mx-auto bg-white dark:bg-gray-800 p-8 rounded-4xl shadow-xl text-center border border-black/5 animate-fade-in">
+                  <img src={currentUser.avatarUrl} className="w-32 h-32 rounded-full mx-auto border-4 border-primary/20 mb-4 shadow-lg" />
                   <h2 className="text-3xl font-black">{currentUser.name}</h2>
-                  <p className="text-gray-500 mb-6">{currentUser.email}</p>
-                  <button onClick={() => setActiveView('settings')} className="px-6 py-2 bg-primary text-white rounded-xl font-bold">Editar Perfil</button>
-              </div>
-          );
-          case 'routine': return (
-              <div className="w-full max-w-4xl space-y-6">
-                  <h2 className="text-3xl font-black">{t('client.routine.title')}</h2>
-                  <div className="bg-white dark:bg-gray-800 p-8 rounded-4xl shadow-sm border border-black/5 text-center">
-                      <p className="text-gray-500">Aquí verás tu rutina asignada por día.</p>
+                  <p className="text-gray-500 mb-8 font-medium">{currentUser.email}</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button onClick={() => setActiveView('profile-edit')} className="p-4 bg-primary text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:scale-105 transition-all">Editar Perfil</button>
+                    <button onClick={() => setActiveView('settings')} className="p-4 bg-gray-100 dark:bg-gray-700 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-gray-200 transition-all">Ajustes</button>
                   </div>
               </div>
           );
@@ -147,7 +140,7 @@ const ClientDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
         <div className="hidden md:block h-full">
-            <ClientSidebar activeView={activeView} setActiveView={setActiveView} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} isCollapsed={isSidebarCollapsed} toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)} />
+            <ClientSidebar activeView={activeView as any} setActiveView={setActiveView as any} isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} isCollapsed={isSidebarCollapsed} toggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)} />
         </div>
         
         <div className={`flex-1 flex flex-col transition-all duration-300 ${isSidebarCollapsed ? 'md:ml-20' : 'md:ml-64'} pb-16 md:pb-0`}>
@@ -179,16 +172,9 @@ const ClientDashboard: React.FC = () => {
                 </nav>
 
                 <div className="flex items-center space-x-2 sm:space-x-4">
-                    <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-gray-800/50 border border-black/[0.05] dark:border-white/[0.05] rounded-xl text-[10px] font-black text-gray-400 uppercase tracking-tight">
-                        <span>Search</span>
-                        <kbd className="px-1.5 py-0.5 bg-white dark:bg-gray-700 border border-black/10 dark:border-white/10 rounded text-[9px]">⌘K</kbd>
-                    </div>
-
-                    <div className="h-8 w-px bg-black/[0.05] dark:bg-white/[0.05] hidden sm:block"></div>
-
                     <div className="flex items-center gap-1">
                         <NotificationBell onViewAll={() => setActiveView('notifications')} onNotificationClick={v => setActiveView(v as any)} />
-                        <UserProfileMenu user={currentUser} onSettings={() => setActiveView('settings')} onLogout={logout} />
+                        <UserProfileMenu user={currentUser} onEditProfile={() => setActiveView('profile-edit')} onSettings={() => setActiveView('settings')} onLogout={logout} />
                     </div>
                 </div>
             </header>

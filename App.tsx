@@ -119,6 +119,24 @@ const App: React.FC = () => {
   const markAllNotificationsAsRead = useCallback((userId: string) => setNotifications(prev => prev.map(n => n.userId === userId ? { ...n, isRead: true } : n)), [setNotifications]);
   const deleteNotification = useCallback((id: string) => setNotifications(prev => prev.filter(n => n.id !== id)), [setNotifications]);
 
+  // Push Notifications Simulation
+  const requestPushPermission = useCallback(async () => {
+    if (!('Notification' in window)) return false;
+    const permission = await Notification.requestPermission();
+    return permission === 'granted';
+  }, []);
+
+  const sendTestPush = useCallback(() => {
+    if (!('Notification' in window) || Notification.permission !== 'granted') {
+      addToast('Permisos push no concedidos', 'warning');
+      return;
+    }
+    new Notification('GymPro Manager', {
+      body: '¡Esto es una prueba de notificación push en tiempo real!',
+      icon: 'https://ui-avatars.com/api/?name=Gym+Pro&background=0D8ABC&color=fff'
+    });
+  }, [addToast]);
+
   // Routines
   const addRoutineTemplate = useCallback((r: PreEstablishedRoutine) => setPreEstablishedRoutines(prev => [...prev, r]), [setPreEstablishedRoutines]);
   const updateRoutineTemplate = useCallback((r: PreEstablishedRoutine) => setPreEstablishedRoutines(prev => prev.map(item => item.id === r.id ? r : item)), [setPreEstablishedRoutines]);
@@ -243,8 +261,9 @@ const App: React.FC = () => {
     sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement,
     sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement,
     addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, toggleReportModal: () => setIsReportModalOpen(prev => !prev),
-    addNutritionLog, addPayment, addExpense, deleteExpense, addBudget, updateBudget, deleteBudget, addTask, updateTask, deleteTask, addPost, likePost, addToast, removeToast
-  }), [currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, tasks, myClients, myTrainers, login, logout, register, updateUser, addUser, deleteUser, resetUsers, toggleBlockUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification, addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate, logWorkout, addGymClass, updateGymClass, deleteGymClass, bookClass, sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement, sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement, addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, addNutritionLog, addPayment, addExpense, deleteExpense, addBudget, updateBudget, deleteBudget, addTask, updateTask, deleteTask, addPost, likePost, addToast, removeToast]);
+    addNutritionLog, addPayment, addExpense, deleteExpense, addBudget, updateBudget, deleteBudget, addTask, updateTask, deleteTask, addPost, likePost, addToast, removeToast,
+    requestPushPermission, sendTestPush
+  }), [currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, tasks, myClients, myTrainers, login, logout, register, updateUser, addUser, deleteUser, resetUsers, toggleBlockUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification, addRoutineTemplate, updateRoutineTemplate, deleteRoutineTemplate, logWorkout, addGymClass, updateGymClass, deleteGymClass, bookClass, sendMessage, markMessagesAsRead, addAnnouncement, updateAnnouncement, deleteAnnouncement, sendAICoachMessage, addChallenge, updateChallenge, deleteChallenge, joinChallenge, unlockAchievement, addEquipment, updateEquipment, deleteEquipment, reportIncident, resolveIncident, addNutritionLog, addPayment, addExpense, deleteExpense, addBudget, updateBudget, deleteBudget, addTask, updateTask, deleteTask, addPost, likePost, addToast, removeToast, requestPushPermission, sendTestPush]);
 
   return (
     <ThemeProvider>

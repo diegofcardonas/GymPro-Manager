@@ -265,17 +265,11 @@ export interface SocialPost {
 
 export type Visibility = 'everyone' | 'connections' | 'me';
 
-/**
- * FIX: Added SortConfig to resolve the module resolution error in UserManagement.tsx.
- */
 export interface SortConfig {
     key: string;
     direction: 'ascending' | 'descending';
 }
 
-/**
- * FIX: Added Theme interface to resolve missing exported member error in themes.ts and ThemeContext.tsx.
- */
 export interface Theme {
   name: string;
   displayName: string;
@@ -295,6 +289,7 @@ export interface User {
   email: string;
   password?: string;
   phone: string;
+  address?: string;
   avatarUrl: string;
   role: Role;
   joinDate: string;
@@ -315,21 +310,29 @@ export interface User {
   gender?: 'Masculino' | 'Femenino' | 'Otro' | 'Prefiero no decirlo';
   fitnessLevel?: FitnessLevel;
   medicalConditions?: string;
+  personalBests?: {
+      benchPress?: number;
+      squat?: number;
+      deadlift?: number;
+  };
   emergencyContact?: {
       name: string;
       phone: string;
+      relation?: string;
   };
   skills?: string;
+  bio?: string;
+  experienceYears?: number;
+  socialLinks?: {
+      instagram?: string;
+      linkedin?: string;
+  };
   progressNotes?: { date: string; note: string }[];
   workoutHistory?: WorkoutSession[];
   achievements?: string[];
   aiCoachHistory?: AICoachMessage[];
   nutritionLogs?: NutritionLog[];
   blockedUserIds?: string[];
-  /**
-   * FIX: Added notificationPreferences and privacySettings to User interface to match mock data usage.
-   * Updated notificationPreferences to include pushNotifications property.
-   */
   notificationPreferences?: {
     newMessages: boolean;
     routineUpdates: boolean;
