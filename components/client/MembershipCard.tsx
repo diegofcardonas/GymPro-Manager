@@ -78,7 +78,7 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, tier }) => {
                 ctx.lineWidth = 4;
                 ctx.stroke();
             } else {
-                // Fallback if image fails
+                // Fallback initial based avatar
                 ctx.save();
                 ctx.beginPath();
                 ctx.arc(150, 290, 80, 0, Math.PI * 2, true);
@@ -134,27 +134,22 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, tier }) => {
             ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
             ctx.fillText(`${t('client.dashboard.endDate')}: ${new Date(user.membership.endDate).toLocaleDateString()}`, CARD_WIDTH - 50, CARD_HEIGHT - 50);
 
-            // Simulated QR Code area (bottom right)
+            // Simulated QR Code area
             const qrSize = 120;
             const qrX = CARD_WIDTH - 170;
             const qrY = 50;
-            
             ctx.fillStyle = 'white';
             ctx.fillRect(qrX, qrY, qrSize, qrSize);
-            
-            // Draw "pixels" for mock QR based on dynamic token
             const seed = dynamicToken.charCodeAt(0) + dynamicToken.charCodeAt(dynamicToken.length - 1);
             ctx.fillStyle = 'black';
             const cellSize = qrSize / 10;
             for(let i=0; i<10; i++) {
                 for(let j=0; j<10; j++) {
-                    // Simple pseudo-random pattern based on time token
                     if (Math.sin(seed * i * j + timeLeft) > 0) {
                         ctx.fillRect(qrX + i*cellSize, qrY + j*cellSize, cellSize, cellSize);
                     }
                 }
             }
-            // Corner squares
             ctx.fillRect(qrX, qrY, 30, 30);
             ctx.fillRect(qrX + qrSize - 30, qrY, 30, 30);
             ctx.fillRect(qrX, qrY + qrSize - 30, 30, 30);
@@ -168,33 +163,27 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, tier }) => {
             ctx.fillRect(qrX + 10, qrY + qrSize - 20, 10, 10);
         }
 
-        const loadAndDraw = async () => {
-            try {
-                const response = await fetch(user.avatarUrl);
-                if (!response.ok) {
-                    throw new Error(`Network response was not ok for ${user.avatarUrl}`);
-                }
-                const blob = await response.blob();
-                const objectURL = URL.createObjectURL(blob);
-                
-                const avatar = new Image();
-                avatar.onload = () => {
-                    drawCard(avatar);
-                    URL.revokeObjectURL(objectURL); 
-                };
-                avatar.onerror = () => {
-                    drawCard(null);
-                    URL.revokeObjectURL(objectURL);
-                };
-                avatar.src = objectURL;
+        const loadImage = (url: string): Promise<HTMLImageElement> => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous'; // CRITICAL: Fix for CORS issue in canvas
+                img.onload = () => resolve(img);
+                img.onerror = (e) => reject(e);
+                img.src = url;
+            });
+        };
 
+        const initDrawing = async () => {
+            try {
+                const avatar = await loadImage(user.avatarUrl);
+                drawCard(avatar);
             } catch (error) {
-                console.error(`Failed to fetch avatar image from ${user.avatarUrl}. Drawing fallback.`, error);
-                drawCard(null); 
+                console.warn(`Could not load avatar for card via CORS. Drawing fallback.`, error);
+                drawCard(null);
             }
         };
 
-        loadAndDraw();
+        initDrawing();
 
     }, [user, tier, dynamicToken, timeLeft, t]);
 
@@ -203,42 +192,42 @@ const MembershipCard: React.FC<MembershipCardProps> = ({ user, tier }) => {
         if (canvas) {
             const dataUrl = canvas.toDataURL('image/png');
             const link = document.createElement('a');
-            link.download = `GymPro_Card_${user.name.replace(' ', '_')}.png`;
+            link.download = `GymPro_Card_${user.name.replace(/\s+/g, '_')}.png`;
             link.href = dataUrl;
             link.click();
         }
     };
 
     return (
-        <div className="w-full max-w-2xl text-center space-y-6">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{t('client.sidebar.membershipCard')}</h2>
+        <div className="w-full max-w-2xl text-center space-y-6 animate-fade-in">
+            <h2 className="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Tarjeta Digital</h2>
             
-            <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md inline-block w-full max-w-[90%] mx-auto">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-4xl shadow-xl inline-block w-full max-w-[90%] mx-auto border border-black/5">
                 <div className="flex justify-center mb-2">
-                    <span className="text-sm font-mono text-gray-500 dark:text-gray-400 uppercase tracking-widest">
-                        {t('client.membershipCard.dynamicAccessCode')}
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
+                        CÓDIGO DE ACCESO DINÁMICO
                     </span>
                 </div>
                 
-                <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mb-4">
+                <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden mb-6">
                     <div 
-                        className="h-full bg-blue-500 transition-all duration-1000 ease-linear"
+                        className="h-full bg-primary transition-all duration-1000 ease-linear"
                         style={{ width: `${(timeLeft / 30) * 100}%` }}
                     />
                 </div>
                 
-                <canvas ref={canvasRef} className="rounded-lg shadow-sm mx-auto max-w-full h-auto"></canvas>
+                <canvas ref={canvasRef} className="rounded-3xl shadow-2xl mx-auto max-w-full h-auto"></canvas>
                 
-                <p className="mt-2 text-xs text-gray-400">
-                     {t('client.membershipCard.refreshNote', { seconds: timeLeft })}
+                <p className="mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                     SE ACTUALIZA EN {timeLeft}s
                 </p>
             </div>
 
             <button
                 onClick={handleDownload}
-                className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
+                className="px-10 py-4 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black rounded-2xl shadow-xl hover:scale-105 active:scale-95 transition-all"
             >
-                {t('client.membershipCard.download')}
+                DESCARGAR CARNET
             </button>
         </div>
     );
