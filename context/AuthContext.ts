@@ -1,12 +1,12 @@
 
 import { createContext } from 'react';
-import { User, Notification, PreEstablishedRoutine, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, Role, MembershipStatus, ToastMessage, Expense, Budget, Task } from '../types';
+import { User, Notification, PreEstablishedRoutine, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, Role, MembershipStatus, ToastMessage, Expense, Budget, Task, SocialPost } from '../types';
 
 interface AuthContextType {
   currentUser: User | null;
   users: User[];
-  myClients?: User[]; // For trainers
-  myTrainers?: User[]; // For clients
+  myClients?: User[]; 
+  myTrainers?: User[];
   notifications: Notification[];
   preEstablishedRoutines: PreEstablishedRoutine[];
   payments: Payment[];
@@ -19,9 +19,9 @@ interface AuthContextType {
   incidents: IncidentReport[];
   expenses: Expense[];
   budgets: Budget[];
+  posts: SocialPost[];
   tasks: Task[];
   
-  // Toast State
   toasts: ToastMessage[];
   addToast: (message: string, type?: 'success' | 'error' | 'info' | 'warning', duration?: number) => void;
   removeToast: (id: string) => void;
@@ -76,22 +76,20 @@ interface AuthContextType {
   
   addNutritionLog: (userId: string, log: Omit<NutritionLog, 'id'>) => Promise<void>;
   
-  // POS
   addPayment: (payment: Omit<Payment, 'id'>) => void;
-  
-  // Expenses
   addExpense: (expense: Omit<Expense, 'id'>) => void;
   deleteExpense: (id: string) => void;
 
-  // Budgets
   addBudget: (budget: Omit<Budget, 'id'>) => void;
   updateBudget: (budget: Budget) => void;
   deleteBudget: (id: string) => void;
 
-  // Tasks
   addTask: (task: Omit<Task, 'id'>) => void;
   updateTask: (task: Task) => void;
   deleteTask: (id: string) => void;
+
+  addPost: (post: Omit<SocialPost, 'id' | 'likes' | 'comments' | 'timestamp'>) => void;
+  likePost: (postId: string, userId: string) => void;
   
   login: (email: string, password: string) => Promise<string | void>;
   register: (user: any) => Promise<string | void>;
@@ -114,12 +112,11 @@ export const AuthContext = createContext<AuthContextType>({
   incidents: [],
   expenses: [],
   budgets: [],
+  posts: [],
   tasks: [],
-  
   toasts: [],
   addToast: () => {},
   removeToast: () => {},
-
   logout: () => {},
   updateCurrentUser: () => {},
   addUser: () => {},
@@ -127,62 +124,47 @@ export const AuthContext = createContext<AuthContextType>({
   deleteUser: () => {},
   resetUsers: () => {},
   toggleBlockUser: () => {},
-
   markNotificationAsRead: () => {},
   markAllNotificationsAsRead: () => {},
   deleteNotification: () => {},
   addNotification: () => {},
-  
   addRoutineTemplate: () => {},
   updateRoutineTemplate: () => {},
   deleteRoutineTemplate: () => {},
-
   logWorkout: () => {},
-  
   addGymClass: () => {},
   updateGymClass: () => {},
   deleteGymClass: () => {},
   bookClass: () => {},
-  
   sendMessage: () => {},
   markMessagesAsRead: () => {},
-
   addAnnouncement: () => {},
   updateAnnouncement: () => {},
   deleteAnnouncement: () => {},
-  
   sendAICoachMessage: async () => null,
-  
   addChallenge: () => {},
   updateChallenge: () => {},
   deleteChallenge: () => {},
   joinChallenge: () => {},
-
   unlockAchievement: () => {},
-
   addEquipment: () => {},
   updateEquipment: () => {},
   deleteEquipment: () => {},
-
   reportIncident: () => {},
   resolveIncident: () => {},
   toggleReportModal: () => {},
-  
   addNutritionLog: async () => {},
-  
   addPayment: () => {},
-  
   addExpense: () => {},
   deleteExpense: () => {},
-
   addBudget: () => {},
   updateBudget: () => {},
   deleteBudget: () => {},
-
   addTask: () => {},
   updateTask: () => {},
   deleteTask: () => {},
-
+  addPost: () => {},
+  likePost: () => {},
   login: async () => {},
   register: async () => {},
 });

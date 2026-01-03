@@ -55,7 +55,6 @@ const ClientSidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOp
             items: [
                 { id: 'classes', label: t('client.sidebar.classes'), icon: CalendarDaysIcon },
                 { id: 'challenges', label: t('client.sidebar.challenges'), icon: TrophyIcon },
-                { id: 'achievements', label: t('client.sidebar.achievements'), icon: TrophyIcon },
                 { id: 'messages', label: t('client.sidebar.messages'), icon: ChatBubbleLeftRightIcon },
             ]
         },
@@ -64,43 +63,39 @@ const ClientSidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOp
             items: [
                 { id: 'membership-card', label: t('client.sidebar.membership-card'), icon: IdentificationIcon },
                 { id: 'profile', label: t('client.sidebar.profile'), icon: UserCircleIcon },
-                { id: 'notifications', label: t('client.sidebar.notifications'), icon: BellIcon },
                 { id: 'settings', label: t('client.sidebar.settings'), icon: CogIcon },
             ]
         }
     ], [t]);
 
     return (
-        <div className={`fixed h-full z-30 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-r border-black/10 dark:border-white/10 flex flex-col transition-all duration-300 ease-in-out
+        <div className={`fixed h-full z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-r border-black/[0.03] dark:border-white/[0.03] flex flex-col transition-all duration-300 ease-in-out
             ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
             md:translate-x-0 
             ${isCollapsed ? 'w-20' : 'w-64'}
         `}>
-            <div className={`flex items-center h-16 px-4 border-b border-transparent ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+            <div className={`flex items-center h-16 px-6 border-b border-transparent ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
                  {!isCollapsed ? (
-                     <div className="flex items-center gap-2 overflow-hidden">
-                        <LogoIcon className="w-8 h-8 flex-shrink-0" />
-                        <span className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-600 dark:from-teal-300 dark:to-blue-400 whitespace-nowrap">
+                     <div className="flex items-center gap-3 overflow-hidden">
+                        <LogoIcon className="w-8 h-8 flex-shrink-0 text-primary" />
+                        <span className="text-xl font-black tracking-tighter text-gray-900 dark:text-white whitespace-nowrap">
                             GymPro
                         </span>
                     </div>
                  ) : (
-                     <LogoIcon className="w-10 h-10" />
+                     <LogoIcon className="w-10 h-10 text-primary" />
                  )}
             </div>
 
-            <nav className="flex-1 overflow-y-auto overflow-x-hidden py-4 custom-scrollbar">
+            <nav className="flex-1 overflow-y-auto overflow-x-hidden py-6 px-3 custom-scrollbar">
                 {navGroups.map((group, index) => (
-                    <div key={index} className="mb-2">
+                    <div key={index} className="mb-8 last:mb-0">
                         {!isCollapsed && (
-                            <h3 className="px-4 py-2 text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
+                            <h3 className="px-3 mb-3 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                                 {group.title}
                             </h3>
                         )}
-                        {isCollapsed && index !== 0 && (
-                            <div className="mx-4 my-2 border-t border-gray-200 dark:border-gray-800"></div>
-                        )}
-                        <ul className="space-y-1 px-2">
+                        <ul className="space-y-1">
                             {group.items.map(item => (
                                 <li key={item.id}>
                                     <button 
@@ -108,19 +103,16 @@ const ClientSidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOp
                                             setActiveView(item.id as View);
                                             if (window.innerWidth < 768) onClose();
                                         }}
-                                        className={`w-full flex items-center p-2 rounded-lg transition-colors group relative
+                                        className={`w-full flex items-center p-3 rounded-2xl transition-all group relative
                                             ${activeView === item.id 
-                                                ? 'bg-primary/10 text-primary' 
-                                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-200/50 dark:hover:bg-gray-700/50 hover:text-gray-900 dark:hover:text-white'}
-                                            ${isCollapsed ? 'justify-center' : 'space-x-3'}
-                                        `}
-                                        title={isCollapsed ? item.label : ''}
+                                                ? 'bg-primary text-white shadow-lg shadow-primary/20 scale-[1.02]' 
+                                                : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}
                                     >
-                                        <item.icon className={`w-6 h-6 flex-shrink-0 ${activeView === item.id ? 'text-primary' : ''}`} />
-                                        {!isCollapsed && <span className="truncate font-medium">{item.label}</span>}
+                                        <item.icon className={`w-6 h-6 flex-shrink-0 transition-transform ${activeView === item.id ? 'scale-110' : 'group-hover:scale-110'}`} />
+                                        {!isCollapsed && <span className="ml-3 font-bold text-sm truncate">{item.label}</span>}
                                         
                                         {isCollapsed && (
-                                            <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-md">
+                                            <div className="absolute left-full ml-4 px-3 py-2 bg-gray-900 text-white text-[10px] font-black uppercase rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-2xl">
                                                 {item.label}
                                             </div>
                                         )}
@@ -132,10 +124,10 @@ const ClientSidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOp
                 ))}
             </nav>
 
-            <div className="hidden md:flex p-4 border-t border-black/5 dark:border-white/5 justify-end">
+            <div className="p-4 border-t border-black/[0.03] dark:border-white/[0.03]">
                 <button 
                     onClick={toggleCollapse}
-                    className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors w-full flex items-center justify-center"
+                    className="w-full flex items-center justify-center p-3 rounded-2xl bg-gray-50 dark:bg-gray-800/50 text-gray-400 hover:text-primary transition-all hover:bg-white dark:hover:bg-gray-800"
                 >
                     {isCollapsed ? <ChevronRightIcon className="w-5 h-5" /> : <ChevronLeftIcon className="w-5 h-5" />}
                 </button>
