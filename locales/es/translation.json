@@ -1,3 +1,4 @@
+
 {
     "general": {
         "appName": "GymPro Manager",
@@ -318,7 +319,7 @@
             "height": "Altura",
             "heightCm": "{{height}} cm",
             "weight": "Peso",
-            "weightKg": "{{weight}} kg",
+            "weightKg": "{{height}} kg",
             "fitnessGoals": "Metas de Fitness",
             "dietaryPreferences": "Preferencias Dietéticas",
             "medicalConditions": "Condiciones Médicas",
@@ -434,16 +435,17 @@
     "client": {
         "sidebar": {
             "dashboard": "Panel de Control",
-            "aiCoach": "Entrenador IA",
+            "social": "Comunidad",
+            "ai-coach": "Entrenador IA",
             "routine": "Mi Rutina",
-            "workoutLog": "Registrar Sesión",
-            "nutritionLog": "Nutrición",
+            "workout-log": "Registrar Sesión",
+            "nutrition-log": "Nutrición",
             "progress": "Mi Progreso",
             "classes": "Clases",
             "challenges": "Desafíos",
             "achievements": "Mis Logros",
             "messages": "Mensajes",
-            "membershipCard": "Tarjeta Digital",
+            "membership-card": "Tarjeta Digital",
             "profile": "Mi Perfil",
             "notifications": "Notificaciones",
             "settings": "Ajustes"
@@ -452,7 +454,7 @@
             "welcomeBack": "¡Bienvenido de nuevo, {{name}}!",
             "summaryDesc": "Aquí tienes un resumen de tu membresía.",
             "membershipStatus": "Estado de la membresía",
-            "level": "Nivel",
+            "level": "Level",
             "yourTrainers": "Tus entrenadores",
             "unassigned": "Sin asignar",
             "startDate": "Fecha de Inicio",

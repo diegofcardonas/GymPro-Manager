@@ -18,7 +18,7 @@ import { AppleIcon } from '../icons/AppleIcon';
 import { ChevronLeftIcon } from '../icons/ChevronLeftIcon';
 import { ChevronRightIcon } from '../icons/ChevronRightIcon';
 
-type View = 'dashboard' | 'routine' | 'workout-log' | 'progress' | 'classes' | 'messages' | 'membership-card' | 'profile' | 'notifications' | 'settings' | 'ai-coach' | 'challenges' | 'achievements' | 'nutrition-log';
+type View = 'dashboard' | 'routine' | 'workout-log' | 'progress' | 'classes' | 'messages' | 'membership-card' | 'profile' | 'notifications' | 'settings' | 'ai-coach' | 'challenges' | 'achievements' | 'nutrition-log' | 'social';
 
 interface SidebarProps {
     activeView: View;
@@ -37,15 +37,16 @@ const ClientSidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOp
             title: t('sidebar.home'),
             items: [
                 { id: 'dashboard', label: t('client.sidebar.dashboard'), icon: HomeIcon },
-                { id: 'ai-coach', label: t('client.sidebar.aiCoach'), icon: SparklesAiIcon },
+                { id: 'social', label: t('client.sidebar.social'), icon: TrophyIcon },
+                { id: 'ai-coach', label: t('client.sidebar.ai-coach'), icon: SparklesAiIcon },
             ]
         },
         {
             title: t('sidebar.training'),
             items: [
                 { id: 'routine', label: t('client.sidebar.routine'), icon: ClipboardListIcon },
-                { id: 'workout-log', label: t('client.sidebar.workoutLog'), icon: PencilIcon },
-                { id: 'nutrition-log', label: t('client.sidebar.nutritionLog'), icon: AppleIcon },
+                { id: 'workout-log', label: t('client.sidebar.workout-log'), icon: PencilIcon },
+                { id: 'nutrition-log', label: t('client.sidebar.nutrition-log'), icon: AppleIcon },
                 { id: 'progress', label: t('client.sidebar.progress'), icon: ChartBarIcon },
             ]
         },
@@ -61,7 +62,7 @@ const ClientSidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isOp
         {
             title: t('sidebar.account'),
             items: [
-                { id: 'membership-card', label: t('client.sidebar.membershipCard'), icon: IdentificationIcon },
+                { id: 'membership-card', label: t('client.sidebar.membership-card'), icon: IdentificationIcon },
                 { id: 'profile', label: t('client.sidebar.profile'), icon: UserCircleIcon },
                 { id: 'notifications', label: t('client.sidebar.notifications'), icon: BellIcon },
                 { id: 'settings', label: t('client.sidebar.settings'), icon: CogIcon },
