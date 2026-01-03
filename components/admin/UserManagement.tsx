@@ -20,6 +20,7 @@ import { IdentificationIcon } from '../icons/IdentificationIcon';
 import { FireIcon } from '../icons/FireIcon';
 import { UserCircleIcon } from '../icons/UserCircleIcon';
 import { NumberInputWithButtons } from '../shared/NumberInputWithButtons';
+import { TrophyIcon } from '../icons/TrophyIcon';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -69,15 +70,11 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
         if (initialFilter) {
             if (initialFilter.type === 'role') {
                 setActiveTab(initialFilter.value as UserTab);
-                setStatusFilter(null);
-                setTrainerFilter(null);
             } else if (initialFilter.type === 'status') {
                 setActiveTab(Role.CLIENT);
                 setStatusFilter(initialFilter.value);
-                setTrainerFilter(null);
             } else if (initialFilter.type === 'unassigned') {
                 setActiveTab(Role.CLIENT);
-                setStatusFilter(null);
                 setTrainerFilter('unassigned');
             }
             setCurrentPage(1);
@@ -175,7 +172,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
                                 onClick={() => handleTabClick(tab as UserTab)} 
                                 className={`px-5 py-2 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all ${activeTab === tab ? 'bg-white dark:bg-gray-700 text-primary shadow-sm' : 'text-gray-400 hover:text-gray-600'}`}
                              >
-                                {tab === Role.CLIENT ? t('nav.users') : tab === Role.TRAINER ? t('enums.Role.TRAINER') : tab}
+                                {tab === Role.CLIENT ? t('nav.users') : tab === Role.TRAINER ? 'Entrenadores' : tab === 'OPERATIONAL' ? 'Operativos' : 'Salud'}
                              </button>
                         ))}
                     </div>
@@ -289,18 +286,29 @@ const UserRow: React.FC<{ user: User; trainers: User[]; onEdit: (user: User) => 
     );
 };
 
-const UserModal: React.FC<{ user: User | null, activeTab: string, trainers: User[], onSave: (u: User) => void, onClose: () => void }> = ({ user, activeTab, trainers, onSave, onClose }) => {
+const UserModal: React.FC<{ user: User | null, activeTab: UserTab, trainers: User[], onSave: (u: User) => void, onClose: () => void }> = ({ user, activeTab, trainers, onSave, onClose }) => {
     const { t } = useTranslation();
-    const [activeFormTab, setActiveFormTab] = useState<'personal' | 'membership' | 'fitness'>('personal');
+    const [activeFormTab, setActiveFormTab] = useState<'personal' | 'membership' | 'fitness' | 'professional'>(user?.role === Role.CLIENT ? 'personal' : 'personal');
+    
+    // Determine default role based on tab
+    const getDefaultRole = (tab: UserTab) => {
+        if (tab === Role.CLIENT) return Role.CLIENT;
+        if (tab === Role.TRAINER) return Role.TRAINER;
+        if (tab === 'OPERATIONAL') return Role.RECEPTIONIST;
+        if (tab === 'HEALTH') return Role.NUTRITIONIST;
+        return Role.CLIENT;
+    };
+
     const [formData, setFormData] = useState<User>(() => {
         if (user) return { ...user };
+        const defaultRole = getDefaultRole(activeTab);
         return {
             id: '',
             name: '',
             email: '',
             phone: '',
-            role: activeTab === 'OPERATIONAL' ? Role.RECEPTIONIST : (activeTab === Role.TRAINER ? Role.TRAINER : Role.CLIENT),
-            avatarUrl: `https://ui-avatars.com/api/?name=New+User&background=random`,
+            role: defaultRole,
+            avatarUrl: `https://ui-avatars.com/api/?name=Nuevo+Usuario&background=random`,
             joinDate: new Date().toISOString(),
             membership: { 
                 status: MembershipStatus.ACTIVE, 
@@ -332,13 +340,16 @@ const UserModal: React.FC<{ user: User | null, activeTab: string, trainers: User
         onSave(formData);
     };
 
+    const isClient = formData.role === Role.CLIENT;
+    const isProfessional = [Role.TRAINER, Role.NUTRITIONIST, Role.PHYSIOTHERAPIST].includes(formData.role);
+
     return (
         <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-md animate-fade-in">
              <div className="bg-white dark:bg-gray-800 rounded-4xl w-full max-w-2xl shadow-2xl overflow-hidden animate-scale-in">
                 <div className="p-8 bg-primary text-white flex justify-between items-center relative overflow-hidden">
                     <UserCircleIcon className="absolute -right-6 -top-6 w-32 h-32 opacity-10" />
                     <div className="relative z-10">
-                        <h2 className="text-3xl font-black uppercase tracking-tighter">{user ? t('general.edit') : t('general.create')} {t('general.user')}</h2>
+                        <h2 className="text-3xl font-black uppercase tracking-tighter">{user ? t('general.edit') : t('general.create')} {isClient ? 'Cliente' : 'Personal'}</h2>
                         <p className="text-primary-foreground/70 text-[10px] font-black uppercase tracking-widest mt-1">Configuración Maestro de Perfil</p>
                     </div>
                     <button onClick={onClose} className="relative z-10 p-2 hover:bg-white/10 rounded-full transition-all">
@@ -346,16 +357,18 @@ const UserModal: React.FC<{ user: User | null, activeTab: string, trainers: User
                     </button>
                 </div>
 
-                <div className="flex bg-gray-50 dark:bg-gray-900/50 p-2 border-b border-black/5">
+                <div className="flex bg-gray-50 dark:bg-gray-900/50 p-2 border-b border-black/5 overflow-x-auto">
                     {[
-                        { id: 'personal', label: t('admin.userEditor.tabs.personal'), icon: <UserCircleIcon className="w-4 h-4"/> },
-                        { id: 'membership', label: t('admin.userEditor.tabs.membership'), icon: <IdentificationIcon className="w-4 h-4"/> },
-                        { id: 'fitness', label: t('admin.userEditor.tabs.fitness'), icon: <FireIcon className="w-4 h-4"/> }
-                    ].map(tab => (
+                        { id: 'personal', label: t('admin.userEditor.tabs.personal'), icon: <UserCircleIcon className="w-4 h-4"/>, visible: true },
+                        { id: 'membership', label: t('admin.userEditor.tabs.membership'), icon: <IdentificationIcon className="w-4 h-4"/>, visible: true },
+                        { id: 'fitness', label: t('admin.userEditor.tabs.fitness'), icon: <FireIcon className="w-4 h-4"/>, visible: isClient },
+                        { id: 'professional', label: t('admin.userEditor.tabs.professional'), icon: <TrophyIcon className="w-4 h-4"/>, visible: isProfessional }
+                    ].filter(t => t.visible).map(tab => (
                         <button 
                             key={tab.id}
+                            type="button"
                             onClick={() => setActiveFormTab(tab.id as any)}
-                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeFormTab === tab.id ? 'bg-white dark:bg-gray-700 text-primary shadow-sm' : 'text-gray-400'}`}
+                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all min-w-[120px] ${activeFormTab === tab.id ? 'bg-white dark:bg-gray-700 text-primary shadow-sm' : 'text-gray-400'}`}
                         >
                             {tab.icon} {tab.label}
                         </button>
@@ -380,10 +393,9 @@ const UserModal: React.FC<{ user: User | null, activeTab: string, trainers: User
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Género</label>
                                 <select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner">
-                                    <option value="Masculino">Masculino</option>
-                                    <option value="Femenino">Femenino</option>
-                                    <option value="Otro">Otro</option>
-                                    <option value="Prefiero no decirlo">Prefiero no decirlo</option>
+                                    {Object.keys(t('enums.Gender', { returnObjects: true })).map(key => (
+                                        <option key={key} value={key}>{t(`enums.Gender.${key}`)}</option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
@@ -393,34 +405,37 @@ const UserModal: React.FC<{ user: User | null, activeTab: string, trainers: User
                         <div className="space-y-6 animate-fade-in">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Rol de Sistema</label>
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Rol en el Gimnasio</label>
                                     <select name="role" value={formData.role} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner">
+                                        {/* Filter roles based on tab if needed, or show all */}
                                         {Object.values(Role).map(r => <option key={r} value={r}>{t(`enums.Role.${r}`)}</option>)}
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Estado de Membresía</label>
+                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Estado</label>
                                     <select name="membership.status" value={formData.membership.status} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner">
-                                        {Object.values(MembershipStatus).map(s => <option key={s} value={s}>{s}</option>)}
+                                        {Object.values(MembershipStatus).map(s => <option key={s} value={s}>{t(`enums.MembershipStatus.${s}`)}</option>)}
                                     </select>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('admin.userEditor.fields.tier')}</label>
-                                    <select name="membership.tierId" value={formData.membership.tierId} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner">
-                                        {MOCK_TIERS.map(tier => <option key={tier.id} value={tier.id}>{tier.name} - {tier.price}</option>)}
-                                    </select>
+                            {isClient && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('admin.userEditor.fields.tier')}</label>
+                                        <select name="membership.tierId" value={formData.membership.tierId} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner">
+                                            {MOCK_TIERS.map(tier => <option key={tier.id} value={tier.id}>{tier.name}</option>)}
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('admin.userEditor.fields.expiration')}</label>
+                                        <input type="date" name="membership.endDate" value={formData.membership.endDate.split('T')[0]} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner" />
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('admin.userEditor.fields.expiration')}</label>
-                                    <input type="date" name="membership.endDate" value={formData.membership.endDate.split('T')[0]} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner" />
-                                </div>
-                            </div>
+                            )}
                         </div>
                     )}
 
-                    {activeFormTab === 'fitness' && (
+                    {activeFormTab === 'fitness' && isClient && (
                         <div className="space-y-6 animate-fade-in">
                             <div className="grid grid-cols-3 gap-4">
                                 <div className="space-y-2">
@@ -434,7 +449,7 @@ const UserModal: React.FC<{ user: User | null, activeTab: string, trainers: User
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase text-gray-400 text-center block">Nivel</label>
                                     <select name="fitnessLevel" value={formData.fitnessLevel} onChange={handleChange} className="w-full p-2.5 bg-gray-50 dark:bg-gray-900 border-none rounded-xl focus:ring-2 focus:ring-primary text-[10px] font-black uppercase text-center shadow-inner">
-                                        {Object.values(FitnessLevel).map(l => <option key={l} value={l}>{l}</option>)}
+                                        {Object.values(FitnessLevel).map(l => <option key={l} value={l}>{t(`enums.FitnessLevel.${l}`)}</option>)}
                                     </select>
                                 </div>
                             </div>
@@ -444,11 +459,24 @@ const UserModal: React.FC<{ user: User | null, activeTab: string, trainers: User
                             </div>
                         </div>
                     )}
+
+                    {activeFormTab === 'professional' && isProfessional && (
+                         <div className="space-y-6 animate-fade-in">
+                             <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Especialidades / Habilidades</label>
+                                <textarea name="skills" value={formData.skills || ''} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary text-sm min-h-[100px] shadow-inner font-medium" placeholder="Ej: Powerlifting, HIIT, Nutrición Deportiva..." />
+                            </div>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Biografía Breve</label>
+                                <textarea name="bio" value={formData.bio || ''} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary text-sm min-h-[100px] shadow-inner font-medium" />
+                            </div>
+                         </div>
+                    )}
                 </form>
 
                 <div className="p-8 bg-gray-50 dark:bg-gray-900 border-t border-black/5 flex gap-4">
                     <button onClick={onClose} className="flex-1 py-4 bg-white dark:bg-gray-800 text-gray-400 hover:text-gray-600 rounded-2xl font-black uppercase text-xs tracking-widest transition-all">Cancelar</button>
-                    <button onClick={handleSave} className="flex-[2] py-4 bg-primary text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all">Guardar Usuario-Cliente</button>
+                    <button onClick={handleSave} className="flex-[2] py-4 bg-primary text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all">Guardar {isClient ? 'Cliente' : 'Perfil'}</button>
                 </div>
              </div>
         </div>

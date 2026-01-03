@@ -15,8 +15,8 @@ const defaultPrivacy = { profileVisibility: 'everyone' as const, activityVisibil
 const TRAINERS: User[] = [
     {
         id: 't1',
-        name: 'Carlos Mendoza',
-        email: 'carlos.m@gympro.com',
+        name: 'Chris Validator',
+        email: 'chris.v@gympro.com',
         password: 'password123',
         phone: '300-111-2222',
         avatarUrl: 'https://randomuser.me/api/portraits/men/32.jpg',

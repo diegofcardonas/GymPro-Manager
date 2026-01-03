@@ -30,7 +30,7 @@ const resources = {
         kg: "kg",
         cm: "cm",
         messages: "Messages",
-        user: "Client-User",
+        user: "Client",
         warning: "Warning",
         unassigned: "Unassigned",
         add: "Add",
@@ -42,7 +42,7 @@ const resources = {
       },
       nav: {
         dashboard: "Home",
-        users: "Client-Users",
+        users: "Clients",
         reports: "Reports",
         payments: "Finances",
         pos: "Point of Sale",
@@ -80,9 +80,9 @@ const resources = {
       },
       admin: {
         dashboard: { notifications: "Notifications", settings: "Settings", classSchedule: "Class Schedule", routineTemplates: "Routine Templates" },
-        userManagement: { searchPlaceholder: "Search users...", allTrainers: "All Trainers", selectPlaceholder: "Select..." },
+        userManagement: { searchPlaceholder: "Search...", allTrainers: "All Trainers", selectPlaceholder: "Select..." },
         userEditor: {
-          tabs: { personal: "Personal", membership: "Membership & Role", fitness: "Fitness Profile" },
+          tabs: { personal: "Personal", membership: "System Access", fitness: "Fitness Profile", professional: "Professional Profile" },
           fields: { tier: "Membership Tier", expiration: "Expiration Date", goals: "Fitness Goals", medical: "Medical Conditions" }
         },
         reports: { title: "Reports & Analytics", trainerLoad: "Trainer Load", clients: "Clients", expirationForecast: "Expiration Forecast", expiringMemberships: "Expiring Memberships", demographicsGender: "Demographics by Gender", demographicsLevel: "Demographics by Level", notSet: "Not Set" },
@@ -174,7 +174,7 @@ const resources = {
         kg: "kg",
         cm: "cm",
         messages: "Mensajes",
-        user: "Usuario-Cliente",
+        user: "Cliente",
         warning: "Atención",
         unassigned: "Sin asignar",
         add: "Añadir",
@@ -186,7 +186,7 @@ const resources = {
       },
       nav: {
         dashboard: "Inicio",
-        users: "Usuarios-Clientes",
+        users: "Clientes",
         reports: "Reportes",
         payments: "Finanzas",
         pos: "Punto de Venta",
@@ -224,9 +224,9 @@ const resources = {
       },
       admin: {
         dashboard: { notifications: "Notificaciones", settings: "Ajustes", classSchedule: "Agenda de Clases", routineTemplates: "Plantillas de Rutina" },
-        userManagement: { searchPlaceholder: "Buscar usuarios...", allTrainers: "Todos los Entrenadores", selectPlaceholder: "Seleccionar..." },
+        userManagement: { searchPlaceholder: "Buscar...", allTrainers: "Todos los Entrenadores", selectPlaceholder: "Seleccionar..." },
         userEditor: {
-          tabs: { personal: "Personal", membership: "Membresía y Rol", fitness: "Perfil Fitness" },
+          tabs: { personal: "Personal", membership: "Acceso Sistema", fitness: "Perfil Fitness", professional: "Perfil Profesional" },
           fields: { tier: "Nivel de Membresía", expiration: "Vencimiento", goals: "Objetivos de Fitness", medical: "Condiciones Médicas" }
         },
         reports: { title: "Reportes y Analíticas", trainerLoad: "Carga de Entrenadores", clients: "Clientes", expirationForecast: "Pronóstico de Vencimientos", expiringMemberships: "Membresías por Vencer", demographicsGender: "Demografía por Género", demographicsLevel: "Demografía por Nivel", notSet: "No definido" },
@@ -248,7 +248,21 @@ const resources = {
         aiGenerator: { title: "Smart Workout Builder", promptPlaceholder: "Ej: Tengo 45 min, solo mancuernas, enfoque en pierna.", generate: "Construir Rutina IA", disclaimer: "La IA puede cometer errores. Escucha a tu cuerpo.", suggested: "Sugerencias", loading: "Diseñando tu sesión perfecta...", addToLog: "Usar esta rutina" }
       },
       trainer: {
-        sidebar: { summary: "Resumen", management: "Gestión", communication: "Comunicación", account: "Cuenta", dashboard: "Inicio", tasks: "Tareas", clients: "Clientes", schedule: "Agenda", templates: "Plantillas", messages: "Mensajes", profile: "Perfil", notifications: "Notificaciones", settings: "Ajustes" }
+        sidebar: { 
+          summary: "Resumen", 
+          management: "Gestión", 
+          communication: "Comunicación", 
+          account: "Cuenta", 
+          dashboard: "Inicio", 
+          tasks: "Tareas", 
+          clients: "Clientes", 
+          schedule: "Agenda", 
+          templates: "Plantillas", 
+          messages: "Mensajes", 
+          profile: "Perfil", 
+          notifications: "Notificaciones", 
+          settings: "Ajustes" 
+        }
       },
       receptionist: { title: "Recepción", nav: { checkIn: "Check-In", users: "Usuarios", pos: "POS", tasks: "Tareas" }, cameraError: "No se pudo acceder a la cámara", qrTip: "Alinea el código QR en el marco", success: "Ingreso Exitoso", welcome: "Bienvenido, {{name}}", scanQR: "Escanear QR", noMembersFound: "No se encontraron miembros" },
       manager: { title: "Gerencia General", overview: "Resumen", staff: "Personal", financials: "Finanzas", revenue: "Ingresos Totales", mrr: "MRR", activeMembers: "Miembros Activos", staffCount: "Personal", revenueTrend: "Tendencia de Ingresos", financialsPlaceholder: "Reportes financieros detallados y proyecciones." },
@@ -321,9 +335,7 @@ if (!rootElement) {
 
 const root = ReactDOM.createRoot(rootElement);
 root.render(
-  <React.StrictMode>
-    <Suspense fallback={<div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 font-bold">GymPro Loading...</div>}>
-      <App />
-    </Suspense>
-  </React.StrictMode>
+  <Suspense fallback={<div className="flex h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 font-bold">GymPro Loading...</div>}>
+    <App />
+  </Suspense>
 );
