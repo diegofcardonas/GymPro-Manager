@@ -25,7 +25,8 @@
     "unassigned": "Sin asignar",
     "add": "Añadir",
     "logout": "Cerrar Sesión",
-    "settings": "Ajustes"
+    "settings": "Ajustes",
+    "export": "Exportar CSV"
   },
   "nav": {
     "dashboard": "Inicio",
@@ -53,6 +54,52 @@
     "profile": "Perfil",
     "logout": "Cerrar Sesión",
     "analysis": "Análisis Postura"
+  },
+  "admin": {
+    "finances": {
+      "title": "Centro Financiero",
+      "tabs": {
+        "overview": "Resumen",
+        "transactions": "Movimientos",
+        "budgets": "Presupuestos",
+        "reports": "Análisis Pro"
+      },
+      "stats": {
+        "netProfit": "Utilidad Neta",
+        "totalIncome": "Ingresos Totales",
+        "totalExpenses": "Gastos Totales",
+        "cashFlow": "Flujo de Caja"
+      },
+      "modal": {
+        "addIncome": "Registrar Ingreso",
+        "addExpense": "Registrar Gasto",
+        "amount": "Monto",
+        "category": "Categoría",
+        "date": "Fecha",
+        "description": "Descripción / Concepto",
+        "method": "Método de Pago"
+      },
+      "budget": {
+        "category": "Rubro",
+        "planned": "Planeado",
+        "actual": "Ejecutado",
+        "difference": "Diferencia",
+        "status": "Estado"
+      }
+    }
+  },
+  "finance": {
+    "categories": {
+      "Rent": "Arriendo",
+      "Salaries": "Nómina",
+      "Utilities": "Servicios Públicos",
+      "Marketing": "Publicidad",
+      "Equipment": "Equipamiento",
+      "Maintenance": "Mantenimiento",
+      "Sales": "Ventas Membresía",
+      "POS_SALE": "Venta Tienda",
+      "Other": "Otros"
+    }
   },
   "client": {
     "dashboard": {
