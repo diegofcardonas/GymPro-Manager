@@ -11,7 +11,7 @@ const generateHistoricalPayments = () => {
     clients.forEach((client, index) => {
         const tier = MOCK_TIERS.find(t => t.id === client.membership.tierId) || MOCK_TIERS[3];
 
-        // Current Month
+        // Membresía Mes Actual
         let currentStatus = PaymentStatus.COMPLETED;
         if (client.membership.status === MembershipStatus.PENDING) currentStatus = PaymentStatus.PENDING;
         if (client.membership.status === MembershipStatus.EXPIRED) currentStatus = PaymentStatus.FAILED;
@@ -23,44 +23,57 @@ const generateHistoricalPayments = () => {
             date: new Date().toISOString(),
             status: currentStatus,
             tierId: tier.id,
-            paymentMethod: index % 3 === 0 ? PaymentMethod.CARD : (index % 2 === 0 ? PaymentMethod.TRANSFER : PaymentMethod.CASH),
-            description: `Membresía ${tier.name}`
+            paymentMethod: index % 4 === 0 ? PaymentMethod.CARD : (index % 3 === 0 ? PaymentMethod.TRANSFER : PaymentMethod.CASH),
+            description: `Renovación Membresía ${tier.name}`
         });
 
-        // Past 4 months
-        for (let i = 1; i <= 4; i++) {
-            const pastDate = new Date();
-            pastDate.setMonth(pastDate.getMonth() - i);
-            pastDate.setDate(Math.floor(Math.random() * 28) + 1);
-            
-            payments.push({
-                id: `p-${client.id}-hist-${i}`,
-                userId: client.id,
-                amount: tier.price,
-                date: pastDate.toISOString(),
-                status: PaymentStatus.COMPLETED,
-                tierId: tier.id,
-                paymentMethod: i % 2 === 0 ? PaymentMethod.CARD : PaymentMethod.TRANSFER,
-                description: `Membresía ${tier.name}`
-            });
+        // Historial de 3 meses atrás para los primeros 50 usuarios
+        if (index < 50) {
+            for (let i = 1; i <= 3; i++) {
+                const pastDate = new Date();
+                pastDate.setMonth(pastDate.getMonth() - i);
+                pastDate.setDate(Math.floor(Math.random() * 5) + 1);
+                
+                payments.push({
+                    id: `p-${client.id}-hist-${i}`,
+                    userId: client.id,
+                    amount: tier.price,
+                    date: pastDate.toISOString(),
+                    status: PaymentStatus.COMPLETED,
+                    tierId: tier.id,
+                    paymentMethod: i % 2 === 0 ? PaymentMethod.CARD : PaymentMethod.TRANSFER,
+                    description: `Membresía ${tier.name}`
+                });
+            }
         }
     });
 
-    // POS sales
-    for (let i = 0; i < 200; i++) {
+    // Ventas de Tienda (POS) - 150 registros aleatorios
+    const posProducts = [
+        { name: 'Proteína Whey ISO (Tarro)', price: 185000 },
+        { name: 'Creatina Monohidratada', price: 95000 },
+        { name: 'Pre-Workout Explosive', price: 125000 },
+        { name: 'Agua Cristal (Botella)', price: 3500 },
+        { name: 'Gatorade Manzana', price: 5500 },
+        { name: 'Barra Energética Pro', price: 7500 },
+        { name: 'Toalla Gym Pro', price: 28000 }
+    ];
+
+    for (let i = 0; i < 150; i++) {
         const date = new Date();
-        date.setMonth(date.getMonth() - Math.floor(Math.random() * 6));
+        date.setMonth(date.getMonth() - Math.floor(Math.random() * 4));
         date.setDate(Math.floor(Math.random() * 28) + 1);
         const randomClient = clients[Math.floor(Math.random() * clients.length)];
+        const product = posProducts[Math.floor(Math.random() * posProducts.length)];
         
         payments.push({
             id: `pos-${i}`,
             userId: randomClient.id,
-            amount: Math.floor(Math.random() * 35000) + 5000,
+            amount: product.price,
             date: date.toISOString(),
             status: PaymentStatus.COMPLETED,
             tierId: 'POS_SALE',
-            description: i % 5 === 0 ? 'Proteína ISO' : (i % 2 === 0 ? 'Agua Mineral' : 'Barra Energética'),
+            description: product.name,
             paymentMethod: Math.random() > 0.4 ? PaymentMethod.CASH : PaymentMethod.CARD
         });
     }
