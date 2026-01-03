@@ -1,7 +1,9 @@
 
 {
   "common": {
+    "appName": "GymPro Manager",
     "save": "Guardar",
+    "saveChanges": "Guardar Cambios",
     "cancel": "Cancelar",
     "delete": "Eliminar",
     "edit": "Editar",
@@ -9,24 +11,47 @@
     "actions": "Acciones",
     "search": "Buscar...",
     "welcome": "Bienvenido, {{name}}",
-    "noData": "No hay información disponible",
-    "confirmDelete": "¿Estás seguro de que deseas eliminar esto?",
+    "noData": "Sin datos disponibles",
+    "confirmDelete": "¿Estás seguro? Esta acción no se puede deshacer.",
     "success": "Éxito",
-    "error": "Error"
+    "error": "Error",
+    "view": "Ver",
+    "create": "Crear",
+    "kg": "kg",
+    "cm": "cm"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "signup": "Registrarse",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "name": "Nombre Completo",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "dontHaveAccount": "¿No tienes cuenta?",
+    "alreadyHaveAccount": "¿Ya tienes cuenta?",
+    "demoAccess": "Acceso de Demostración",
+    "errorMissingFields": "Por favor completa todos los campos",
+    "errorUnexpected": "Ocurrió un error inesperado"
   },
   "nav": {
     "dashboard": "Panel",
-    "users": "Usuarios",
+    "social": "Comunidad",
     "tasks": "Tareas",
+    "users": "Usuarios",
     "classes": "Clases",
     "routines": "Rutinas",
     "finances": "Finanzas",
     "settings": "Ajustes",
-    "logout": "Cerrar Sesión"
+    "logout": "Cerrar Sesión",
+    "progress": "Mi Progreso",
+    "aiCoach": "Coach IA",
+    "nutrition": "Nutrición IA",
+    "profile": "Mi Perfil"
   },
   "tasks": {
     "title": "Gestión de Tareas",
-    "myTasks": "Mis Tareas Asignadas",
+    "subtitle": "Supervisa las responsabilidades del equipo.",
+    "myTasks": "Mis Tareas",
     "newTask": "Nueva Tarea",
     "editTask": "Editar Tarea",
     "status": "Estado",
@@ -36,11 +61,49 @@
     "assignTo": "Asignar a",
     "description": "Descripción",
     "taskName": "Nombre de la Tarea",
-    "noTasks": "No tienes tareas asignadas",
-    "noTasksDesc": "¡Estás al día con todo!",
-    "statusUpdateSuccess": "Estado actualizado correctamente"
+    "noTasks": "Sin tareas asignadas",
+    "noTasksDesc": "¡Buen trabajo! Tu lista está limpia.",
+    "statusUpdateSuccess": "Estado actualizado"
+  },
+  "progress": {
+    "title": "Mi Evolución",
+    "subtitle": "Sigue tus ganancias y récords.",
+    "maxWeight": "Peso Máx",
+    "maxVolume": "Volumen Total",
+    "est1rm": "Est. 1RM",
+    "totalSessions": "Sesiones",
+    "strengthTrend": "Tendencia de Fuerza",
+    "noDataDesc": "Registra tu primer entrenamiento para ver tu gráfica de progreso."
+  },
+  "profile": {
+    "editTitle": "Editar Perfil",
+    "personal": "Info Personal",
+    "fitness": "Salud y Metas",
+    "career": "Profesional",
+    "emergency": "Emergencia",
+    "fullName": "Nombre Completo",
+    "mobile": "Móvil",
+    "height": "Altura",
+    "weight": "Peso",
+    "imc": "IMC",
+    "prs": "Récords Personales",
+    "success": "Perfil actualizado con éxito"
   },
   "enums": {
+    "Role": {
+      "ADMIN": "Administrador",
+      "CLIENT": "Cliente",
+      "TRAINER": "Entrenador",
+      "RECEPTIONIST": "Recepcionista",
+      "GENERAL_MANAGER": "Gerente",
+      "NUTRITIONIST": "Nutricionista",
+      "PHYSIOTHERAPIST": "Fisioterapeuta"
+    },
+    "MembershipStatus": {
+      "ACTIVE": "Activo",
+      "EXPIRED": "Vencido",
+      "PENDING": "Pendiente"
+    },
     "TaskStatus": {
       "PENDING": "Pendiente",
       "IN_PROGRESS": "En Progreso",
@@ -50,21 +113,22 @@
       "Low": "Baja",
       "Medium": "Media",
       "High": "Alta"
-    },
-    "MembershipStatus": {
-      "ACTIVE": "Activo",
-      "EXPIRED": "Vencido",
-      "PENDING": "Pendiente"
-    },
-    "Role": {
-      "ADMIN": "Administrador",
-      "CLIENT": "Cliente",
-      "TRAINER": "Entrenador",
-      "RECEPTIONIST": "Recepcionista",
-      "GENERAL_MANAGER": "Gerente",
-      "GROUP_INSTRUCTOR": "Instructor",
-      "NUTRITIONIST": "Nutricionista",
-      "PHYSIOTHERAPIST": "Fisioterapeuta"
     }
+  },
+  "toast": {
+    "welcome": "¡Bienvenido de nuevo, {{name}}!",
+    "loggedOut": "Sesión cerrada correctamente",
+    "passwordError": "Email o contraseña incorrectos",
+    "emailExists": "El email ya está registrado",
+    "accountCreated": "¡Cuenta creada!"
+  },
+  "days": {
+    "Monday": "Lunes",
+    "Tuesday": "Martes",
+    "Wednesday": "Miércoles",
+    "Thursday": "Jueves",
+    "Friday": "Viernes",
+    "Saturday": "Sábado",
+    "Sunday": "Domingo"
   }
 }

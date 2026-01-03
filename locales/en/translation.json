@@ -1,7 +1,9 @@
 
 {
   "common": {
+    "appName": "GymPro Manager",
     "save": "Save",
+    "saveChanges": "Save Changes",
     "cancel": "Cancel",
     "delete": "Delete",
     "edit": "Edit",
@@ -9,24 +11,47 @@
     "actions": "Actions",
     "search": "Search...",
     "welcome": "Welcome, {{name}}",
-    "noData": "No information available",
-    "confirmDelete": "Are you sure you want to delete this?",
+    "noData": "No data available",
+    "confirmDelete": "Are you sure? This cannot be undone.",
     "success": "Success",
-    "error": "Error"
+    "error": "Error",
+    "view": "View",
+    "create": "Create",
+    "kg": "kg",
+    "cm": "cm"
+  },
+  "auth": {
+    "login": "Log In",
+    "signup": "Sign Up",
+    "email": "Email Address",
+    "password": "Password",
+    "name": "Full Name",
+    "forgotPassword": "Forgot password?",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "demoAccess": "Demo Access",
+    "errorMissingFields": "Please fill all fields",
+    "errorUnexpected": "An unexpected error occurred"
   },
   "nav": {
     "dashboard": "Dashboard",
-    "users": "Users",
+    "social": "Community",
     "tasks": "Tasks",
+    "users": "Users",
     "classes": "Classes",
     "routines": "Routines",
     "finances": "Finances",
     "settings": "Settings",
-    "logout": "Logout"
+    "logout": "Log Out",
+    "progress": "My Progress",
+    "aiCoach": "AI Coach",
+    "nutrition": "AI Nutrition",
+    "profile": "My Profile"
   },
   "tasks": {
     "title": "Task Management",
-    "myTasks": "My Assigned Tasks",
+    "subtitle": "Supervise team responsibilities.",
+    "myTasks": "My Tasks",
     "newTask": "New Task",
     "editTask": "Edit Task",
     "status": "Status",
@@ -37,10 +62,48 @@
     "description": "Description",
     "taskName": "Task Name",
     "noTasks": "No tasks assigned",
-    "noTasksDesc": "You are all caught up!",
-    "statusUpdateSuccess": "Status updated successfully"
+    "noTasksDesc": "Great job! Your list is clear.",
+    "statusUpdateSuccess": "Status updated"
+  },
+  "progress": {
+    "title": "My Evolution",
+    "subtitle": "Track your gains and records.",
+    "maxWeight": "Max Weight",
+    "maxVolume": "Total Volume",
+    "est1rm": "Est. 1RM",
+    "totalSessions": "Sessions",
+    "strengthTrend": "Strength Trend",
+    "noDataDesc": "Log your first workout to see your progress chart."
+  },
+  "profile": {
+    "editTitle": "Edit Profile",
+    "personal": "Personal Info",
+    "fitness": "Health & Goals",
+    "career": "Professional",
+    "emergency": "Emergency",
+    "fullName": "Full Name",
+    "mobile": "Mobile",
+    "height": "Height",
+    "weight": "Weight",
+    "imc": "BMI",
+    "prs": "Personal Records",
+    "success": "Profile updated successfully"
   },
   "enums": {
+    "Role": {
+      "ADMIN": "Administrator",
+      "CLIENT": "Client",
+      "TRAINER": "Trainer",
+      "RECEPTIONIST": "Receptionist",
+      "GENERAL_MANAGER": "Manager",
+      "NUTRITIONIST": "Nutritionist",
+      "PHYSIOTHERAPIST": "Physio"
+    },
+    "MembershipStatus": {
+      "ACTIVE": "Active",
+      "EXPIRED": "Expired",
+      "PENDING": "Pending"
+    },
     "TaskStatus": {
       "PENDING": "Pending",
       "IN_PROGRESS": "In Progress",
@@ -50,21 +113,22 @@
       "Low": "Low",
       "Medium": "Medium",
       "High": "High"
-    },
-    "MembershipStatus": {
-      "ACTIVE": "Active",
-      "EXPIRED": "Expired",
-      "PENDING": "Pending"
-    },
-    "Role": {
-      "ADMIN": "Administrator",
-      "CLIENT": "Client",
-      "TRAINER": "Trainer",
-      "RECEPTIONIST": "Receptionist",
-      "GENERAL_MANAGER": "Manager",
-      "GROUP_INSTRUCTOR": "Instructor",
-      "NUTRITIONIST": "Nutritionist",
-      "PHYSIOTHERAPIST": "Physiotherapist"
     }
+  },
+  "toast": {
+    "welcome": "Welcome back, {{name}}!",
+    "loggedOut": "Logged out successfully",
+    "passwordError": "Invalid email or password",
+    "emailExists": "Email already registered",
+    "accountCreated": "Account created!"
+  },
+  "days": {
+    "Monday": "Monday",
+    "Tuesday": "Tuesday",
+    "Wednesday": "Wednesday",
+    "Thursday": "Thursday",
+    "Friday": "Friday",
+    "Saturday": "Saturday",
+    "Sunday": "Sunday"
   }
 }

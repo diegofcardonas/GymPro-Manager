@@ -11,28 +11,28 @@ export enum Role {
 }
 
 export enum MembershipStatus {
-  ACTIVE = 'Activo',
-  EXPIRED = 'Vencido',
-  PENDING = 'Pendiente',
+  ACTIVE = 'ACTIVE',
+  EXPIRED = 'EXPIRED',
+  PENDING = 'PENDING',
 }
 
 export enum FitnessLevel {
-    BEGINNER = 'Principiante',
-    INTERMEDIATE = 'Intermedio',
-    ADVANCED = 'Avanzado',
+    BEGINNER = 'BEGINNER',
+    INTERMEDIATE = 'INTERMEDIATE',
+    ADVANCED = 'ADVANCED',
 }
 
 export enum NotificationType {
-    INFO = 'info',
-    WARNING = 'warning',
-    SUCCESS = 'success',
-    ALERT = 'alert',
+    INFO = 'INFO',
+    WARNING = 'WARNING',
+    SUCCESS = 'SUCCESS',
+    ALERT = 'ALERT',
 }
 
 export enum TaskStatus {
-    PENDING = 'Pendiente',
-    IN_PROGRESS = 'En Progreso',
-    COMPLETED = 'Completado',
+    PENDING = 'PENDING',
+    IN_PROGRESS = 'IN_PROGRESS',
+    COMPLETED = 'COMPLETED',
 }
 
 export type TaskPriority = 'Low' | 'Medium' | 'High';
@@ -100,16 +100,16 @@ export interface MembershipTier {
 }
 
 export enum PaymentStatus {
-    COMPLETED = 'Completado',
-    PENDING = 'Pendiente',
-    FAILED = 'Fallido',
+    COMPLETED = 'COMPLETED',
+    PENDING = 'PENDING',
+    FAILED = 'FAILED',
 }
 
 export enum PaymentMethod {
-    CASH = 'Efectivo',
-    CARD = 'Tarjeta',
-    TRANSFER = 'Transferencia',
-    OTHER = 'Otro'
+    CASH = 'CASH',
+    CARD = 'CARD',
+    TRANSFER = 'TRANSFER',
+    OTHER = 'OTHER'
 }
 
 export interface Payment {
@@ -214,9 +214,9 @@ export interface Challenge {
 }
 
 export enum EquipmentStatus {
-    OPERATIONAL = 'Operativo',
-    IN_REPAIR = 'En Reparación',
-    OUT_OF_SERVICE = 'Fuera de Servicio',
+    OPERATIONAL = 'OPERATIONAL',
+    IN_REPAIR = 'IN_REPAIR',
+    OUT_OF_SERVICE = 'OUT_OF_SERVICE',
 }
 
 export interface EquipmentItem {

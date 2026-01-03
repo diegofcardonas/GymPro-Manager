@@ -1,7 +1,7 @@
 
 import React, { useContext, useMemo, useState, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { TaskStatus, Task, TaskPriority } from '../../types';
+import { TaskStatus, Task } from '../../types';
 import { CheckCircleIcon } from '../icons/CheckCircleIcon';
 import { ClockIcon } from '../icons/ClockIcon';
 import { ClipboardDocumentCheckIcon } from '../icons/ClipboardDocumentCheckIcon';
@@ -35,10 +35,7 @@ const TaskBoard: React.FC = () => {
     if (isLoading) {
         return (
             <div className="space-y-4 animate-fade-in w-full max-w-2xl mx-auto">
-                <div className="flex items-center justify-between mb-2 px-2">
-                    <Skeleton width={120} height={28} />
-                    <Skeleton width={80} height={16} />
-                </div>
+                <Skeleton width={120} height={28} />
                 {[1, 2, 3].map(i => (
                     <div key={i} className="bg-white dark:bg-gray-800 p-5 rounded-3xl shadow-sm border border-black/5 flex items-start gap-4">
                         <Skeleton variant="circular" width={32} height={32} />
@@ -66,11 +63,9 @@ const TaskBoard: React.FC = () => {
         <div className="space-y-6 animate-fade-in w-full max-w-2xl mx-auto pb-24">
             <div className="flex items-center justify-between mb-2 px-2">
                 <h3 className="font-black text-2xl text-gray-900 dark:text-white tracking-tight">{t('tasks.myTasks')}</h3>
-                <div className="flex items-center gap-2">
-                   <span className="text-[10px] font-black text-white uppercase bg-primary px-2.5 py-1 rounded-full shadow-sm">
-                        {myTasks.filter(t => t.status !== TaskStatus.COMPLETED).length}
-                    </span>
-                </div>
+                <span className="text-[10px] font-black text-white uppercase bg-primary px-2.5 py-1 rounded-full shadow-sm">
+                    {myTasks.filter(t => t.status !== TaskStatus.COMPLETED).length}
+                </span>
             </div>
             
             <div className="space-y-4">
@@ -118,7 +113,7 @@ const TaskBoard: React.FC = () => {
                                                     : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
                                                 }`}
                                         >
-                                            {t(`enums.TaskStatus.${status.replace(' ', '_').toUpperCase()}`)}
+                                            {t(`enums.TaskStatus.${status}`)}
                                         </button>
                                     ))}
                                 </div>
