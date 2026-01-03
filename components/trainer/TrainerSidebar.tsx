@@ -30,14 +30,14 @@ const TrainerSidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isO
 
     const navGroups = useMemo(() => [
         {
-            title: t('sidebar.summary'),
+            title: t('trainer.sidebar.summary'),
             items: [
                 { id: 'dashboard', label: t('trainer.sidebar.dashboard'), icon: ChartBarIcon },
                 { id: 'tasks', label: t('trainer.sidebar.tasks'), icon: ClipboardDocumentCheckIcon },
             ]
         },
         {
-            title: t('sidebar.management'),
+            title: t('trainer.sidebar.management'),
             items: [
                 { id: 'clients', label: t('trainer.sidebar.clients'), icon: UserGroupIcon },
                 { id: 'schedule', label: t('trainer.sidebar.schedule'), icon: CalendarDaysIcon },
@@ -45,13 +45,13 @@ const TrainerSidebar: React.FC<SidebarProps> = ({ activeView, setActiveView, isO
             ]
         },
         {
-            title: t('sidebar.communication'),
+            title: t('trainer.sidebar.communication'),
             items: [
                 { id: 'messages', label: t('trainer.sidebar.messages'), icon: ChatBubbleLeftRightIcon },
             ]
         },
         {
-            title: t('sidebar.account'),
+            title: t('trainer.sidebar.account'),
             items: [
                 { id: 'profile', label: t('trainer.sidebar.profile'), icon: UserCircleIcon },
                 { id: 'notifications', label: t('trainer.sidebar.notifications'), icon: BellIcon },

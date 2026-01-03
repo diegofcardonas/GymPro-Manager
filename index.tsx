@@ -68,8 +68,18 @@ const resources = {
         analysis: "Posture Analysis",
         aiGenerator: "AI Builder"
       },
+      sidebar: {
+        overview: "Overview",
+        management: "Management",
+        gymOperations: "Gym Operations",
+        community: "Community",
+        system: "System",
+        home: "Home",
+        training: "Training",
+        account: "Account"
+      },
       admin: {
-        dashboard: { notifications: "Notifications", settings: "Settings" },
+        dashboard: { notifications: "Notifications", settings: "Settings", classSchedule: "Class Schedule", routineTemplates: "Routine Templates" },
         userManagement: { searchPlaceholder: "Search users...", allTrainers: "All Trainers", selectPlaceholder: "Select..." },
         userEditor: {
           tabs: { personal: "Personal", membership: "Membership & Role", fitness: "Fitness Profile" },
@@ -86,7 +96,7 @@ const resources = {
       auth: { login: "Log In", signup: "Sign Up", name: "Full Name", email: "Email Address", password: "Password", forgotPassword: "Forgot password?", dontHaveAccount: "Don't have an account?", alreadyHaveAccount: "Already have an account?", demoAccess: "Demo Access", errorMissingFields: "Please fill all fields", errorUnexpected: "An unexpected error occurred" },
       client: {
         dashboard: { welcome: "Hello, {{name}}!", daysLeft: "You have {{count}} membership days left.", startTraining: "Start Training", viewClasses: "View Classes", aiQuote: "Daily AI Motivation", endDate: "Expires" },
-        sidebar: { home: "Home", training: "Training", community: "Community", account: "Account", routine: "Routine", classes: "Classes", profile: "Profile" },
+        sidebar: { home: "Home", training: "Training", community: "Community", account: "Account", routine: "Routine", classes: "Classes", profile: "Profile", 'membership-card': "Digital Card" },
         social: { feed: "Social Feed", ranking: "Leaderboard", placeholder: "Share your progress, {{name}}...", photoVideo: "Photo/Video", post: "Post", workouts: "workouts", points: "pts", noPosts: "No posts yet. Be the first!" },
         workout: { restDay: "Rest Day!", noRoutine: "You don't have a routine for today, but you can train freestyle if you feel energetic.", freestyle: "Freestyle Training", preparePlayer: "PREPARE PLAYER ⚡", exercisesConfigured: "{{count}} EXERCISES CONFIGURED", selectExercise: "Select Exercise...", addSet: "ADD SET", saveManual: "SAVE MANUALLY 💾", goal: "Goal" },
         progress: { title: "My Evolution", subtitle: "Keep track of your physical progress", maxWeight: "Max Weight", maxVolume: "Total Volume", est1rm: "Est. 1RM", totalSessions: "Total Sessions", strengthTrend: "Strength Trend", trainingVolume: "Training Volume", monthlyConsistency: "Monthly Consistency", recentHistory: "Recent History", exercisesLogged: "exercises logged", noData: "No data yet", noDataDesc: "Start logging your workouts to see your progress charts." },
@@ -202,8 +212,18 @@ const resources = {
         analysis: "Análisis Postura",
         aiGenerator: "Constructor IA"
       },
+      sidebar: {
+        overview: "Resumen",
+        management: "Gestión",
+        gymOperations: "Operaciones",
+        community: "Comunidad",
+        system: "Sistema",
+        home: "Inicio",
+        training: "Entrenamiento",
+        account: "Cuenta"
+      },
       admin: {
-        dashboard: { notifications: "Notificaciones", settings: "Ajustes" },
+        dashboard: { notifications: "Notificaciones", settings: "Ajustes", classSchedule: "Agenda de Clases", routineTemplates: "Plantillas de Rutina" },
         userManagement: { searchPlaceholder: "Buscar usuarios...", allTrainers: "Todos los Entrenadores", selectPlaceholder: "Seleccionar..." },
         userEditor: {
           tabs: { personal: "Personal", membership: "Membresía y Rol", fitness: "Perfil Fitness" },
@@ -220,7 +240,7 @@ const resources = {
       auth: { login: "Iniciar Sesión", signup: "Registrarse", name: "Nombre Completo", email: "Correo Electrónico", password: "Contraseña", forgotPassword: "¿Olvidaste tu contraseña?", dontHaveAccount: "¿No tienes cuenta?", alreadyHaveAccount: "¿Ya tienes cuenta?", demoAccess: "Acceso Demo", errorMissingFields: "Por favor llena todos los campos", errorUnexpected: "Ocurrió un error inesperado" },
       client: {
         dashboard: { welcome: "¡Hola, {{name}}!", daysLeft: "Te quedan {{count}} días de membresía.", startTraining: "Empezar a Entrenar", viewClasses: "Ver Clases", aiQuote: "Motivación Diaria IA", endDate: "Vence" },
-        sidebar: { home: "Inicio", training: "Entrenamiento", community: "Comunidad", account: "Cuenta", routine: "Rutina", classes: "Clases", profile: "Perfil" },
+        sidebar: { home: "Inicio", training: "Entrenamiento", community: "Comunidad", account: "Cuenta", routine: "Rutina", classes: "Clases", profile: "Perfil", 'membership-card': "Tarjeta Digital" },
         social: { feed: "Muro Social", ranking: "Ranking del Mes", placeholder: "Comparte tu progreso, {{name}}...", photoVideo: "Foto/Video", post: "Publicar", workouts: "entrenos", points: "pts", noPosts: "Aún no hay publicaciones. ¡Sé el primero!" },
         workout: { restDay: "¡Día de Descanso!", noRoutine: "No tienes rutina para hoy, pero puedes entrenar libre si tienes energía.", freestyle: "Entrenamiento Libre", preparePlayer: "PREPARAR PLAYER ⚡", exercisesConfigured: "{{count}} EJERCICIOS CONFIGURADOS", selectExercise: "Seleccionar Ejercicio...", addSet: "AÑADIR SERIE", saveManual: "GUARDAR MANUALMENTE 💾", goal: "Meta" },
         progress: { title: "Mi Evolución", subtitle: "Lleva el control de tu progreso físico", maxWeight: "Peso Máximo", maxVolume: "Volumen Total", est1rm: "1RM Est.", totalSessions: "Sesiones Totales", strengthTrend: "Tendencia de Fuerza", trainingVolume: "Volumen de Entrenamiento", monthlyConsistency: "Consistencia Mensual", recentHistory: "Historial Reciente", exercisesLogged: "ejercicios reg.", noData: "Sin datos aún", noDataDesc: "Empieza a registrar tus entrenamientos para ver tus gráficas." },
