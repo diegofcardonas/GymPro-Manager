@@ -1,5 +1,7 @@
 {
   "name": "GymPro Manager",
-  "description": "A web and mobile application for managing gym users, featuring different user levels like administrators and clients for efficient member tracking. / Una aplicación web y móvil para gestionar usuarios de gimnasio, con diferentes niveles de usuario como administrador y clientes para un seguimiento eficiente.",
-  "requestFramePermissions": []
+  "description": "Plataforma integral de gestión de gimnasios moderna, receptiva y potenciada por Inteligencia Artificial (Gemini).",
+  "requestFramePermissions": [
+    "camera"
+  ]
 }
