@@ -76,7 +76,7 @@ const WorkoutPlayer: React.FC<WorkoutPlayerProps> = ({ exercises, onFinish, onCa
                 <div className="w-full max-w-xl space-y-8 py-8">
                     <div className="text-center space-y-2">
                         <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter">{currentExercise.name}</h2>
-                        <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Objetivo: {currentExercise.plannedSets} series x {currentExercise.plannedReps} reps</p>
+                        <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">{t('client.workout.goal')}: {currentExercise.plannedSets} series x {currentExercise.plannedReps} reps</p>
                     </div>
 
                     <div className="space-y-4">
@@ -109,7 +109,7 @@ const WorkoutPlayer: React.FC<WorkoutPlayerProps> = ({ exercises, onFinish, onCa
                     disabled={currentIndex === 0}
                     className="flex-1 py-5 bg-gray-100 dark:bg-gray-800 rounded-3xl font-black uppercase tracking-widest text-xs disabled:opacity-30"
                 >
-                    {t('general.view')} Anterior
+                    {t('player.previous')}
                 </button>
                 <button 
                     onClick={nextExercise}

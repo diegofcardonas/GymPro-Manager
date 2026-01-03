@@ -28,7 +28,7 @@
     "settings": "Ajustes"
   },
   "nav": {
-    "dashboard": "Panel Inicio",
+    "dashboard": "Inicio",
     "users": "Usuarios",
     "reports": "Reportes",
     "payments": "Finanzas",
@@ -46,7 +46,7 @@
     "mySettings": "Mis Ajustes",
     "social": "Comunidad",
     "routine": "Mi Rutina",
-    "workoutLog": "Registrar Entreno",
+    "workoutLog": "Registro de Entrenamiento",
     "nutritionLog": "Nutrición IA",
     "progress": "Mi Progreso",
     "aiCoach": "Coach IA",
@@ -54,9 +54,58 @@
     "logout": "Cerrar Sesión",
     "analysis": "Análisis Postura"
   },
+  "client": {
+    "dashboard": {
+      "welcome": "¡Hola, {{name}}!",
+      "daysLeft": "Te quedan {{count}} días de membresía.",
+      "startTraining": "Empezar a Entrenar",
+      "viewClasses": "Ver Clases",
+      "aiQuote": "Motivación Diaria IA"
+    },
+    "workout": {
+      "restDay": "¡Día de Descanso!",
+      "noRoutine": "No tienes una rutina para hoy, pero puedes entrenar libre si te sientes con energía.",
+      "freestyle": "Entrenamiento Libre",
+      "preparePlayer": "PREPARAR PLAYER ⚡",
+      "addSet": "AÑADIR SERIE",
+      "saveManual": "GUARDAR MANUALMENTE 💾",
+      "exercisesConfigured": "{{count}} EJERCICIOS CONFIGURADOS",
+      "selectExercise": "Selecciona Ejercicio...",
+      "goal": "Objetivo"
+    },
+    "progress": {
+      "title": "Mi Evolución",
+      "subtitle": "Sigue de cerca tu progreso físico",
+      "maxWeight": "Peso Máximo",
+      "maxVolume": "Volumen Total",
+      "est1rm": "Est. 1RM",
+      "totalSessions": "Sesiones Totales",
+      "strengthTrend": "Tendencia de Fuerza",
+      "trainingVolume": "Volumen de Carga",
+      "monthlyConsistency": "Consistencia Mensual",
+      "recentHistory": "Historial Reciente",
+      "exercisesLogged": "ejercicios registrados",
+      "noData": "Sin datos aún",
+      "noDataDesc": "Empieza a registrar tus entrenos para ver tus gráficas."
+    },
+    "nutrition": {
+      "title": "Diario de Nutrición IA",
+      "uploadDesc": "Subir foto de comida",
+      "description": "Descripción del plato",
+      "preciseDesc": "Sé lo más preciso posible (ej: 200g de pollo, 1 taza de arroz...)",
+      "analyze": "Analizar con IA",
+      "protein": "Proteína",
+      "carbs": "Carbohidratos",
+      "fat": "Grasas",
+      "aiAnalysis": "Análisis de la IA",
+      "empty": "No hay registros aún. ¡Sube tu primera comida!",
+      "photoMeal": "Plato analizado por foto"
+    }
+  },
   "player": {
     "start": "Comenzar Entrenamiento",
     "next": "Siguiente Ejercicio",
+    "previous": "Anterior",
     "finish": "Terminar Rutina",
     "rest": "Tiempo de Descanso",
     "skip": "Saltar",
@@ -65,7 +114,7 @@
   "analysis": {
     "title": "Análisis de Técnica IA",
     "upload": "Subir Foto de Ejercicio",
-    "analyzing": "La IA está analizando tu técnica...",
+    "analyzing": "Analizando...",
     "feedback": "Feedback del Coach"
   },
   "splash": {
@@ -145,15 +194,6 @@
     "aiCoachError": "El Coach IA está fuera de línea",
     "workoutLogged": "¡Entrenamiento registrado!",
     "challengeJoined": "¡Te has unido al desafío!"
-  },
-  "client": {
-    "dashboard": {
-      "welcome": "¡Hola, {{name}}!",
-      "daysLeft": "Te quedan {{count}} días de membresía.",
-      "startTraining": "Empezar a Entrenar",
-      "viewClasses": "Ver Clases",
-      "aiQuote": "Motivación Diaria IA"
-    }
   },
   "profile": {
     "editTitle": "Editar Perfil",

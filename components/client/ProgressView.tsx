@@ -86,8 +86,8 @@ const ProgressView: React.FC = () => {
         <div className="w-full max-w-6xl space-y-8 animate-fade-in pb-20">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">{t('progress.title')}</h2>
-                    <p className="text-gray-500 dark:text-gray-400 font-medium">{t('progress.subtitle')}</p>
+                    <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tight">{t('client.progress.title')}</h2>
+                    <p className="text-gray-500 dark:text-gray-400 font-medium">{t('client.progress.subtitle')}</p>
                 </div>
                 
                 {uniqueExercises.length > 0 && (
@@ -110,28 +110,28 @@ const ProgressView: React.FC = () => {
                         <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-black/5">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-primary/10 text-primary rounded-2xl"><TrophyIcon className="w-6 h-6"/></div>
-                                <span className="text-[10px] font-black uppercase text-gray-400">{t('progress.maxWeight')}</span>
+                                <span className="text-[10px] font-black uppercase text-gray-400">{t('client.progress.maxWeight')}</span>
                             </div>
                             <p className="text-3xl font-black text-gray-900 dark:text-white">{personalBests.weight} <span className="text-sm text-gray-400">{t('general.kg')}</span></p>
                         </div>
                         <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-black/5">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-emerald-500/10 text-emerald-500 rounded-2xl"><FireIcon className="w-6 h-6"/></div>
-                                <span className="text-[10px] font-black uppercase text-gray-400">{t('progress.maxVolume')}</span>
+                                <span className="text-[10px] font-black uppercase text-gray-400">{t('client.progress.maxVolume')}</span>
                             </div>
                             <p className="text-3xl font-black text-gray-900 dark:text-white">{personalBests.volume.toLocaleString()} <span className="text-sm text-gray-400">{t('general.kg')}</span></p>
                         </div>
                         <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-black/5">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-purple-500/10 text-purple-500 rounded-2xl"><ChartBarIcon className="w-6 h-6"/></div>
-                                <span className="text-[10px] font-black uppercase text-gray-400">{t('progress.est1rm')}</span>
+                                <span className="text-[10px] font-black uppercase text-gray-400">{t('client.progress.est1rm')}</span>
                             </div>
                             <p className="text-3xl font-black text-gray-900 dark:text-white">{personalBests.e1rm} <span className="text-sm text-gray-400">{t('general.kg')}</span></p>
                         </div>
                         <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-black/5">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-orange-500/10 text-orange-500 rounded-2xl"><CalendarDaysIcon className="w-6 h-6"/></div>
-                                <span className="text-[10px] font-black uppercase text-gray-400">{t('progress.totalSessions')}</span>
+                                <span className="text-[10px] font-black uppercase text-gray-400">{t('client.progress.totalSessions')}</span>
                             </div>
                             <p className="text-3xl font-black text-gray-900 dark:text-white">{workoutHistory.length}</p>
                         </div>
@@ -142,7 +142,7 @@ const ProgressView: React.FC = () => {
                         <div className="lg:col-span-2 space-y-8">
                             <div className="bg-white dark:bg-gray-800 p-8 rounded-4xl shadow-sm border border-black/5">
                                 <h3 className="text-xl font-black mb-8 text-gray-900 dark:text-white flex items-center gap-2">
-                                    <ChartBarIcon className="w-6 h-6 text-primary" /> {t('progress.strengthTrend')}
+                                    <ChartBarIcon className="w-6 h-6 text-primary" /> {t('client.progress.strengthTrend')}
                                 </h3>
                                 <div className="h-[400px]">
                                     <ResponsiveContainer width="100%" height="100%">
@@ -159,8 +159,8 @@ const ProgressView: React.FC = () => {
                                             <Tooltip 
                                                 contentStyle={{ borderRadius: '1.5rem', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontWeight: 'bold' }}
                                             />
-                                            <Area type="monotone" dataKey="maxWeight" name={t('progress.maxWeight')} stroke="hsl(var(--primary))" fill="url(#colorMax)" strokeWidth={4} dot={{ r: 4, fill: 'hsl(var(--primary))', strokeWidth: 2, stroke: '#fff' }} />
-                                            <Area type="monotone" dataKey="estimated1RM" name={t('progress.est1rm')} stroke="#a855f7" fill="transparent" strokeWidth={2} strokeDasharray="5 5" />
+                                            <Area type="monotone" dataKey="maxWeight" name={t('client.progress.maxWeight')} stroke="hsl(var(--primary))" fill="url(#colorMax)" strokeWidth={4} dot={{ r: 4, fill: 'hsl(var(--primary))', strokeWidth: 2, stroke: '#fff' }} />
+                                            <Area type="monotone" dataKey="estimated1RM" name={t('client.progress.est1rm')} stroke="#a855f7" fill="transparent" strokeWidth={2} strokeDasharray="5 5" />
                                         </AreaChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -168,7 +168,7 @@ const ProgressView: React.FC = () => {
 
                             <div className="bg-white dark:bg-gray-800 p-8 rounded-4xl shadow-sm border border-black/5">
                                 <h3 className="text-xl font-black mb-8 text-gray-900 dark:text-white flex items-center gap-2">
-                                    <FireIcon className="w-6 h-6 text-emerald-500" /> {t('progress.trainingVolume')}
+                                    <FireIcon className="w-6 h-6 text-emerald-500" /> {t('client.progress.trainingVolume')}
                                 </h3>
                                 <div className="h-[300px]">
                                     <ResponsiveContainer width="100%" height="100%">
@@ -177,7 +177,7 @@ const ProgressView: React.FC = () => {
                                             <XAxis dataKey="date" axisLine={false} tickLine={false} className="text-[10px] font-bold text-gray-400" />
                                             <YAxis axisLine={false} tickLine={false} className="text-[10px] font-bold text-gray-400" />
                                             <Tooltip contentStyle={{ borderRadius: '1.5rem', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} />
-                                            <Line type="step" dataKey="totalVolume" name={t('progress.maxVolume')} stroke="#10b981" strokeWidth={3} dot={false} />
+                                            <Line type="step" dataKey="totalVolume" name={t('client.progress.maxVolume')} stroke="#10b981" strokeWidth={3} dot={false} />
                                         </LineChart>
                                     </ResponsiveContainer>
                                 </div>
@@ -187,7 +187,7 @@ const ProgressView: React.FC = () => {
                         {/* Right Sidebar - Consistency & History */}
                         <div className="space-y-8">
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-black/5">
-                                <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-6">{t('progress.monthlyConsistency')}</h3>
+                                <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-6">{t('client.progress.monthlyConsistency')}</h3>
                                 <div className="h-[180px]">
                                     <ResponsiveContainer width="100%" height="100%">
                                         <BarChart data={sessionsByMonth}>
@@ -200,7 +200,7 @@ const ProgressView: React.FC = () => {
                             </div>
 
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-sm border border-black/5 flex flex-col max-h-[600px]">
-                                <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-6">{t('progress.recentHistory')}</h3>
+                                <h3 className="text-sm font-black uppercase tracking-widest text-gray-400 mb-6">{t('client.progress.recentHistory')}</h3>
                                 <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar">
                                     {[...workoutHistory].reverse().map(session => (
                                         <div key={session.id} className="p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/30 border border-black/[0.02] dark:border-white/[0.02]">
@@ -208,7 +208,7 @@ const ProgressView: React.FC = () => {
                                                 <p className="text-xs font-black uppercase text-primary">#{t(`days.${session.day}`)}</p>
                                                 <p className="text-[10px] font-bold text-gray-400">{new Date(session.date).toLocaleDateString()}</p>
                                             </div>
-                                            <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{session.loggedExercises.length} {t('progress.exercisesLogged')}</p>
+                                            <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{session.loggedExercises.length} {t('client.progress.exercisesLogged')}</p>
                                             <div className="mt-2 flex flex-wrap gap-1">
                                                 {session.loggedExercises.slice(0, 3).map((ex, i) => (
                                                     <span key={i} className="px-2 py-0.5 bg-white dark:bg-gray-700 rounded-md text-[8px] font-black text-gray-500 uppercase">{ex.name.split(' ')[0]}</span>
@@ -225,8 +225,8 @@ const ProgressView: React.FC = () => {
             ) : (
                 <div className="py-20 flex flex-col items-center justify-center text-center bg-white dark:bg-gray-800 rounded-4xl border-2 border-dashed border-black/5 opacity-50">
                     <ChartBarIcon className="w-20 h-20 text-gray-300 mb-4" />
-                    <h3 className="text-2xl font-black text-gray-400">{t('progress.noData')}</h3>
-                    <p className="text-gray-400 mt-2 max-w-sm">{t('progress.noDataDesc')}</p>
+                    <h3 className="text-2xl font-black text-gray-400">{t('client.progress.noData')}</h3>
+                    <p className="text-gray-400 mt-2 max-w-sm">{t('client.progress.noDataDesc')}</p>
                 </div>
             )}
         </div>

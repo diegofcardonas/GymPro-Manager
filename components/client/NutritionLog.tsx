@@ -55,7 +55,7 @@ const NutritionLog: React.FC = () => {
             const newLog = {
                 id: `nut-${Date.now()}`,
                 date: new Date().toISOString(),
-                mealDescription: mealDescription || "Photo analyzed meal",
+                mealDescription: mealDescription || t('client.nutrition.photoMeal'),
                 imageUrl: capturedImage || undefined,
                 aiAnalysis: analysis
             };

@@ -95,7 +95,7 @@ const ClientDashboard: React.FC = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
                     {[
                         { id: 'nutrition-log', label: t('nav.nutritionLog'), color: 'bg-emerald-500' },
-                        { id: 'posture-analysis', label: 'Técnica IA', color: 'bg-rose-500', icon: <CameraIcon className="w-6 h-6"/> },
+                        { id: 'posture-analysis', label: t('nav.analysis'), color: 'bg-rose-500', icon: <CameraIcon className="w-6 h-6"/> },
                         { id: 'progress', label: t('nav.progress'), color: 'bg-amber-500' },
                         { id: 'ai-coach', label: t('nav.aiCoach'), color: 'bg-violet-500' },
                         { id: 'social', label: t('nav.social'), color: 'bg-blue-500' }
@@ -169,7 +169,7 @@ const ClientDashboard: React.FC = () => {
                                     : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
                                 }`}
                         >
-                            {v === 'posture-analysis' ? 'Técnica IA' : t(`nav.${v === 'nutrition-log' ? 'nutritionLog' : v === 'ai-coach' ? 'aiCoach' : v}`)}
+                            {t(`nav.${v === 'nutrition-log' ? 'nutritionLog' : v === 'ai-coach' ? 'aiCoach' : v === 'posture-analysis' ? 'analysis' : v}`)}
                             {activeView === v && (
                                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-primary rounded-full"></span>
                             )}

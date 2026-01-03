@@ -59,10 +59,10 @@ const WorkoutLog: React.FC<WorkoutLogProps> = ({ onNavigate }) => {
         return (
             <div className="w-full max-w-2xl text-center bg-white dark:bg-gray-800 p-12 rounded-4xl shadow-xl border border-black/5 flex flex-col items-center justify-center min-h-[400px] animate-fade-in">
                 <div className="p-6 bg-primary/10 rounded-full mb-6"><ClockIcon className="w-12 h-12 text-primary" /></div>
-                <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-4">¡Día de Descanso!</h2>
-                <p className="text-gray-500 mb-8 max-w-xs">No tienes una rutina para hoy, pero puedes entrenar libre si te sientes con energía.</p>
+                <h2 className="text-3xl font-black text-gray-900 dark:text-white mb-4">{t('client.workout.restDay')}</h2>
+                <p className="text-gray-500 mb-8 max-w-xs">{t('client.workout.noRoutine')}</p>
                 <button onClick={() => { setIsFreestyle(true); setLoggedExercises([{ name: '', plannedSets: 3, plannedReps: '10', completedSets: [{ weight: 0, reps: 0 }] }]); }} className="px-8 py-4 bg-primary text-white rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center gap-3">
-                    <PlusIcon className="w-6 h-6" /> Entrenamiento Libre
+                    <PlusIcon className="w-6 h-6" /> {t('client.workout.freestyle')}
                 </button>
             </div>
         );
@@ -75,11 +75,11 @@ const WorkoutLog: React.FC<WorkoutLogProps> = ({ onNavigate }) => {
                     <h2 className="text-3xl font-black text-gray-900 dark:text-white">
                         {t('nav.workoutLog')} <span className="text-primary italic">#{t(`days.${today}`)}</span>
                     </h2>
-                    <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px] mt-1">{loggedExercises.length} EJERCICIOS CONFIGURADOS</p>
+                    <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px] mt-1">{t('client.workout.exercisesConfigured', { count: loggedExercises.length })}</p>
                 </div>
                 <div className="flex gap-2 w-full sm:w-auto">
                     <button onClick={() => setIsPlaying(true)} className="flex-1 sm:flex-none px-6 py-3 bg-primary text-white rounded-2xl font-black shadow-lg shadow-primary/20 hover:scale-105 transition-all flex items-center justify-center gap-2">
-                         PREPARAR PLAYER ⚡
+                         {t('client.workout.preparePlayer')}
                     </button>
                     <button onClick={() => setLoggedExercises([...loggedExercises, { name: '', plannedSets: 3, plannedReps: '10', completedSets: [{weight:0, reps:0}] }])} className="p-3 bg-gray-100 dark:bg-gray-800 rounded-2xl text-gray-500 hover:text-primary transition-all"><PlusIcon className="w-6 h-6" /></button>
                 </div>
@@ -95,7 +95,7 @@ const WorkoutLog: React.FC<WorkoutLogProps> = ({ onNavigate }) => {
                                     onChange={(e) => { const updated = [...loggedExercises]; updated[exIndex].name = e.target.value; setLoggedExercises(updated); }} 
                                     className="w-full p-3 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl font-black text-gray-900 dark:text-white focus:ring-2 focus:ring-primary"
                                 >
-                                    <option value="">Selecciona Ejercicio...</option>
+                                    <option value="">{t('client.workout.selectExercise')}</option>
                                     {MOCK_EXERCISES.map(name => <option key={name} value={name}>{name}</option>)}
                                 </select>
                             </div>
@@ -127,7 +127,7 @@ const WorkoutLog: React.FC<WorkoutLogProps> = ({ onNavigate }) => {
                                 </div>
                             ))}
                             <button onClick={() => { const updated = [...loggedExercises]; updated[exIndex].completedSets.push({weight:0, reps:0}); setLoggedExercises(updated); }} className="flex items-center justify-center border-2 border-dashed border-gray-100 dark:border-gray-800 rounded-2xl text-[10px] font-black text-gray-400 hover:text-primary hover:border-primary/30 transition-all p-4">
-                                + AÑADIR SERIE
+                                + {t('client.workout.addSet')}
                             </button>
                         </div>
                     </div>
@@ -136,7 +136,7 @@ const WorkoutLog: React.FC<WorkoutLogProps> = ({ onNavigate }) => {
 
             <div className="fixed bottom-20 left-0 w-full px-6 md:px-0 md:static md:flex md:justify-center z-10">
                  <button onClick={() => handleLogWorkout(loggedExercises)} className="w-full md:w-auto px-12 py-5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-black text-xl rounded-3xl shadow-2xl hover:scale-105 transition-all">
-                    GUARDAR MANUALMENTE 💾
+                    {t('client.workout.saveManual')}
                 </button>
             </div>
         </div>

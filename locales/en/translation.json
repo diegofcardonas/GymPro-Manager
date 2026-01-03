@@ -23,10 +23,12 @@
     "user": "User",
     "warning": "Warning",
     "unassigned": "Unassigned",
-    "add": "Add"
+    "add": "Add",
+    "logout": "Log Out",
+    "settings": "Settings"
   },
   "nav": {
-    "dashboard": "Dashboard",
+    "dashboard": "Home",
     "users": "Users",
     "reports": "Reports",
     "payments": "Finances",
@@ -44,12 +46,76 @@
     "mySettings": "My Settings",
     "social": "Community",
     "routine": "My Routine",
-    "workoutLog": "Log Workout",
+    "workoutLog": "Workout Log",
     "nutritionLog": "AI Nutrition",
     "progress": "My Progress",
     "aiCoach": "AI Coach",
     "profile": "Profile",
-    "logout": "Log Out"
+    "logout": "Log Out",
+    "analysis": "Posture Analysis"
+  },
+  "client": {
+    "dashboard": {
+      "welcome": "Hello, {{name}}!",
+      "daysLeft": "You have {{count}} membership days left.",
+      "startTraining": "Start Training",
+      "viewClasses": "View Classes",
+      "aiQuote": "Daily AI Motivation"
+    },
+    "workout": {
+      "restDay": "Rest Day!",
+      "noRoutine": "You don't have a routine for today, but you can train freestyle if you feel energetic.",
+      "freestyle": "Freestyle Training",
+      "preparePlayer": "PREPARE PLAYER ⚡",
+      "addSet": "ADD SET",
+      "saveManual": "SAVE MANUALLY 💾",
+      "exercisesConfigured": "{{count}} EXERCISES CONFIGURED",
+      "selectExercise": "Select Exercise...",
+      "goal": "Goal"
+    },
+    "progress": {
+      "title": "My Evolution",
+      "subtitle": "Keep track of your physical progress",
+      "maxWeight": "Max Weight",
+      "maxVolume": "Total Volume",
+      "est1rm": "Est. 1RM",
+      "totalSessions": "Total Sessions",
+      "strengthTrend": "Strength Trend",
+      "trainingVolume": "Training Volume",
+      "monthlyConsistency": "Monthly Consistency",
+      "recentHistory": "Recent History",
+      "exercisesLogged": "exercises logged",
+      "noData": "No data yet",
+      "noDataDesc": "Start logging your workouts to see your progress charts."
+    },
+    "nutrition": {
+      "title": "AI Nutrition Log",
+      "uploadDesc": "Upload meal photo",
+      "description": "Meal description",
+      "preciseDesc": "Be as precise as possible (e.g. 200g chicken, 1 cup rice...)",
+      "analyze": "Analyze with AI",
+      "protein": "Protein",
+      "carbs": "Carbohydrates",
+      "fat": "Fats",
+      "aiAnalysis": "AI Analysis",
+      "empty": "No logs yet. Upload your first meal!",
+      "photoMeal": "Meal analyzed by photo"
+    }
+  },
+  "player": {
+    "start": "Start Workout",
+    "next": "Next Exercise",
+    "previous": "Previous",
+    "finish": "Finish Routine",
+    "rest": "Rest Time",
+    "skip": "Skip",
+    "wellDone": "Great job!"
+  },
+  "analysis": {
+    "title": "AI Technique Analysis",
+    "upload": "Upload Exercise Photo",
+    "analyzing": "Analyzing...",
+    "feedback": "Coach Feedback"
   },
   "splash": {
     "tagline": "Forging your best version",
@@ -128,15 +194,6 @@
     "aiCoachError": "Coach is temporarily offline",
     "workoutLogged": "Workout logged!",
     "challengeJoined": "You joined the challenge!"
-  },
-  "client": {
-    "dashboard": {
-      "welcome": "Hello, {{name}}!",
-      "daysLeft": "You have {{count}} membership days left.",
-      "startTraining": "Start Training",
-      "viewClasses": "View Classes",
-      "aiQuote": "Daily AI Motivation"
-    }
   },
   "profile": {
     "editTitle": "Edit Profile",
