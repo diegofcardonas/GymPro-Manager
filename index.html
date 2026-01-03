@@ -23,12 +23,17 @@
             },
             animation: {
               'spring-pop': 'spring-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+              'scale-in': 'scale-in 0.2s ease-out forwards',
             },
             keyframes: {
               'spring-pop': {
                 '0%': { transform: 'scale(0.8)' },
                 '50%': { transform: 'scale(1.2)' },
                 '100%': { transform: 'scale(1)' },
+              },
+              'scale-in': {
+                '0%': { opacity: '0', transform: 'scale(0.95) translateY(10px)' },
+                '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
               }
             }
           },
@@ -132,7 +137,8 @@
     "react-i18next": "https://aistudiocdn.com/react-i18next@^14.1.2",
     "i18next-browser-languagedetector": "https://aistudiocdn.com/i18next-browser-languagedetector@^8.0.0",
     "i18next-http-backend": "https://aistudiocdn.com/i18next-http-backend@^2.5.2",
-    "@heroicons/react/": "https://aistudiocdn.com/@heroicons/react@^2.2.0/"
+    "@heroicons/react/": "https://aistudiocdn.com/@heroicons/react@^2.2.0/",
+    "react-dom": "https://esm.sh/react-dom@^19.2.3"
   }
 }
 </script>

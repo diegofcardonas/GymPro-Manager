@@ -1,5 +1,6 @@
 
 import React, { useState, useMemo, useContext, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { User, Role, MembershipStatus, SortConfig, FitnessLevel, MembershipTier } from '../../types';
 import { AuthContext } from '../../context/AuthContext';
 import { PencilIcon } from '../icons/PencilIcon';
@@ -183,7 +184,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
     }, [activeTab]);
 
     return (
-        <div className="bg-white dark:bg-gray-800/50 rounded-4xl ring-1 ring-black/5 dark:ring-white/10 w-full overflow-hidden shadow-2xl animate-fade-in">
+        <div className="bg-white dark:bg-gray-800/50 rounded-4xl ring-1 ring-black/5 dark:ring-white/10 w-full overflow-hidden shadow-2xl animate-fade-in relative">
             <div className="p-6 border-b border-gray-100 dark:border-gray-700 space-y-4">
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                     <div className="flex bg-gray-100 dark:bg-gray-900/50 p-1 rounded-2xl w-full lg:w-auto overflow-x-auto">
@@ -256,7 +257,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ initialFilter, onFilter
             </div>
              
             {showRolePicker && (
-                <div className="fixed inset-0 bg-black/80 z-[110] flex items-center justify-center p-4 backdrop-blur-md animate-fade-in">
+                <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[9999] flex items-center justify-center p-4 animate-fade-in">
                     <div className="bg-white dark:bg-gray-800 rounded-4xl w-full max-w-sm shadow-2xl overflow-hidden p-8 animate-scale-in">
                         <h3 className="text-xl font-black text-center mb-6 uppercase tracking-tighter">¿Qué perfil desea crear?</h3>
                         <div className="grid grid-cols-1 gap-3">
@@ -332,7 +333,12 @@ const UserModal: React.FC<{ user: User | null, activeTab: UserTab, trainers: Use
     const { t } = useTranslation();
     const [activeFormTab, setActiveFormTab] = useState<'personal' | 'membership' | 'fitness' | 'professional'>(user?.role === Role.CLIENT ? 'personal' : 'personal');
     
-    // Determine default role based on tab
+    // Prevent background scrolling
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => { document.body.style.overflow = 'unset'; };
+    }, []);
+
     const getDefaultRole = (tab: UserTab) => {
         if (forcedRole) return forcedRole;
         if (tab === Role.CLIENT) return Role.CLIENT;
@@ -386,21 +392,30 @@ const UserModal: React.FC<{ user: User | null, activeTab: UserTab, trainers: Use
     const isClient = formData.role === Role.CLIENT;
     const isProfessional = [Role.TRAINER, Role.NUTRITIONIST, Role.PHYSIOTHERAPIST].includes(formData.role);
 
-    return (
-        <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-md animate-fade-in">
-             <div className="bg-white dark:bg-gray-800 rounded-4xl w-full max-w-2xl shadow-2xl overflow-hidden animate-scale-in">
-                <div className="p-8 bg-primary text-white flex justify-between items-center relative overflow-hidden">
-                    <UserCircleIcon className="absolute -right-6 -top-6 w-32 h-32 opacity-10" />
+    const modalContent = (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-0 md:p-6 bg-black/95 backdrop-blur-2xl animate-fade-in">
+             <div className="bg-white dark:bg-gray-800 w-full h-full md:h-auto md:max-h-[92vh] md:max-w-4xl md:rounded-4xl shadow-[0_0_100px_rgba(0,0,0,0.8)] overflow-hidden animate-scale-in flex flex-col border border-white/10">
+                {/* Header Superior Máximo */}
+                <div className="p-6 md:p-10 bg-primary text-white flex justify-between items-center relative overflow-hidden shrink-0 border-b border-white/20">
+                    <UserCircleIcon className="absolute -right-8 -top-8 w-48 h-48 opacity-10" />
                     <div className="relative z-10">
-                        <h2 className="text-3xl font-black uppercase tracking-tighter">{user ? t('general.edit') : t('general.create')} {isClient ? 'Cliente' : 'Personal'}</h2>
-                        <p className="text-primary-foreground/70 text-[10px] font-black uppercase tracking-widest mt-1">Configuración Maestro de Perfil</p>
+                        <h2 className="text-2xl md:text-3xl font-black uppercase tracking-tighter italic">
+                            {user ? t('general.edit') : t('general.create')} {isClient ? 'Cliente' : 'Staff'}
+                        </h2>
+                        <p className="text-primary-foreground/70 text-[10px] md:text-xs font-black uppercase tracking-widest mt-1">
+                            UNIDAD CENTRAL DE PROCESAMIENTO
+                        </p>
                     </div>
-                    <button onClick={onClose} className="relative z-10 p-2 hover:bg-white/10 rounded-full transition-all">
+                    <button 
+                        onClick={onClose} 
+                        className="relative z-10 p-3 bg-white/10 hover:bg-white/20 rounded-2xl transition-all border border-white/10 hover:scale-110 active:scale-95"
+                    >
                         <XCircleIcon className="w-8 h-8" />
                     </button>
                 </div>
 
-                <div className="flex bg-gray-50 dark:bg-gray-900/50 p-2 border-b border-black/5 overflow-x-auto">
+                {/* Tabs Ultra Visibles */}
+                <div className="flex bg-gray-50 dark:bg-gray-900 border-b border-black/5 overflow-x-auto shrink-0 scrollbar-hide">
                     {[
                         { id: 'personal', label: t('admin.userEditor.tabs.personal'), icon: <UserCircleIcon className="w-4 h-4"/>, visible: true },
                         { id: 'membership', label: t('admin.userEditor.tabs.membership'), icon: <IdentificationIcon className="w-4 h-4"/>, visible: true },
@@ -411,31 +426,26 @@ const UserModal: React.FC<{ user: User | null, activeTab: UserTab, trainers: Use
                             key={tab.id}
                             type="button"
                             onClick={() => setActiveFormTab(tab.id as any)}
-                            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all min-w-[120px] ${activeFormTab === tab.id ? 'bg-white dark:bg-gray-700 text-primary shadow-sm' : 'text-gray-400'}`}
+                            className={`flex-1 flex items-center justify-center gap-3 py-6 px-8 border-b-4 transition-all min-w-[180px] font-black uppercase text-[10px] tracking-widest
+                                ${activeFormTab === tab.id 
+                                    ? 'bg-white dark:bg-gray-800 border-primary text-primary shadow-[inset_0_-2px_0_rgba(0,0,0,0.05)]' 
+                                    : 'border-transparent text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-black/[0.02]'}`}
                         >
                             {tab.icon} {tab.label}
                         </button>
                     ))}
                 </div>
 
-                <form onSubmit={handleSave} className="p-8 space-y-6 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                {/* Formulario de Alta Legibilidad */}
+                <form onSubmit={handleSave} className="flex-1 overflow-y-auto p-6 md:p-10 space-y-10 custom-scrollbar overscroll-contain bg-white dark:bg-gray-800">
                     {activeFormTab === 'personal' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Nombre Completo</label>
-                                <input name="name" value={formData.name} onChange={handleChange} required className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner" />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Email</label>
-                                <input name="email" type="email" value={formData.email} onChange={handleChange} required className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner" />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Teléfono</label>
-                                <input name="phone" value={formData.phone} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner" />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Género</label>
-                                <select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8 animate-fade-in">
+                            <FormField label="Nombre Completo" name="name" value={formData.name} onChange={handleChange} required placeholder="Nombre y Apellidos" />
+                            <FormField label="Email Principal" name="email" type="email" value={formData.email} onChange={handleChange} required placeholder="usuario@ejemplo.com" />
+                            <FormField label="Línea de Contacto" name="phone" value={formData.phone} onChange={handleChange} placeholder="+57 300 000 0000" />
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">Género</label>
+                                <select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-primary rounded-2xl font-bold transition-all shadow-inner appearance-none cursor-pointer text-sm">
                                     {Object.keys(t('enums.Gender', { returnObjects: true })).map(key => (
                                         <option key={key} value={key}>{t(`enums.Gender.${key}`)}</option>
                                     ))}
@@ -445,32 +455,32 @@ const UserModal: React.FC<{ user: User | null, activeTab: UserTab, trainers: Use
                     )}
 
                     {activeFormTab === 'membership' && (
-                        <div className="space-y-6 animate-fade-in">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Rol en el Gimnasio</label>
-                                    <select name="role" value={formData.role} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner">
+                        <div className="space-y-10 animate-fade-in">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">Rol Operativo</label>
+                                    <select name="role" value={formData.role} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-primary rounded-2xl font-bold transition-all shadow-inner cursor-pointer text-sm">
                                         {Object.values(Role).map(r => <option key={r} value={r}>{t(`enums.Role.${r}`)}</option>)}
                                     </select>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Estado</label>
-                                    <select name="membership.status" value={formData.membership.status} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner">
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">Estado de Acceso</label>
+                                    <select name="membership.status" value={formData.membership.status} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-primary rounded-2xl font-bold transition-all shadow-inner cursor-pointer text-sm">
                                         {Object.values(MembershipStatus).map(s => <option key={s} value={s}>{t(`enums.MembershipStatus.${s}`)}</option>)}
                                     </select>
                                 </div>
                             </div>
                             {isClient && (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('admin.userEditor.fields.tier')}</label>
-                                        <select name="membership.tierId" value={formData.membership.tierId} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 border-t border-black/5 dark:border-white/5 pt-10">
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">Plan de Membresía</label>
+                                        <select name="membership.tierId" value={formData.membership.tierId} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-primary rounded-2xl font-bold transition-all shadow-inner cursor-pointer text-sm">
                                             {MOCK_TIERS.map(tier => <option key={tier.id} value={tier.id}>{tier.name}</option>)}
                                         </select>
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('admin.userEditor.fields.expiration')}</label>
-                                        <input type="date" name="membership.endDate" value={formData.membership.endDate.split('T')[0]} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold shadow-inner" />
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">Fecha de Expiración</label>
+                                        <input type="date" name="membership.endDate" value={formData.membership.endDate.split('T')[0]} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-primary rounded-2xl font-bold transition-all shadow-inner text-sm" />
                                     </div>
                                 </div>
                             )}
@@ -478,51 +488,81 @@ const UserModal: React.FC<{ user: User | null, activeTab: UserTab, trainers: Use
                     )}
 
                     {activeFormTab === 'fitness' && isClient && (
-                        <div className="space-y-6 animate-fade-in">
-                            <div className="grid grid-cols-3 gap-4">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 text-center block">Altura (cm)</label>
+                        <div className="space-y-10 animate-fade-in">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase text-gray-400 text-center block tracking-widest">Estatura (cm)</label>
                                     <NumberInputWithButtons value={formData.height || 170} onChange={v => setFormData({...formData, height: v as number})} />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 text-center block">Peso (kg)</label>
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase text-gray-400 text-center block tracking-widest">Peso (kg)</label>
                                     <NumberInputWithButtons value={formData.weight || 70} onChange={v => setFormData({...formData, weight: v as number})} step={0.5} />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 text-center block">Nivel</label>
-                                    <select name="fitnessLevel" value={formData.fitnessLevel} onChange={handleChange} className="w-full p-2.5 bg-gray-50 dark:bg-gray-900 border-none rounded-xl focus:ring-2 focus:ring-primary text-[10px] font-black uppercase text-center shadow-inner">
+                                <div className="space-y-3">
+                                    <label className="text-[10px] font-black uppercase text-gray-400 text-center block tracking-widest">Nivel Fitness</label>
+                                    <select name="fitnessLevel" value={formData.fitnessLevel} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-2 border-transparent rounded-2xl font-black uppercase text-[10px] text-center shadow-inner appearance-none cursor-pointer">
                                         {Object.values(FitnessLevel).map(l => <option key={l} value={l}>{t(`enums.FitnessLevel.${l}`)}</option>)}
                                     </select>
                                 </div>
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('admin.userEditor.fields.goals')}</label>
-                                <textarea name="fitnessGoals" value={formData.fitnessGoals || ''} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary text-sm min-h-[100px] shadow-inner font-medium" placeholder="Bajar de peso, ganar masa muscular..." />
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">Objetivos de Entrenamiento</label>
+                                <textarea name="fitnessGoals" value={formData.fitnessGoals || ''} onChange={handleChange} className="w-full p-6 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-primary rounded-3xl transition-all text-sm min-h-[140px] shadow-inner font-medium leading-relaxed" placeholder="Metas específicas..." />
                             </div>
                         </div>
                     )}
 
                     {activeFormTab === 'professional' && isProfessional && (
-                         <div className="space-y-6 animate-fade-in">
-                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Especialidades / Habilidades</label>
-                                <textarea name="skills" value={formData.skills || ''} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary text-sm min-h-[100px] shadow-inner font-medium" placeholder="Ej: Powerlifting, HIIT, Nutrición Deportiva..." />
+                         <div className="space-y-10 animate-fade-in">
+                             <div className="space-y-3">
+                                <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">Especialidades</label>
+                                <textarea name="skills" value={formData.skills || ''} onChange={handleChange} className="w-full p-6 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-primary rounded-3xl transition-all text-sm min-h-[140px] shadow-inner font-medium leading-relaxed" placeholder="Especialidades..." />
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">Biografía Breve</label>
-                                <textarea name="bio" value={formData.bio || ''} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary text-sm min-h-[100px] shadow-inner font-medium" />
+                            <div className="space-y-3">
+                                <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">Reseña Biográfica</label>
+                                <textarea name="bio" value={formData.bio || ''} onChange={handleChange} className="w-full p-6 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-primary rounded-3xl transition-all text-sm min-h-[140px] shadow-inner font-medium leading-relaxed" placeholder="Historia profesional..." />
                             </div>
                          </div>
                     )}
                 </form>
 
-                <div className="p-8 bg-gray-50 dark:bg-gray-900 border-t border-black/5 flex gap-4">
-                    <button onClick={onClose} className="flex-1 py-4 bg-white dark:bg-gray-800 text-gray-400 hover:text-gray-600 rounded-2xl font-black uppercase text-xs tracking-widest transition-all">Cancelar</button>
-                    <button onClick={handleSave} className="flex-[2] py-4 bg-primary text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all">Guardar {isClient ? 'Cliente' : 'Perfil'}</button>
+                {/* Footer Maestro */}
+                <div className="p-6 md:p-10 bg-gray-50 dark:bg-gray-900 border-t border-black/5 dark:border-white/5 flex flex-col sm:flex-row gap-4 shrink-0">
+                    <button 
+                        onClick={onClose} 
+                        type="button" 
+                        className="flex-1 py-5 bg-white dark:bg-gray-800 text-gray-400 hover:text-gray-800 dark:hover:text-white rounded-3xl font-black uppercase text-xs tracking-widest transition-all border border-black/5 dark:border-white/5 hover:bg-black/5"
+                    >
+                        {t('general.cancel')}
+                    </button>
+                    <button 
+                        onClick={handleSave} 
+                        type="button" 
+                        className="flex-[2] py-5 bg-primary text-white rounded-3xl font-black uppercase text-xs tracking-widest shadow-xl hover:shadow-primary/40 hover:scale-[1.01] active:scale-95 transition-all border border-primary/20"
+                    >
+                        {user ? 'GUARDAR CAMBIOS' : 'CREAR REGISTRO'}
+                    </button>
                 </div>
              </div>
         </div>
-    )
+    );
+
+    return createPortal(modalContent, document.body);
 };
+
+const FormField: React.FC<{ label: string; name: string; value: any; onChange: any; type?: string; required?: boolean; placeholder?: string }> = ({ label, name, value, onChange, type = 'text', required, placeholder }) => (
+    <div className="space-y-3">
+        <label className="text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1">{label}</label>
+        <input 
+            name={name} 
+            type={type} 
+            value={value} 
+            onChange={onChange} 
+            required={required} 
+            placeholder={placeholder}
+            className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-2 border-transparent focus:border-primary rounded-2xl font-bold transition-all shadow-inner text-sm text-gray-900 dark:text-white" 
+        />
+    </div>
+);
 
 export default UserManagement;

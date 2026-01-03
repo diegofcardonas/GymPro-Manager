@@ -10,6 +10,21 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 const resources = {
   en: {
     translation: {
+      app: {
+        reportProblem: "Report a Problem"
+      },
+      auth: {
+        login: "Log In",
+        signup: "Sign Up",
+        email: "Email Address",
+        password: "Password",
+        name: "Full Name",
+        errorMissingFields: "Please fill all fields",
+        errorUnexpected: "An unexpected error occurred",
+        dontHaveAccount: "Don't have an account?",
+        alreadyHaveAccount: "Already have an account?",
+        demoAccess: "Demo Access"
+      },
       general: {
         appName: "GymPro Manager",
         save: "Save",
@@ -151,6 +166,21 @@ const resources = {
   },
   es: {
     translation: {
+      app: {
+        reportProblem: "Reportar un Problema"
+      },
+      auth: {
+        login: "Iniciar Sesión",
+        signup: "Registrarse",
+        email: "Correo Electrónico",
+        password: "Contraseña",
+        name: "Nombre Completo",
+        errorMissingFields: "Por favor llena todos los campos",
+        errorUnexpected: "Ocurrió un error inesperado",
+        dontHaveAccount: "¿No tienes cuenta?",
+        alreadyHaveAccount: "¿Ya tienes cuenta?",
+        demoAccess: "Acceso Demo"
+      },
       general: {
         appName: "GymPro Manager",
         save: "Guardar",
@@ -278,7 +308,7 @@ const resources = {
           title: "Ajustes", appearance: "Apariencia", languageDesc: "Elige tu idioma preferido.", darkMode: "Modo Oscuro", darkModeDesc: "Cambiar entre tema claro y oscuro.", theme: "Tema de Color", accountSecurity: "Seguridad de la Cuenta", authErrorLogin: "Debes iniciar sesión para cambiar tu contraseña.", passwordErrorCurrent: "Contraseña actual incorrecta.", passwordErrorMatch: "Las nuevas contraseñas no coinciden.", passwordErrorLength: "La contraseña debe tener al menos 8 caracteres.", passwordSuccess: "Contraseña actualizada exitosamente.", currentPassword: "Contraseña Actual", newPassword: "Nueva Contraseña", confirmNewPassword: "Confirmar Nueva Contraseña", changePassword: "Cambiar Contraseña",
           privacyNotifications: "Privacidad y Notificaciones", privacySettings: "Ajustes de Privacidad", profileVisibility: "Visibilidad del Perfil", profileVisibilityDesc: "Controla quién puede ver tu perfil.", activityVisibility: "Visibilidad de Actividad", activityVisibilityDesc: "Controla quién puede ver tus entrenamientos.", showInSearch: "Mostrar en Búsqueda", showInSearchDesc: "Permitir que otros te encuentren por nombre.",
           notificationPreferences: "Preferencias de Notificación", newMessages: "Nuevos Mensajes", newMessagesDesc: "Notificar cuando recibas un mensaje.", routineUpdates: "Actualizaciones de Rutina", routineUpdatesDesc: "Notificar cuando tu entrenador actualice tu rutina.",
-          blockedUsers: "Usuarios Bloqueados", unblock: "Desbloquear", noBlockedUsers: "No hay usuarios bloqueados.", dangerZone: "Zona de Peligro", deactivateAccount: "Desactivar Cuenta", deactivateAccountDesc: "Deshabilitar temporalmente tu cuenta.", deactivate: "Desactivar", resetUsers: "Restablecer Datos", resetUsersDesc: "Restablecer todos los datos de demostración.", reset: "Restablecer", confirmDeactivation: "¿Estás seguro de que quieres desactivar tu cuenta? Puedes reactivarla iniciando sesión nuevamente.", confirmResetUsers: "Esto restablecerá todos los datos de usuario al estado inicial de demostración. Esta acción no se puede deshacer.",
+          blockedUsers: "Usuarios Bloqueados", unblock: "Desbloquear", noBlockedUsers: "No hay usuarios hoy bloqueados.", dangerZone: "Zona de Peligro", deactivateAccount: "Desactivar Cuenta", deactivateAccountDesc: "Deshabilitar temporalmente tu cuenta.", deactivate: "Deactivate", resetUsers: "Restablecer Datos", resetUsersDesc: "Restablecer todos los datos de demostración.", reset: "Restablecer", confirmDeactivation: "¿Estás seguro de que quieres desactivar tu cuenta? Puedes reactivarla iniciando sesión nuevamente.", confirmResetUsers: "Esto restablecerá todos los datos de usuario al estado inicial de demostración. Esta acción no se puede deshacer.",
           privacyOptions: { everyone: "Todos", connections: "Solo Conexiones", me: "Solo Yo" }
         },
         reportIncidentModal: { title: "Reportar Incidente de Equipo", equipment: "Equipo", selectEquipment: "Seleccionar equipo...", describeProblem: "Describir el problema", descriptionPlaceholder: "ej., La banda se desliza...", submitReport: "Enviar Reporte", alert: "Por favor llena todos los campos" },

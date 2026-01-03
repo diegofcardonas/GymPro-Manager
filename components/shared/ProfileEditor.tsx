@@ -83,15 +83,15 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
 
     return (
         <div className="w-full max-w-5xl mx-auto bg-white dark:bg-gray-900 rounded-4xl shadow-2xl border border-black/5 overflow-hidden animate-fade-in">
-            <div className="relative bg-gradient-to-br from-indigo-700 via-blue-600 to-primary p-8 text-white">
+            <div className="relative bg-gradient-to-br from-indigo-700 via-blue-600 to-primary p-6 md:p-10 text-white">
                 <div className="absolute inset-0 bg-black/10 backdrop-blur-[1px]"></div>
-                <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-8">
                     <div className="relative group">
-                        <div className="w-36 h-36 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl group-hover:scale-105 transition-transform duration-500">
+                        <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl group-hover:scale-105 transition-transform duration-500">
                             <img src={formData.avatarUrl} className="w-full h-full object-cover" alt="Avatar" />
                         </div>
-                        <button onClick={() => fileInputRef.current?.click()} className="absolute bottom-1 right-1 p-3 bg-white text-primary rounded-full shadow-lg hover:bg-primary hover:text-white transition-all transform hover:rotate-12">
-                            <CameraIcon className="w-5 h-5" />
+                        <button onClick={() => fileInputRef.current?.click()} className="absolute bottom-0 right-0 p-2.5 bg-white text-primary rounded-full shadow-lg hover:bg-primary hover:text-white transition-all transform hover:rotate-12">
+                            <CameraIcon className="w-4 h-4" />
                         </button>
                         <input type="file" ref={fileInputRef} onChange={(e) => {
                              if (e.target.files?.[0]) {
@@ -102,51 +102,42 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
                         }} className="hidden" accept="image/*" />
                     </div>
                     
-                    <div className="text-center md:text-left space-y-2">
+                    <div className="text-center md:text-left space-y-1">
                         <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                            <h2 className="text-4xl font-black tracking-tighter">{formData.name}</h2>
-                            <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10">
+                            <h2 className="text-2xl md:text-3xl font-black tracking-tighter">{formData.name}</h2>
+                            <span className="px-2.5 py-0.5 bg-white/20 backdrop-blur-md rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10">
                                 {t(`enums.Role.${formData.role}`)}
                             </span>
                         </div>
-                        <p className="text-blue-100 font-medium opacity-80">{formData.email}</p>
+                        <p className="text-blue-100 font-medium opacity-80 text-sm">{formData.email}</p>
                     </div>
                 </div>
             </div>
 
-            <div className="flex flex-col md:flex-row h-[600px]">
-                <div className="w-full md:w-64 bg-gray-50 dark:bg-gray-900/50 border-r border-black/5 p-4 flex flex-row md:flex-col gap-2 overflow-x-auto">
+            <div className="flex flex-col md:flex-row h-auto md:h-[550px]">
+                <div className="w-full md:w-56 bg-gray-50 dark:bg-gray-900/50 border-r border-black/5 p-3 flex flex-row md:flex-col gap-2 overflow-x-auto">
                     {tabs.map(tab => (
-                        <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-3 px-5 py-4 rounded-2xl font-black text-xs uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id ? 'bg-primary text-white shadow-lg' : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
-                            <tab.icon className="w-5 h-5" /> {tab.label}
+                        <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-3 px-4 py-3.5 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id ? 'bg-primary text-white shadow-lg' : 'text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800'}`}>
+                            <tab.icon className="w-4 h-4" /> {tab.label}
                         </button>
                     ))}
                 </div>
 
-                <div className="flex-1 p-8 overflow-y-auto bg-white dark:bg-gray-900">
+                <div className="flex-1 p-6 md:p-10 overflow-y-auto bg-white dark:bg-gray-900">
                     {activeTab === 'personal' && (
-                        <div className="space-y-8 animate-fade-in">
+                        <div className="space-y-6 animate-fade-in">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.fullName')}</label>
-                                    <input name="name" value={formData.name} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold" />
+                                    <input name="name" value={formData.name} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold text-sm" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.mobile')}</label>
-                                    <input name="phone" value={formData.phone} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold" />
+                                    <input name="phone" value={formData.phone} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold text-sm" />
                                 </div>
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.birthDate')}</label>
-                                    <input type="date" name="birthDate" value={formData.birthDate?.split('T')[0]} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold" />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('profile.gender')}</label>
-                                    <select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-800 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold">
-                                        <option value="Masculino">{t('enums.Gender.Masculino')}</option>
-                                        <option value="Femenino">{t('enums.Gender.Femenino')}</option>
-                                        <option value="Otro">{t('enums.Gender.Otro')}</option>
-                                        <option value="Prefiero no decirlo">{t('enums.Gender.Prefiero no decirlo')}</option>
-                                    </select>
+                                    <input type="date" name="birthDate" value={formData.birthDate?.split('T')[0]} onChange={handleChange} className="w-full p-4 bg-gray-50 dark:bg-gray-900 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold text-sm" />
                                 </div>
                             </div>
                         </div>
@@ -163,19 +154,9 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
                                     <label className="text-[10px] font-black uppercase text-gray-400 ml-1 text-center block">{t('profile.weight')} ({t('general.kg')})</label>
                                     <NumberInputWithButtons value={formData.weight || 0} onChange={(v) => setFormData({...formData, weight: v as number})} step={0.5} />
                                 </div>
-                                <div className="bg-emerald-50 dark:bg-emerald-900/10 p-4 rounded-3xl flex flex-col items-center justify-center border border-emerald-100">
-                                    <span className="text-[10px] font-black uppercase text-emerald-600">{t('profile.imc')}</span>
-                                    <span className="text-3xl font-black text-emerald-700">{imc || '--'}</span>
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase text-gray-400 ml-1">{t('enums.FitnessLevel.title')}</label>
-                                <div className="grid grid-cols-3 gap-3">
-                                    {Object.values(FitnessLevel).map(level => (
-                                        <button key={level} onClick={() => setFormData({...formData, fitnessLevel: level})} className={`p-4 rounded-2xl text-[10px] font-black uppercase border-2 transition-all ${formData.fitnessLevel === level ? 'border-primary bg-primary/5 text-primary' : 'border-black/5 text-gray-400'}`}>
-                                            {t(`enums.FitnessLevel.${level}`)}
-                                        </button>
-                                    ))}
+                                <div className="bg-emerald-50 dark:bg-emerald-900/10 p-3 rounded-2xl flex flex-col items-center justify-center border border-emerald-100">
+                                    <span className="text-[9px] font-black uppercase text-emerald-600">IMC ESTIMADO</span>
+                                    <span className="text-2xl font-black text-emerald-700">{imc || '--'}</span>
                                 </div>
                             </div>
                         </div>
@@ -183,18 +164,18 @@ const ProfileEditor: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
                 </div>
             </div>
 
-            <div className="p-8 bg-gray-50 dark:bg-gray-900 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="p-6 md:p-8 bg-gray-50 dark:bg-gray-900 border-t border-black/5 flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div className="text-gray-400 text-[10px] font-black uppercase tracking-widest flex items-center gap-2">
                     <CheckCircleIcon className="w-4 h-4 text-primary" /> {t('general.success')}
                 </div>
                 <div className="flex gap-4 w-full sm:w-auto">
-                    <button onClick={handleSave} disabled={isSaving} className="flex-1 sm:px-10 py-4 bg-primary text-white rounded-2xl font-black shadow-xl shadow-primary/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
-                        {isSaving ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <CheckCircleIcon className="w-6 h-6" />}
-                        {isSaving ? t('profile.saving') : t('general.saveChanges')}
+                    <button onClick={handleSave} disabled={isSaving} className="flex-1 sm:px-10 py-4 bg-primary text-white rounded-2xl font-black shadow-xl shadow-primary/30 hover:scale-[1.01] active:scale-95 transition-all flex items-center justify-center gap-3">
+                        {isSaving ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <CheckCircleIcon className="w-5 h-5" />}
+                        <span className="text-xs uppercase tracking-widest">{isSaving ? t('profile.saving') : t('general.saveChanges')}</span>
                     </button>
                     {onCancel && (
-                        <button onClick={onCancel} className="px-8 py-4 bg-white dark:bg-gray-800 text-gray-400 hover:text-gray-600 rounded-2xl font-black border border-black/5">
-                            {t('general.cancel').toUpperCase()}
+                        <button onClick={onCancel} className="px-6 py-4 bg-white dark:bg-gray-800 text-gray-400 hover:text-gray-600 rounded-2xl font-black border border-black/5 text-xs uppercase tracking-widest">
+                            {t('general.cancel')}
                         </button>
                     )}
                 </div>
