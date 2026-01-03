@@ -1,4 +1,5 @@
 
+
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { User, Role, Notification, PreEstablishedRoutine, NotificationType, Payment, WorkoutSession, GymClass, Message, Announcement, Challenge, Achievement, EquipmentItem, IncidentReport, AICoachMessage, NutritionLog, MembershipStatus, ToastMessage, Expense, Budget, SocialPost, Task } from './types';
@@ -71,7 +72,34 @@ const App: React.FC = () => {
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   
-  useEffect(() => { setTimeout(() => setIsLoading(false), 2000); }, []);
+  // Lógica de Notificaciones Push
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('Service Worker registrado', reg))
+        .catch(err => console.warn('Error al registrar Service Worker', err));
+    }
+    setTimeout(() => setIsLoading(false), 2000);
+  }, []);
+
+  const requestPushPermission = useCallback(async () => {
+    if (!('Notification' in window)) return false;
+    const permission = await Notification.requestPermission();
+    return permission === 'granted';
+  }, []);
+
+  const sendTestPush = useCallback(async () => {
+    if (!('serviceWorker' in navigator)) return;
+    const registration = await navigator.serviceWorker.ready;
+    
+    // FIX: Using type assertion to any as 'vibrate' property might not be recognized in the current environment's NotificationOptions definition
+    registration.showNotification('GymPro Manager', {
+      body: '¡Hola! Esta es una notificación de prueba en tiempo real.',
+      icon: 'https://ui-avatars.com/api/?name=Gym+Pro&background=0D8ABC&color=fff',
+      vibrate: [200, 100, 200],
+      tag: 'test-notification'
+    } as any);
+  }, []);
 
   const addToast = useCallback((message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info', duration = 3000) => {
       const id = Date.now().toString();
@@ -124,8 +152,20 @@ const App: React.FC = () => {
   }, [users, achievements, updateUser, addToast, t, addPost]);
 
   const addNotification = useCallback((n: Omit<Notification, 'id' | 'timestamp' | 'isRead'>) => {
-    setNotifications(prev => [{ ...n, id: `n${Date.now()}`, timestamp: new Date().toISOString(), isRead: false }, ...prev]);
-  }, [setNotifications]);
+    const newNotif = { ...n, id: `n${Date.now()}`, timestamp: new Date().toISOString(), isRead: false };
+    setNotifications(prev => [newNotif, ...prev]);
+    
+    // Si el usuario tiene las push activadas, mostramos una notificación real del sistema
+    if (currentUser?.notificationPreferences?.pushNotifications && Notification.permission === 'granted') {
+      navigator.serviceWorker.ready.then(registration => {
+        registration.showNotification(newNotif.title, {
+          body: newNotif.message,
+          icon: 'https://ui-avatars.com/api/?name=Gym+Pro&background=0D8ABC&color=fff',
+          tag: 'gympro-notif'
+        });
+      });
+    }
+  }, [setNotifications, currentUser]);
 
   const markNotificationAsRead = useCallback((id: string) => {
     setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
@@ -214,7 +254,15 @@ const App: React.FC = () => {
     const newTask = { ...task, id: `task-${Date.now()}` };
     setTasks(prev => [newTask, ...prev]);
     addToast(t('toast.taskAdded'), 'success');
-  }, [setTasks, addToast, t]);
+    
+    // Notificar al asignado
+    addNotification({
+      userId: task.assignedToId,
+      title: 'Nueva Tarea Asignada',
+      message: `Se te ha asignado la tarea: ${task.title}`,
+      type: NotificationType.INFO
+    });
+  }, [setTasks, addToast, t, addNotification]);
 
   const updateTask = useCallback((updatedTask: Task) => {
     setTasks(prev => prev.map(t => t.id === updatedTask.id ? updatedTask : t));
@@ -228,8 +276,8 @@ const App: React.FC = () => {
   const contextValue = useMemo(() => ({
     currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, tasks,
     login, logout, updateUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, unlockAchievement, addPayment, addPost, likePost, toggleReportModal: () => setIsReportModalOpen(prev => !prev),
-    addToast, removeToast, logWorkout, sendAICoachMessage, bookClass, sendMessage, markMessagesAsRead, addTask, updateTask, deleteTask
-  }), [currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, tasks, login, logout, updateUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, unlockAchievement, addPayment, addPost, likePost, addToast, removeToast, logWorkout, sendAICoachMessage, bookClass, sendMessage, markMessagesAsRead, addTask, updateTask, deleteTask]);
+    addToast, removeToast, logWorkout, sendAICoachMessage, bookClass, sendMessage, markMessagesAsRead, addTask, updateTask, deleteTask, requestPushPermission, sendTestPush
+  }), [currentUser, users, notifications, preEstablishedRoutines, payments, gymClasses, messages, announcements, challenges, achievements, equipment, incidents, toasts, expenses, budgets, posts, tasks, login, logout, updateUser, addNotification, markNotificationAsRead, markAllNotificationsAsRead, unlockAchievement, addPayment, addPost, likePost, addToast, removeToast, logWorkout, sendAICoachMessage, bookClass, sendMessage, markMessagesAsRead, addTask, updateTask, deleteTask, requestPushPermission, sendTestPush]);
 
   return (
     <ThemeProvider>

@@ -570,8 +570,9 @@ const RoutineEditor: React.FC<{client: User; trainer: User; onSave: (client: Use
                 },
             };
             
+            // FIX: Using gemini-3-flash-preview as it's better for routine generation and supports responseSchema natively
             const response = await ai.models.generateContent({
-                model: 'gemini-2.5-flash',
+                model: 'gemini-3-flash-preview',
                 contents: prompt,
                 config: {
                     responseMimeType: "application/json",

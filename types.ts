@@ -328,11 +328,13 @@ export interface User {
   blockedUserIds?: string[];
   /**
    * FIX: Added notificationPreferences and privacySettings to User interface to match mock data usage.
+   * Updated notificationPreferences to include pushNotifications property.
    */
   notificationPreferences?: {
     newMessages: boolean;
     routineUpdates: boolean;
     classReminders: boolean;
+    pushNotifications?: boolean;
   };
   privacySettings?: {
     profileVisibility: Visibility;

@@ -7,6 +7,7 @@ import { themes } from '../themes';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useTranslation } from 'react-i18next';
 import { ConfirmationModal } from './shared/ConfirmationModal';
+import { BellIcon } from './icons/BellIcon';
 
 // Reusable toggle component
 const SettingToggle: React.FC<{ id: string, label: string, description: string, enabled: boolean, onToggle: () => void }> = ({ id, label, description, enabled, onToggle }) => (
@@ -42,7 +43,7 @@ const SettingSection: React.FC<{ title: string; children: React.ReactNode; dange
 
 const SettingsView: React.FC = () => {
     const { t } = useTranslation();
-    const { currentUser, updateCurrentUser, logout, users, toggleBlockUser, deleteUser, resetUsers } = useContext(AuthContext)!;
+    const { currentUser, updateCurrentUser, logout, users, toggleBlockUser, deleteUser, resetUsers, requestPushPermission, sendTestPush } = useContext(AuthContext)!;
     const { theme, setThemeByName, isDarkMode, toggleDarkMode } = useContext(ThemeContext)!;
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
@@ -84,19 +85,31 @@ const SettingsView: React.FC = () => {
         setConfirmPassword('');
     };
     
-    const handleNotificationToggle = useCallback((key: string) => {
+    const handleNotificationToggle = useCallback(async (key: string) => {
         if (!currentUser) return;
 
-        const currentPrefs = currentUser.notificationPreferences || { newMessages: true, routineUpdates: true, classReminders: true };
+        const currentPrefs = currentUser.notificationPreferences || { newMessages: true, routineUpdates: true, classReminders: true, pushNotifications: false };
+        
+        let shouldEnable = !currentPrefs[key as keyof typeof currentPrefs];
+        
+        // Especial handling for Push
+        if (key === 'pushNotifications' && shouldEnable) {
+            const granted = await requestPushPermission();
+            if (!granted) {
+                alert('No se pudieron activar las notificaciones. Por favor, revisa los permisos de tu navegador.');
+                return;
+            }
+        }
+
         const updatedUser: User = {
             ...currentUser,
             notificationPreferences: {
                 ...currentPrefs,
-                [key]: !currentPrefs[key as keyof typeof currentPrefs],
+                [key]: shouldEnable,
             },
         };
         updateCurrentUser(updatedUser);
-    }, [currentUser, updateCurrentUser]);
+    }, [currentUser, updateCurrentUser, requestPushPermission]);
 
     const handlePrivacyChange = useCallback((key: string, value: string | boolean) => {
         if (!currentUser) return;
@@ -132,7 +145,7 @@ const SettingsView: React.FC = () => {
 
 
     return (
-        <div className="w-full max-w-3xl bg-white dark:bg-gray-800/50 rounded-2xl shadow-lg ring-1 ring-black/5 dark:ring-white/10 p-6 md:p-8 space-y-8">
+        <div className="w-full max-w-3xl bg-white dark:bg-gray-800/50 rounded-2xl shadow-lg ring-1 ring-black/5 dark:ring-white/10 p-6 md:p-8 space-y-8 animate-fade-in">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{t('components.settingsView.title')}</h2>
             
             <SettingSection title={t('components.settingsView.appearance')}>
@@ -265,6 +278,25 @@ const SettingsView: React.FC = () => {
                     enabled={currentUser?.notificationPreferences?.routineUpdates ?? true}
                     onToggle={() => handleNotificationToggle('routineUpdates')}
                 />
+                <SettingToggle
+                    id="pushNotifications"
+                    label="Notificaciones Push"
+                    description="Recibe alertas críticas incluso con la aplicación cerrada."
+                    enabled={currentUser?.notificationPreferences?.pushNotifications ?? false}
+                    onToggle={() => handleNotificationToggle('pushNotifications')}
+                />
+                
+                {currentUser?.notificationPreferences?.pushNotifications && (
+                  <div className="mt-4 p-4 bg-primary/5 rounded-2xl border border-primary/20 flex justify-between items-center">
+                    <p className="text-xs font-bold text-primary uppercase">Prueba del sistema push</p>
+                    <button 
+                      onClick={sendTestPush}
+                      className="px-4 py-2 bg-primary text-white text-xs font-black rounded-xl hover:scale-105 transition-all"
+                    >
+                      ENVIAR NOTIFICACIÓN DE PRUEBA
+                    </button>
+                  </div>
+                )}
 
                 <h4 className="font-semibold text-gray-800 dark:text-gray-200 mt-6 mb-2 border-t border-gray-200 dark:border-gray-600 pt-6">{t('components.settingsView.blockedUsers')}</h4>
                 {blockedUsers.length > 0 ? (

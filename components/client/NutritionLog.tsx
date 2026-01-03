@@ -35,7 +35,8 @@ const NutritionLog: React.FC = () => {
         const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
         
         try {
-            const contents: any[] = [{ text: `Analiza esta comida${mealDescription ? `: ${mealDescription}` : ''}. Identifica alimentos, estima calorías y macros (proteína, carbohidratos, grasa) y da un consejo breve.` }];
+            // FIX: Explicitly request JSON response in the prompt since responseMimeType is not allowed for nano banana series
+            const contents: any[] = [{ text: `Analiza esta comida${mealDescription ? `: ${mealDescription}` : ''}. Identifica alimentos, estima calorías y macros (proteína, carbohidratos, grasa) y da un consejo breve. Responde ÚNICAMENTE en formato JSON con la siguiente estructura: {"estimatedCalories": "string", "estimatedMacros": {"protein": "string", "carbs": "string", "fat": "string"}, "suggestion": "string"}` }];
             
             if (capturedImage) {
                 contents.push({
@@ -46,26 +47,15 @@ const NutritionLog: React.FC = () => {
                 });
             }
 
+            // FIX: Removed responseMimeType and responseSchema for gemini-2.5-flash-image as per coding guidelines for nano banana models
             const res = await ai.models.generateContent({
                 model: 'gemini-2.5-flash-image',
-                contents: { parts: contents },
-                config: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: Type.OBJECT,
-                        properties: {
-                            estimatedCalories: { type: Type.STRING },
-                            estimatedMacros: {
-                                type: Type.OBJECT,
-                                properties: { protein: { type: Type.STRING }, carbs: { type: Type.STRING }, fat: { type: Type.STRING } }
-                            },
-                            suggestion: { type: Type.STRING }
-                        }
-                    }
-                }
+                contents: { parts: contents }
             });
 
-            const analysis = JSON.parse(res.text);
+            // FIX: Handle extraction of JSON string from potential markdown code blocks and parse it
+            const cleanedText = (res.text || '').replace(/```json|```/g, "").trim();
+            const analysis = JSON.parse(cleanedText);
             const newLog = {
                 id: `nut-${Date.now()}`,
                 date: new Date().toISOString(),
@@ -79,6 +69,7 @@ const NutritionLog: React.FC = () => {
             setMealDescription('');
             setCapturedImage(null);
         } catch (err) {
+            console.error("Nutrition Analysis Error:", err);
             alert("Error al analizar la comida con IA.");
         } finally {
             setIsLoading(false);
